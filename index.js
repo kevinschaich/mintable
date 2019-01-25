@@ -5,9 +5,13 @@ const moment = require('moment')
 const { fetchTransactions } = require("./lib/fetch");
 const { transformTransactionsToUpdates } = require("./lib/transform");
 const { updateSheet, addSheet, clearSheet, getSheets } = require("./lib/update");
+const { transactionColumns } = require('./lib/constants')
 
-const month = moment().startOf('month').format('YYYY.MM');
-const lastMonth = moment().subtract(1, 'month').startOf('month').format('YYYY.MM');
+const currentMonth = moment().startOf('month');
+const lastMonth = moment().subtract(1, 'month').startOf('month');
+
+const currentMonthSheet = currentMonth.format('YYYY.MM');
+const lastMonthSheet = lastMonth.format('YYYY.MM');
 
 (async () => {
   console.log("Fetching Transactions...");
@@ -17,24 +21,23 @@ const lastMonth = moment().subtract(1, 'month').startOf('month').format('YYYY.MM
   const sheets = await getSheets();
   const sheetTitles = _.map(sheets, sheet => sheet.properties.title);
 
-  if (! _.includes(sheetTitles, lastMonth)) {
-    addSheet(lastMonth);
+  if (!_.includes(sheetTitles, lastMonthSheet)) {
+    addSheet(lastMonthSheet);
   }
-  if (!_.includes(sheetTitles, month)) {
-    addSheet(month);
+  if (!_.includes(sheetTitles, currentMonthSheet)) {
+    addSheet(currentMonthSheet);
   }
 
-  const transactionsWithDateObjects = _.sortBy(_.map(transactions, transaction => {
-    return {
-      ...transaction,
-      date: moment(transaction.date)
-    }
-  }), 'date');
-  console.log(transactionsWithDateObjects)
-  console.log(month);
-  // clearSheet("Sheet1");  
+  clearSheet(`${currentMonthSheet}!${transactionColumns}`)
+  clearSheet(`${lastMonthSheet}!${transactionColumns}`)
 
-  const updates = transformTransactionsToUpdates("2019.01", _.sortBy(transactions, "date"));
-  updateSheet(updates);
+  const sorted = _.sortBy(transactions, 'date');
+
+  const partitioned = _.partition(sorted, transaction => {
+    return moment(transaction.date).startOf('month').format('YYYY.MM') === currentMonthSheet
+  });
+
+  updateSheet(transformTransactionsToUpdates(currentMonthSheet, partitioned[0]));
+  updateSheet(transformTransactionsToUpdates(lastMonthSheet, partitioned[1]));
   // addSheet('asdfasdf')
 })();
