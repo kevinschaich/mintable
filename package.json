@@ -18,6 +18,7 @@
     "express": "^4.16.4",
     "fs-extra": "^7.0.1",
     "googleapis": "27",
+    "lodash": "^4.17.11",
     "moment": "^2.23.0",
     "plaid": "^2.10.0"
   }
