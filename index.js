@@ -17,7 +17,7 @@ const { updateSheet, addSheet, clearSheet, getSheets } = require("./lib/update")
   const sheets = await getSheets();
   const updates = transformTransactionsToUpdates(transactions);
   console.log(sheets);
-  clearSheet("Sheet1");
+  // clearSheet("Sheet1");  
   updateSheet(updates);
   // addSheet('asdfasdf')
 })();
