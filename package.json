@@ -8,8 +8,8 @@
     "test": "node index.js",
     "test-plaid": "node scripts/testPlaid.js",
     "test-sheets": "node scripts/testSheets.js",
-    "token-plaid": "node scripts/plaidServer.js",
-    "token-sheets": "node scripts/getSheetsToken.js"
+    "token-plaid": "node scripts/tokenPlaid.js",
+    "token-sheets": "node scripts/tokenSheets.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
