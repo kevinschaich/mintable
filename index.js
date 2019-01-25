@@ -13,7 +13,6 @@ const lastMonth = moment().subtract(1, 'month').startOf('month').format('YYYY.MM
   console.log("Fetching Transactions...");
 
   const transactions = await fetchTransactions();
-  const updates = transformTransactionsToUpdates("2019.01", _.sortBy(transactions, "date"));
 
   const sheets = await getSheets();
   const sheetTitles = _.map(sheets, sheet => sheet.properties.title);
@@ -25,8 +24,17 @@ const lastMonth = moment().subtract(1, 'month').startOf('month').format('YYYY.MM
     addSheet(month);
   }
 
+  const transactionsWithDateObjects = _.sortBy(_.map(transactions, transaction => {
+    return {
+      ...transaction,
+      date: moment(transaction.date)
+    }
+  }), 'date');
+  console.log(transactionsWithDateObjects)
   console.log(month);
   // clearSheet("Sheet1");  
+
+  const updates = transformTransactionsToUpdates("2019.01", _.sortBy(transactions, "date"));
   updateSheet(updates);
   // addSheet('asdfasdf')
 })();
