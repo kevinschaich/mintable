@@ -20,7 +20,7 @@ const {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const properties = ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'];
-  const additional_columns = ['notes', 'work', 'joint', 'paid'];
+  const additional_columns = ['notes', 'work', 'joint'];
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const firstCol = alphabet[0];
   const lastCol = alphabet[properties.length - 1];

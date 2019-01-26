@@ -1,5 +1,7 @@
 # Mintable
 
+![Mintable](./img/mintable.png)
+
 ## Disclaimer
 
 All this repo does is talk to Plaid/Google APIs and write tokens to your local file system. If you don't feel safe entering real bank credentials, you can audit the code yourself and try it on Plaid's sandbox environment.
