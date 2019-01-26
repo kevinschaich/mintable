@@ -2,7 +2,7 @@ require('dotenv').config();
 const _ = require('lodash');
 const moment = require('moment');
 
-const { fetchTransactions } = require('./lib/fetch');
+const { fetchTransactions } = require('./lib/plaid');
 const {
   updateSheet,
   addSheet,
@@ -12,7 +12,7 @@ const {
   resizeColumns,
   duplicateSheet,
   renameSheet
-} = require('./lib/update');
+} = require('./lib/sheets');
 
 (async () => {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

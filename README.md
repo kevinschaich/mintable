@@ -1,10 +1,16 @@
-# Build Your Own Mint
+# Mintable
 
-## Important Disclaimer
+## Disclaimer
 
-All this repo does is talking to Plaid/Google APIs and writing tokens to your local file system. If you don't feel safe entering real bank credentials, audit the code yourself to make sure.
+All this repo does is talk to Plaid/Google APIs and write tokens to your local file system. If you don't feel safe entering real bank credentials, you can audit the code yourself and try it on Plaid's sandbox environment.
 
-## Setting up API keys
+## Credits
+
+Mintable started out as a fork of [Evan You](https://github.com/yyx990803)'s [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint) skeleton. Evan put together a great set of scripts to make the connection between Plaid and Google Sheets painless.
+
+This repo is a lot more opinionated about defaults and gives you a real, working transaction spreadsheet out of the box. If you're looking for something very bare-bones to hack on, try [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint).
+
+## Setup
 
 1. First things first - rename `.env.sample` to `.env`. Variables in this file will be loaded as environment variables. This file is ignored by Git.
 1. Run `npm install` in the repo root.
@@ -43,15 +49,13 @@ All this repo does is talking to Plaid/Google APIs and writing tokens to your lo
 
 - Now run `npm run test-sheets`. You should see your sheet's cell A1 with "It worked!".
 
-## Transform your Data
+## Usage
 
-- With the APIs sorted out, now it's time to connect them. Open `lib/transform.js` - this is where you can write your own logic to map incoming transactions to cell updates. How to structure the spreadsheet to use that data is up to you.
+1. After completing the above steps, run `node index.js` in the repo root. If everything works, your spreadsheet should have been updated.
 
-- By default, the transaction date range is from the beginning of last month to now. You can adjust this in `lib/fetch.js`.
+The logic for transforming raw Plaid transactions to Google Sheets cell data is defined in `index.js` – helpers can be found in the `lib` folder.
 
-- Once you've setup your own transform logic, run `node index.js`. If everything works, your spreadsheet should have been updated.
-
-- This repo only handles transactions, but it should be pretty straightforward to add balances. (logic for fetching balances is in `fetch.js` already)
+- This repo only handles transactions, but it should be pretty straightforward to add balances. (logic for fetching balances is in `plaid.js` already)
 
 ## Automate the Updates
 
