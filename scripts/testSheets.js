@@ -1,8 +1,10 @@
-require('dotenv').config()
+require('dotenv').config();
 
-const { updateSheet } = require('../lib/update')
+const { updateSheet } = require('../lib/update');
 
-updateSheet([{
-  range: 'A1',
-  values: [['It worked!']]
-}])
+updateSheet([
+  {
+    range: 'A1',
+    values: [['It worked!']]
+  }
+]);
