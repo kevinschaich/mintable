@@ -35,8 +35,6 @@ This repo is a lot more opinionated about defaults and gives you a real, working
 
 ### Google Sheets
 
-> I use a Google Sheet because it's convenient. If you don't trust Google or want to build your own fancy interface, you can totally do that - but that's out of scope for this demo.
-
 - First, create a Google Sheets spreadsheet, and save its ID in `.env` as `SHEETS_SHEET_ID`.
 
 - Then, go to [Google Sheets API Quickstart](https://developers.google.com/sheets/api/quickstart/nodejs), and click the "Enable the Google Sheets API" button. Follow instructions and download the credentials JSON file. Take a look at the file and fill in the following fields in `.env`:

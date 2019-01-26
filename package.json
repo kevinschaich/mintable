@@ -1,8 +1,8 @@
 {
-  "name": "build-your-own-mint",
+  "name": "mintable",
   "private": true,
   "main": "index.js",
-  "author": "Evan You",
+  "author": "Kevin Schaich",
   "license": "MIT",
   "scripts": {
     "test": "node index.js",

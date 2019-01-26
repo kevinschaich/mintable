@@ -34,7 +34,7 @@ workflows:
   nightly:
     triggers:
       - schedule:
-          # UTC 5:00 AM = EST 12:00 AM daily
+          # UTC 5:00 AM – EST 12:00 AM daily
           cron: "0 5 * * *"
           filters:
             branches:
