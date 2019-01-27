@@ -6,13 +6,9 @@
 
 All this repo does is talk to Plaid/Google APIs and write tokens to your local file system. If you don't feel safe entering real bank credentials, you can audit the code yourself and try it on Plaid's sandbox environment.
 
-## Credits
-
-Mintable started out as a fork of [Evan You](https://github.com/yyx990803)'s [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint) skeleton. Evan put together a great set of scripts to make the connection between Plaid and Google Sheets painless.
-
-This repo is a lot more opinionated about defaults and gives you a working transaction spreadsheet out of the box. If you're looking for something more bare-bones, try [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint).
-
 ## Setup
+
+### Housekeeping
 
 1. Rename `.env.sample` to `.env`. Variables in this file will be loaded as environment variables. This file is ignored by Git.
 1. Run `npm install` in the repo root.
@@ -38,14 +34,20 @@ This repo is a lot more opinionated about defaults and gives you a working trans
 1. Run `npm run token-sheets`. This will prompt for auth and save the token in `.env`.
 1. If you've done everything correctly, running `npm run test-sheets` should fill cell A1 in your sheet with "It worked!".
 
-## Usage
+### Usage
 
 1. After completing the above steps, run `node index.js` in the repo root. If everything works, your spreadsheet should have been updated.
 
 > **Note:** The logic for transforming raw Plaid transactions to Google Sheets cell data is defined in `index.js` – helpers can be found in the `lib` folder.
 
-## Automate the Updates
+### Automated Updates
 
 The repo contains a [CircleCI](https://circleci.com/) config file which runs the update every day at 5AM UTC (midnight US Eastern time). You can adjust the cron config to tweak the time/frequency of the updates. Note that your local `.env` is not checked into the repo, so you will need to copy all those env variables into your CircleCI project settings.
 
 This is totally optional if you don't trust CI with your tokens. Just run it manually when you want to update things.
+
+## Credits
+
+Mintable started out as a fork of [Evan You](https://github.com/yyx990803)'s [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint) skeleton. Evan put together a great set of scripts to make the connection between Plaid and Google Sheets painless.
+
+This repo is a lot more opinionated about defaults and gives you a working transaction spreadsheet out of the box. If you're looking for something more bare-bones, try [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint).
