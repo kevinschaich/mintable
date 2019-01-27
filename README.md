@@ -30,7 +30,7 @@ This repo is a lot more opinionated about defaults and gives you a working trans
 
 ### Google Sheets
 
-1. Create a Google Sheets spreadsheet, and save its ID in `.env` as `SHEETS_SHEET_ID` (you can find this in the URL as https://docs.google.com/spreadsheets/d/<ID>/edit)
+1. Create a Google Sheets spreadsheet, and save its ID in `.env` as `SHEETS_SHEET_ID` (you can find this in the URL as `https://docs.google.com/spreadsheets/d/<ID>/edit`)
 1. Go to [Google Sheets API Quickstart](https://developers.google.com/sheets/api/quickstart/nodejs), and click **Enable the Google Sheets API**. Follow instructions and download the credentials JSON file. Take a look at the file and fill in the following fields in `.env`:
     1. `SHEETS_CLIENT_ID`
     1. `SHEETS_CLIENT_SECRET`
