@@ -48,6 +48,21 @@ All this repo does is talk to Plaid/Google APIs and write tokens to your local f
 
 > **Note:** The logic for transforming raw Plaid transactions to Google Sheets cell data is defined in `index.js` – helpers can be found in the `lib` folder.
 
+### Updating your Template Sheet
+
+Out of the box, Mintable will populate a very basic list of transactions. Since the Google Sheets APIs are cumbersome to interact with for manipulating cell data and formatting, I recommend that you create a "template" sheet as a base. Mintable will only touch the few spreadsheet columns it needs to update transactional data (defined in `index.js`), so the right side of your spreadsheet be as complex as you like and contain all the calculations, formulas, and visualizations you want to see for each month's data. You can create your own template or start with this premade one with some useful formulas:
+
+* [Mintable – Public Template on Google Sheets](https://docs.google.com/spreadsheets/d/10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw/edit#gid=1649215680)
+
+To use this as your monthly template sheet:
+
+1. Delete all the automated sheets in your Mintable spreadsheet.
+1. Click the downwards arrow on the `2018.12` sheet in the template, then **Copy To...**, and select your Mintable spreadsheet when Google asks where you want to copy to.
+1. Do the same for the `Constants` sheet.
+1. In your Mintable spreadsheet, change the name of the `Copy of 2018.12` sheet to `<YEAR>.<LAST MONTH>`. For example, if the current date is February 1, 2019, change the name of the first sheet to `2019.01`.
+1. Rename the `Copy of Constants` sheet to `Constants`.
+1. Re-run `node index.js` from the repo root. If everything works, your spreadsheet should have been updated with calculations intact! You may need to fix any broken formula references that got messed up in the copy process.
+
 ### Automated Updates
 
 The repo contains a [CircleCI](https://circleci.com/) config file which runs the update every day at 5AM UTC (midnight US Eastern time). You can adjust the cron config to tweak the time/frequency of the updates. Note that your local `.env` is not checked into the repo, so you will need to copy all those env variables into your CircleCI project settings.
