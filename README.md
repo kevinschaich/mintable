@@ -81,6 +81,6 @@ See [Credits and Alternatives](#credits-and-alternatives) above for a detailed c
 
 **Do I have to give my data to Plaid and Google? Are there any completely self-hosted alternatives I can use?**
 
-As of the time of writing, no. Mintable relies on Plaid for integrating with your banks and fetching transactional data, and uses Google Sheets as the storage/visualization layer.
+As of the time of writing, Mintable relies on Plaid for integrating with your banks and fetching transactional data, and uses Google Sheets as the storage/visualization layer.
 
 That being said, I'd be happy to approve contributions for a pluggable interface for both the transactional and spreadsheet pieces.
