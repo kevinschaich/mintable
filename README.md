@@ -61,7 +61,7 @@ To use this as your monthly template sheet:
 
 #### Automated Updates
 
-This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run daily builds automatically. If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
+This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run hourly builds automatically. If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
 
 Note that your local `.env` is not checked into the repo, so you will need to copy all those env variables into your project settings to use this feature. This is totally optional if you don't trust CI with your tokens. Just run it manually when you want to update things.
 
