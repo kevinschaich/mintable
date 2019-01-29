@@ -61,9 +61,9 @@ To use this as your monthly template sheet:
 
 #### Automated Updates
 
-The repo contains a [CircleCI](https://circleci.com/) config file which runs the update every day at 5AM UTC (midnight US Eastern time). You can adjust the cron config to tweak the time/frequency of the updates. Note that your local `.env` is not checked into the repo, so you will need to copy all those env variables into your CircleCI project settings.
+This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run daily builds automatically.
 
-This is totally optional if you don't trust CI with your tokens. Just run it manually when you want to update things.
+Note that your local `.env` is not checked into the repo, so you will need to copy all those env variables into your project settings to use this feature. This is totally optional if you don't trust CI with your tokens. Just run it manually when you want to update things.
 
 ## Credits & Alternatives
 
