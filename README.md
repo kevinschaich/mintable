@@ -1,4 +1,4 @@
-<h3 align="center"><img width="400" src="./img/logo.png" alt="Mintable"><p align="center">Roll-your-own Mint clone for managing personal finances using the Google Sheets and Plaid APIs.</p><br></h3>
+<h3 align="center"><img width="400" src="./img/logo.png" alt="Mintable"><p align="center">Roll-your-own Mint clone for managing personal finances using the Google Sheets and Plaid APIs.</p></h3>
 
 ![Mintable](./img/mintable.png)
 
@@ -12,12 +12,12 @@ Mintable allows you to automatically populate transactional data from your finan
 
 ## Setup
 
-#### Housekeeping
+### Housekeeping
 
 1. Rename `.env.sample` to `.env`. Variables in this file will be loaded as environment variables. This file is ignored by Git.
 1. Run `npm install` in the repo root.
 
-#### Plaid
+### Plaid
 
 1. You will first need to sign up for [Plaid](https://plaid.com/) and apply for the development plan. You might need to wait for a day or two to get approved. It's free and limited to 100 items (i.e. banks), so it should be more than enough for your personal use.
 1. Once approved, fill out the following in `.env`:
@@ -32,7 +32,7 @@ Mintable allows you to automatically populate transactional data from your finan
 
 > **Note:** If you plan to [use CircleCI to automate your updates](#automated-updates), it requires environment variables (your self-defined account names above) to be all caps with no hyphens, i.e. `BANK_OF_AMERICA` or `AMERICAN_EXPRESS`.
 
-#### Google Sheets
+### Google Sheets
 
 1. Create a Google Sheets spreadsheet, and save its ID in `.env` as `SHEETS_SHEET_ID`. You can find this in the spreadsheet URL as `https://docs.google.com/spreadsheets/d/<ID>/edit`.
 1. Go to [Google Sheets API Quickstart](https://developers.google.com/sheets/api/quickstart/nodejs), and click **Enable the Google Sheets API**. Follow instructions and download the credentials JSON file. Take a look at the file and fill in the following fields in `.env`:
@@ -44,13 +44,13 @@ Mintable allows you to automatically populate transactional data from your finan
 1. Run `npm run token-sheets`. This will prompt for auth and save the token in `.env`.
 1. If you've done everything correctly, running `npm run test-sheets` should fill cell A1 in your sheet with "It worked!".
 
-#### Usage
+### Usage
 
 1. After completing the above steps, run `node index.js` in the repo root. If everything works, your spreadsheet should have been updated.
 
 > **Note:** The logic for transforming raw Plaid transactions to Google Sheets cell data is defined in `index.js` – helpers can be found in the `lib` folder.
 
-#### Updating your Template Sheet
+### Updating your Template Sheet
 
 Out of the box, Mintable will populate a very basic list of transactions. Since the Google Sheets APIs are cumbersome to interact with for manipulating cell data and formatting, I recommend that you create a "template" sheet as a base. Mintable will only touch the few spreadsheet columns it needs to update transactional data (defined in `index.js`), so the right side of your spreadsheet be as complex as you like and contain all the calculations, formulas, and visualizations you want to see for each month's data. You can create your own template or start with this premade one with some useful formulas:
 
@@ -65,7 +65,7 @@ To use this as your monthly template sheet:
 1. Rename the `Copy of Constants` sheet to `Constants`.
 1. Re-run `node index.js` from the repo root. If everything works, your spreadsheet should have been updated with calculations intact! You may need to fix any broken formula references that got messed up in the copy process.
 
-#### Automated Updates
+### Automated Updates
 
 This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run hourly builds automatically. If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
 
