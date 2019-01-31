@@ -28,15 +28,19 @@ Mintable allows you to automatically populate transactional data from your finan
 1. You should now have a local server running to connect your financial institutions – open [https://localhost:8080](https://localhost:8080) to go through the authentication flow. Once you've linked the bank, its associated access token will be saved in `.env`. This process needs to be repeated for each bank you want to connect. Make sure to run each with a different `account` name.
 1.  If you've done everything correctly, running `npm run test-plaid` now should log the recent transactions in your connected accounts.
 
+> **Note:** If you plan to [use CircleCI to automate your updates](#automated-updates), it requires environment variables (your self-defined account names above) to be all caps with no hyphens, i.e. `BANK_OF_AMERICA` or `AMERICAN_EXPRESS`.
+
 #### Google Sheets
 
 1. Create a Google Sheets spreadsheet, and save its ID in `.env` as `SHEETS_SHEET_ID`. You can find this in the spreadsheet URL as `https://docs.google.com/spreadsheets/d/<ID>/edit`.
-1. Go to [Google Sheets API Quickstart](https://developers.google.com/sheets/api/quickstart/nodejs), and click **Enable the Google Sheets API**. Follow instructions and download the credentials JSON file. Take a look at the file and fill in the following fields in `.env`:
+2. Go to [Google Sheets API Quickstart](https://developers.google.com/sheets/api/quickstart/nodejs), and click **Enable the Google Sheets API**. Follow instructions and download the credentials JSON file. Take a look at the file and fill in the following fields in `.env`:
+    ```
     1. `SHEETS_CLIENT_ID`
-    1. `SHEETS_CLIENT_SECRET`
-    1. `SHEETS_REDIRECT_URI` (use the first item in `redirect_uri`)
-1. Run `npm run token-sheets`. This will prompt for auth and save the token in `.env`.
-1. If you've done everything correctly, running `npm run test-sheets` should fill cell A1 in your sheet with "It worked!".
+    2. `SHEETS_CLIENT_SECRET`
+    3. `SHEETS_REDIRECT_URI` (use the first item in `redirect_uri`)
+    ```
+3. Run `npm run token-sheets`. This will prompt for auth and save the token in `.env`.
+4. If you've done everything correctly, running `npm run test-sheets` should fill cell A1 in your sheet with "It worked!".
 
 #### Usage
 
@@ -63,7 +67,7 @@ To use this as your monthly template sheet:
 
 This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run hourly builds automatically. If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
 
-Note that your local `.env` is not checked into the repo, so you will need to copy all those env variables into your project settings to use this feature. This is totally optional if you don't trust CI with your tokens. Just run it manually when you want to update things.
+> **Note:** Your local `.env` is not checked into the repo, so you will need to copy all those env variables into your project settings to use this feature. This is totally optional if you don't trust CI with your tokens. Just run it manually when you want to update things.
 
 ## Credits & Alternatives
 
