@@ -58,7 +58,7 @@ const {
   }
   
   if (!currentMonthSheet) {
-    currentMonthSheet = await duplicateSheet(lastMonthSheet.properties.sheetId);
+    currentMonthSheet = await duplicateSheet(process.env.SHEETS_SHEET_ID, lastMonthSheet.properties.sheetId);
     await renameSheet(currentMonthSheet.properties.sheetId, currentMonthSheetTitle);
     await clearSheet(`${currentMonthSheetTitle}!${firstTransactionColumn}:${lastReferenceColumn}`);
   }
