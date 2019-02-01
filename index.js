@@ -20,6 +20,8 @@ const {
   // CONSTANT DEFINITIONS
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  const publicTemplateSheetId = "10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw";
+
   const defaultTransactionColumns = ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'];
   const defaultReferenceColumns = ['notes', 'work', 'joint'];
   const transactionColumns = JSON.parse(process.env.TRANSACTION_COLUMNS || null) || defaultTransactionColumns;
@@ -44,15 +46,19 @@ const {
   // SET UP SHEETS FOR CURRENT/LAST MONTH'S TRANSACTIONS
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const sheets = await getSheets();
+  const sheets = await getSheets(process.env.SHEETS_SHEET_ID);
   let currentMonthSheet = _.find(sheets, sheet => sheet.properties.title === currentMonthSheetTitle);
   let lastMonthSheet = _.find(sheets, sheet => sheet.properties.title === lastMonthSheetTitle);
 
   if (!lastMonthSheet) {
-    lastMonthSheet = await addSheet(lastMonthSheetTitle);
+    const publicTemplateSheets = await getSheets(publicTemplateSheetId);
+    lastMonthSheet = await duplicateSheet(publicTemplateSheetId, publicTemplateSheets[0].properties.sheetId);
+    await renameSheet(lastMonthSheet.properties.sheetId, lastMonthSheetTitle);
+    await clearSheet(`${lastMonthSheetTitle}!${firstTransactionColumn}:${lastReferenceColumn}`);
   }
+  
   if (!currentMonthSheet) {
-    currentMonthSheet = await duplicateSheet(lastMonthSheet.properties.sheetId);
+    currentMonthSheet = await duplicateSheet(process.env.SHEETS_SHEET_ID, lastMonthSheet.properties.sheetId);
     await renameSheet(currentMonthSheet.properties.sheetId, currentMonthSheetTitle);
     await clearSheet(`${currentMonthSheetTitle}!${firstTransactionColumn}:${lastReferenceColumn}`);
   }
