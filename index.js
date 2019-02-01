@@ -15,6 +15,7 @@ const {
 } = require('./lib/sheets');
 
 (async () => {
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // CONSTANT DEFINITIONS
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,26 +58,45 @@ const {
   // FETCH TRANSACTIONS AND MAP TO SHEET UPDATES
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const transformTransactionsToUpdates = (sheetTitle, transactions) => {
-    const updates = _.map(transactions, (transaction, i) => {
-      return {
-        range: `${sheetTitle}!${firstCol}${i + 2}:${lastCol}${i + 2}`,
-        values: [
-          _.map(properties, property => {
-            let value = _.get(transaction, property, '');
-            value = value === true ? 'y' : value;
-            value = value === false ? null : value;
-            return value;
-          })
-        ]
-      };
+  const sanitizeTransaction = transaction => {
+    // Explode Plaid's category hierarchy – first two are usually the only interesting ones
+    transaction['category.0'] = transaction.category[0]
+    transaction['category.1'] = transaction.category[1]
+
+    // Map TRUE to 'y' and FALSE to nothing (used for Pending column)
+    transaction = _.mapValues(transaction, property => {
+      property = property === true ? 'y' : property;
+      property = property === false ? '' : property;
+      return property;
     });
 
+    // Handle category overrides defined in .env
+    const categoryOverrides = process.env.CATEGORY_OVERRIDES ? JSON.parse(process.env.CATEGORY_OVERRIDES) : []
+    _.forEach(categoryOverrides, override => {
+      if (new RegExp(override.pattern, _.get(override, 'flags', '')).test(transaction.name)) {
+        transaction['category.0'] = _.get(override, 'category.0', '');
+        transaction['category.1'] = _.get(override, 'category.1', '');
+      }
+    });
+
+    return _.at(transaction, properties)
+  }
+
+  const transformTransactionsToUpdates = (sheetTitle, transactions) => {
+    // Transaction data (rows 2 onwards)
+    const updates = _.map(transactions, (transaction, i) => {
+      const range = `${sheetTitle}!${firstCol}${i + 2}:${lastCol}${i + 2}`;
+      const values = [sanitizeTransaction(transaction)];
+      return { range, values };
+    });
+
+    // Column headers for transaction data
     updates.push({
       range: `${sheetTitle}!${firstCol}1:${lastCol}1`,
       values: [properties]
     });
 
+    // Additional user-defined column headers (specify above in additional_columns)
     updates.push({
       range: `${sheetTitle}!${firstAddCol}1:${lastAddCol}1`,
       values: [additional_columns]
