@@ -99,6 +99,14 @@ For example, if you want anything matching `autopay` or `e-payment` to get categ
 CATEGORY_OVERRIDES=[{ "pattern": ".*(autopay|e.payment).*", "flags": "i", "category.0": "Transfer", "category.1": "Credit Card Payments" }]
 ```
 
+### Transaction Provider
+
+`TRANSACTION_PROVIDER` specifies which service to use to fetch transactions. At this time, the only possible value is `"plaid"`, but we plan to add other providers in the future.
+
+### Spreadsheet Provider
+
+`SPREADSHEET_PROVIDER` specifies which service to use to automate spreadsheet updates. At this time, the only possible value is `"sheets"`, but we plan to add other providers in the future.
+
 ## Credits & Alternatives
 
 Mintable started out as a fork of [Evan You](https://github.com/yyx990803)'s [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint) skeleton, and after a few contributions it was clear that my fork had become incompatible. I didn't want to fix something that wasn't broken; so became the start of [Mintable](#).
