@@ -75,7 +75,7 @@ This repo includes config files for both [CircleCI](https://circleci.com/) and [
 
 All configurations below are made by adding parameters to your local `.env` file.
 
-#### Transaction Columns
+### Transaction Columns
 
 `TRANSACTION_COLUMNS` specifies a list of [Plaid transaction properties](https://plaid.com/docs/#transactions) (using [`_.get()` syntax](https://lodash.com/docs/4.17.11#get)) to override the default automated columns. Each time you run Mintable, all the contents of these columns will be cleared and overwritten.
 
@@ -87,7 +87,7 @@ TRANSACTION_COLUMNS=["name", "amount"]
 
 > **Warning:** Your mileage may vary if you choose to use additional properties outside the tested defaults (`date`, `amount`, `name`, `account`, `category.0`, `category.1`, `pending`). Proceed at your own risk, you're in uncharted territory.
 
-#### Reference Columns
+### Reference Columns
 
 `REFERENCE_COLUMNS` specifies a list of additional, non-automated columns for your reference/bookkeeping purposes. Each time you run Mintable, the contents of these columns will be preserved.
 
@@ -99,7 +99,7 @@ REFERENCE_COLUMNS=["work", "joint"]
 
 > **Warning:** Since reference columns are not automated by Mintable, they have the potential to get out of sync with transaction data (for example, if your bank deletes a transaction, causing a row to get removed in `TRANSACTION_COLUMNS`)
 
-#### Category Overrides
+### Category Overrides
 
 `CATEGORY_OVERRIDES` specifies a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers. Overrides take the following format:
 
