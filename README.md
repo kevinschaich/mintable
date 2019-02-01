@@ -91,7 +91,7 @@ TRANSACTION_COLUMNS=["name", "amount"]
 
 `REFERENCE_COLUMNS` specifies a list of additional, non-automated columns for your reference/bookkeeping purposes. Each time you run Mintable, the contents of these columns will be preserved.
 
-For example, if you want to add one column to track work expenses, and another to joint track expenses shared with a partner, you could add the following line to your `.env` file:
+For example, if you want to add one column to track work expenses, and another to track joint expenses shared with a partner, you could add the following line to your `.env` file:
 
 ```
 REFERENCE_COLUMNS=["work", "joint"]
