@@ -73,9 +73,35 @@ This repo includes config files for both [CircleCI](https://circleci.com/) and [
 
 ## Configuration
 
+All configurations below are made by adding parameters to your local `.env` file.
+
+#### Transaction Columns
+
+`TRANSACTION_COLUMNS` specifies a list of [Plaid transaction properties](https://plaid.com/docs/#transactions) (using [`_.get()` syntax](https://lodash.com/docs/4.17.11#get)) to override the default automated columns. Each time you run Mintable, all the contents of these columns will be cleared and overwritten.
+
+For example, if you only want to auto-populate the name and amount for each transaction, you could add the following line to your `.env` file:
+
+```
+TRANSACTION_COLUMNS=["name", "amount"]
+```
+
+> **Warning:** Your mileage may vary if you choose to use additional properties outside the tested defaults (`date`, `amount`, `name`, `account`, `category.0`, `category.1`, `pending`). Proceed at your own risk, you're in uncharted territory.
+
+#### Reference Columns
+
+`REFERENCE_COLUMNS` specifies a list of additional, non-automated columns for your reference/bookkeeping purposes. Each time you run Mintable, the contents of these columns will be preserved.
+
+For example, if you want to add one column to track work expenses, and another to joint track expenses shared with a partner, you could add the following line to your `.env` file:
+
+```
+REFERENCE_COLUMNS=["work", "joint"]
+```
+
+> **Warning:** Since reference columns are not automated by Mintable, they have the potential to get out of sync with transaction data (for example, if your bank deletes a transaction, causing a row to get removed in `TRANSACTION_COLUMNS`)
+
 #### Category Overrides
 
-You can specify a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers. Overrides take the following format:
+`CATEGORY_OVERRIDES` specifies a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers. Overrides take the following format:
 
 * `pattern`: [JavaScript Regular Expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Syntax) to test transaction names against
 * `flags`: [JavaScript Regular Expression flags](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Syntax) (i.e. `i` for case insensitive)
