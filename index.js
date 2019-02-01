@@ -1,7 +1,7 @@
 require('dotenv').config();
 const moment = require('moment');
-const { updateSheets } = require('./src/sheets');
-const { getTransactions } = require('./src/plaid');
+const { updateSheets } = require('./providers/sheets');
+const { getTransactions } = require('./providers/plaid');
 
 (async () => {
   const defaultTransactionColumns = ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'];
@@ -34,7 +34,7 @@ const { getTransactions } = require('./src/plaid');
 
   switch (transactionProvider) {
     case 'plaid':
-      [currentMonthTransactions, lastMonthTransactions] = getTransactions(
+      [currentMonthTransactions, lastMonthTransactions] = await getTransactions(
         transactionColumns,
         categoryOverrides,
         currentMonthSheetTitle,
@@ -47,7 +47,7 @@ const { getTransactions } = require('./src/plaid');
 
   switch (spreadsheetProvider) {
     case 'sheets':
-      updateSheets(
+      await updateSheets(
         currentMonthTransactions,
         lastMonthTransactions,
         transactionColumns,
