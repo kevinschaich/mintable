@@ -15,22 +15,26 @@ const {
 } = require('./lib/sheets');
 
 (async () => {
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // CONSTANT DEFINITIONS
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const properties = ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'];
-  const additional_columns = ['notes', 'work', 'joint'];
   const publicTemplateSheetId = "10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw";
 
   const defaultTransactionColumns = ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'];
   const defaultReferenceColumns = ['notes', 'work', 'joint'];
+  const transactionColumns = JSON.parse(process.env.TRANSACTION_COLUMNS || null) || defaultTransactionColumns;
+  const referenceColumns = JSON.parse(process.env.REFERENCE_COLUMNS || null) || defaultReferenceColumns;
+  const categoryOverrides = JSON.parse(process.env.CATEGORY_OVERRIDES || null) || [];
 
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  const firstCol = alphabet[0];
-  const lastCol = alphabet[properties.length - 1];
-  const firstAddCol = alphabet[properties.length];
-  const lastAddCol = alphabet[properties.length + additional_columns.length - 1];
+  const firstTransactionColumn = alphabet[0];
+  const lastTransactionColumn = alphabet[transactionColumns.length - 1];
+  const firstReferenceColumn = alphabet[transactionColumns.length];
+  const lastReferenceColumn = alphabet[transactionColumns.length + referenceColumns.length - 1];
+  const numAutomatedColumns = transactionColumns.length + referenceColumns.length;
+
   const currentMonth = moment().startOf('month');
   const lastMonth = moment()
     .subtract(1, 'month')
@@ -56,39 +60,71 @@ const {
   if (!currentMonthSheet) {
     currentMonthSheet = await duplicateSheet(lastMonthSheet.properties.sheetId);
     await renameSheet(currentMonthSheet.properties.sheetId, currentMonthSheetTitle);
-    await clearSheet(`${currentMonthSheetTitle}!${firstCol}:${lastAddCol}`);
+    await clearSheet(`${currentMonthSheetTitle}!${firstTransactionColumn}:${lastReferenceColumn}`);
   }
 
-  await clearSheet(`${currentMonthSheetTitle}!${firstCol}:${lastCol}`);
-  await clearSheet(`${lastMonthSheetTitle}!${firstCol}:${lastCol}`);
+  await clearSheet(`${currentMonthSheetTitle}!${firstTransactionColumn}:${lastTransactionColumn}`);
+  await clearSheet(`${lastMonthSheetTitle}!${firstTransactionColumn}:${lastTransactionColumn}`);
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // FETCH TRANSACTIONS AND MAP TO SHEET UPDATES
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  const sanitizeTransaction = transaction => {
+    /* 
+    * Explode out Plaid's object hierarchy.
+    * 
+    * For example, the Category hierarchy comes as a list,
+    * and the first two are usually the only interesting ones.
+    * 
+    * Using defaultTransactionColumns above and _.get():
+    * 
+    *    { "category": ["Food and Drink", "Restaurants"] }
+    *
+    * would get expanded to:
+    * 
+    *    { "category.0": "Food and Drink", "category.1": "Restaurants" }
+    */
+    _.forEach(transactionColumns, column => {
+      transaction[column] = _.get(transaction, column);
+    })
+
+    // Map TRUE to 'y' and FALSE to nothing (used for Pending column)
+    transaction = _.mapValues(transaction, property => {
+      property = property === true ? 'y' : property;
+      property = property === false ? '' : property;
+      return property;
+    });
+
+    // Handle category overrides defined in .env
+    _.forEach(categoryOverrides, override => {
+      if (new RegExp(override.pattern, _.get(override, 'flags', '')).test(transaction.name)) {
+        transaction['category.0'] = _.get(override, 'category.0', '');
+        transaction['category.1'] = _.get(override, 'category.1', '');
+      }
+    });
+
+    return _.at(transaction, transactionColumns)
+  }
+
   const transformTransactionsToUpdates = (sheetTitle, transactions) => {
+    // Transaction data (rows 2 onwards)
     const updates = _.map(transactions, (transaction, i) => {
-      return {
-        range: `${sheetTitle}!${firstCol}${i + 2}:${lastCol}${i + 2}`,
-        values: [
-          _.map(properties, property => {
-            let value = _.get(transaction, property, '');
-            value = value === true ? 'y' : value;
-            value = value === false ? null : value;
-            return value;
-          })
-        ]
-      };
+      const range = `${sheetTitle}!${firstTransactionColumn}${i + 2}:${lastTransactionColumn}${i + 2}`;
+      const values = [sanitizeTransaction(transaction)];
+      return { range, values };
     });
 
+    // Column headers for transaction data
     updates.push({
-      range: `${sheetTitle}!${firstCol}1:${lastCol}1`,
-      values: [properties]
+      range: `${sheetTitle}!${firstTransactionColumn}1:${lastTransactionColumn}1`,
+      values: [transactionColumns]
     });
 
+    // Additional user-defined reference column headers (specify in .env)
     updates.push({
-      range: `${sheetTitle}!${firstAddCol}1:${lastAddCol}1`,
-      values: [additional_columns]
+      range: `${sheetTitle}!${firstReferenceColumn}1:${lastReferenceColumn}1`,
+      values: [referenceColumns]
     });
 
     return updates;
@@ -114,7 +150,6 @@ const {
   await formatHeaderRow(currentMonthSheet.properties.sheetId);
   await formatHeaderRow(lastMonthSheet.properties.sheetId);
 
-  const numDataColumns = properties.length + additional_columns.length;
-  await resizeColumns(currentMonthSheet.properties.sheetId, numDataColumns);
-  await resizeColumns(lastMonthSheet.properties.sheetId, numDataColumns);
+  await resizeColumns(currentMonthSheet.properties.sheetId, numAutomatedColumns);
+  await resizeColumns(lastMonthSheet.properties.sheetId, numAutomatedColumns);
 })();

@@ -50,26 +50,54 @@ Mintable allows you to automatically populate transactional data from your finan
 
 > **Note:** The logic for transforming raw Plaid transactions to Google Sheets cell data is defined in `index.js` – helpers can be found in the `lib` folder.
 
-### Updating your Template Sheet
-
-Out of the box, Mintable will populate a very basic list of transactions. Since the Google Sheets APIs are cumbersome to interact with for manipulating cell data and formatting, I recommend that you create a "template" sheet as a base. Mintable will only touch the few spreadsheet columns it needs to update transactional data (defined in `index.js`), so the right side of your spreadsheet be as complex as you like and contain all the calculations, formulas, and visualizations you want to see for each month's data. You can create your own template or start with this premade one with some useful formulas:
-
-* [Mintable – Public Template on Google Sheets](https://docs.google.com/spreadsheets/d/10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw/edit#gid=1649215680)
-
-To use this as your monthly template sheet:
-
-1. Delete all the automated sheets in your Mintable spreadsheet.
-1. Click the downwards arrow on the `2018.12` sheet in the template, then **Copy To...**, and select your Mintable spreadsheet when Google asks where you want to copy to.
-1. Do the same for the `Constants` sheet.
-1. In your Mintable spreadsheet, change the name of the `Copy of 2018.12` sheet to `<YEAR>.<LAST MONTH>`. For example, if the current date is February 1, 2019, change the name of the first sheet to `2019.01`.
-1. Rename the `Copy of Constants` sheet to `Constants`.
-1. Re-run `node index.js` from the repo root. If everything works, your spreadsheet should have been updated with calculations intact! You may need to fix any broken formula references that got messed up in the copy process.
-
 ### Automated Updates
 
 This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run hourly builds automatically. If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
 
 > **Note:** Your local `.env` is not checked into the repo, so you will need to copy all those env variables into your project settings to use this feature. This is totally optional if you don't trust CI with your tokens. Just run it manually when you want to update things.
+
+## Configuration
+
+All configurations below are made by adding parameters to your local `.env` file.
+
+### Transaction Columns
+
+`TRANSACTION_COLUMNS` specifies a list of [Plaid transaction properties](https://plaid.com/docs/#transactions) (using [`_.get()` syntax](https://lodash.com/docs/4.17.11#get)) to override the default automated columns. Each time you run Mintable, all the contents of these columns will be cleared and overwritten.
+
+For example, if you only want to auto-populate the name and amount for each transaction, you could add the following line to your `.env` file:
+
+```
+TRANSACTION_COLUMNS=["name", "amount"]
+```
+
+> **Warning:** Your mileage may vary if you choose to use additional properties outside the tested defaults (`date`, `amount`, `name`, `account`, `category.0`, `category.1`, `pending`). Proceed at your own risk, you're in uncharted territory.
+
+### Reference Columns
+
+`REFERENCE_COLUMNS` specifies a list of additional, non-automated columns for your reference/bookkeeping purposes. Each time you run Mintable, the contents of these columns will be preserved.
+
+For example, if you want to add one column to track work expenses, and another to track joint expenses shared with a partner, you could add the following line to your `.env` file:
+
+```
+REFERENCE_COLUMNS=["work", "joint"]
+```
+
+> **Warning:** Since reference columns are not automated by Mintable, they have the potential to get out of sync with transaction data (for example, if your bank deletes a transaction, causing a row to get removed in `TRANSACTION_COLUMNS`)
+
+### Category Overrides
+
+`CATEGORY_OVERRIDES` specifies a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers. Overrides take the following format:
+
+* `pattern`: [JavaScript Regular Expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Syntax) to test transaction names against
+* `flags`: [JavaScript Regular Expression flags](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Syntax) (i.e. `i` for case insensitive)
+* `category.0`: Override for first (top-level) category
+* `category.1`: Override for second (level-2) category
+
+For example, if you want anything matching `autopay` or `e-payment` to get categorized as `Credit Card Payment`, you could add the following line to your `.env` file:
+
+```
+CATEGORY_OVERRIDES=[{ "pattern": ".*(autopay|e.payment).*", "flags": "i", "category.0": "Transfer", "category.1": "Credit Card Payments" }]
+```
 
 ## Credits & Alternatives
 
