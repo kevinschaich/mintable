@@ -2,6 +2,7 @@ require('dotenv').config();
 const moment = require('moment');
 const { updateSheets } = require('./providers/sheets');
 const { getTransactions } = require('./providers/plaid');
+const { parseEnvOrDefault } = require('./lib/common');
 
 (async () => {
   const defaultTransactionColumns = ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'];
@@ -9,11 +10,11 @@ const { getTransactions } = require('./providers/plaid');
   const defaultSpreadsheetProvider = 'sheets';
   const defaultTransactionProvider = 'plaid';
 
-  const transactionColumns = JSON.parse(process.env.TRANSACTION_COLUMNS || null) || defaultTransactionColumns;
-  const referenceColumns = JSON.parse(process.env.REFERENCE_COLUMNS || null) || defaultReferenceColumns;
-  const categoryOverrides = JSON.parse(process.env.CATEGORY_OVERRIDES || null) || [];
-  const spreadsheetProvider = JSON.parse(process.env.SPREADSHEET_PROVIDER || null) || defaultSpreadsheetProvider;
-  const transactionProvider = JSON.parse(process.env.TRANSACTION_PROVIDER || null) || defaultTransactionProvider;
+  const transactionColumns = parseEnvOrDefault('TRANSACTION_COLUMNS', defaultTransactionColumns);
+  const referenceColumns = parseEnvOrDefault('REFERENCE_COLUMNS', defaultReferenceColumns);
+  const categoryOverrides = parseEnvOrDefault('CATEGORY_OVERRIDES', []);
+  const spreadsheetProvider = parseEnvOrDefault('SPREADSHEET_PROVIDER', defaultSpreadsheetProvider);
+  const transactionProvider = parseEnvOrDefault('TRANSACTION_PROVIDER', defaultTransactionProvider);
 
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const firstTransactionColumn = alphabet[0];
