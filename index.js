@@ -35,11 +35,11 @@ const { parseEnvOrDefault } = require('./lib/common');
 
   switch (transactionProvider) {
     case 'plaid':
-      [currentMonthTransactions, lastMonthTransactions] = await getTransactions(
+      ({ currentMonthTransactions, lastMonthTransactions } = await getTransactions(
         transactionColumns,
         categoryOverrides,
         currentMonthSheetTitle,
-      );
+      ));
       break;
 
     default:

@@ -39,7 +39,7 @@ exports.getTransactions = async (transactionColumns, categoryOverrides, currentM
       }
     });
 
-    return _.at(sanitized, transactionColumns);
+    return sanitized;
   };
 
   const transactions = await fetchTransactions();
@@ -52,5 +52,8 @@ exports.getTransactions = async (transactionColumns, categoryOverrides, currentM
       .format('YYYY.MM') === currentMonthSheetTitle,
   );
 
-  return partitioned;
+  return {
+    currentMonthTransactions: _.map(partitioned[0], transaction => _.at(transaction, transactionColumns)),
+    lastMonthTransactions: _.map(partitioned[1], transaction => _.at(transaction, transactionColumns))
+  }
 };
