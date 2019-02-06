@@ -6,7 +6,7 @@ const {
   formatHeaderRow,
   resizeColumns,
   duplicateSheet,
-  renameSheet,
+  renameSheet
 } = require('../lib/sheets');
 
 exports.updateSheets = async (
@@ -20,7 +20,7 @@ exports.updateSheets = async (
   lastTransactionColumn,
   firstReferenceColumn,
   lastReferenceColumn,
-  numAutomatedColumns,
+  numAutomatedColumns
 ) => {
   const publicTemplateSheetId = '10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw';
 
@@ -55,13 +55,13 @@ exports.updateSheets = async (
     // Column headers for transaction data
     updates.push({
       range: `${sheetTitle}!${firstTransactionColumn}1:${lastTransactionColumn}1`,
-      values: [transactionColumns],
+      values: [transactionColumns]
     });
 
     // Additional user-defined reference column headers (specify in .env)
     updates.push({
       range: `${sheetTitle}!${firstReferenceColumn}1:${lastReferenceColumn}1`,
-      values: [referenceColumns],
+      values: [referenceColumns]
     });
 
     return updates;

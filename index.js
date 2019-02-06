@@ -5,7 +5,15 @@ const { getTransactions } = require('./providers/plaid');
 const { parseEnvOrDefault } = require('./lib/common');
 
 (async () => {
-  const defaultTransactionColumns = ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'];
+  const defaultTransactionColumns = [
+    'date',
+    'amount',
+    'name',
+    'account_details.official_name',
+    'category.0',
+    'category.1',
+    'pending'
+  ];
   const defaultReferenceColumns = ['notes', 'work', 'joint'];
   const defaultSpreadsheetProvider = 'sheets';
   const defaultTransactionProvider = 'plaid';
@@ -38,7 +46,7 @@ const { parseEnvOrDefault } = require('./lib/common');
       ({ currentMonthTransactions, lastMonthTransactions } = await getTransactions(
         transactionColumns,
         categoryOverrides,
-        currentMonthSheetTitle,
+        currentMonthSheetTitle
       ));
       break;
 
@@ -59,7 +67,7 @@ const { parseEnvOrDefault } = require('./lib/common');
         lastTransactionColumn,
         firstReferenceColumn,
         lastReferenceColumn,
-        numAutomatedColumns,
+        numAutomatedColumns
       );
       break;
 
