@@ -9,7 +9,7 @@ const { parseEnvOrDefault } = require('./lib/common');
     'date',
     'amount',
     'name',
-    'account_details.official_name',
+    '_ACCOUNT_NAME',
     'category.0',
     'category.1',
     'pending'

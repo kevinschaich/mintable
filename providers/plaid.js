@@ -23,7 +23,11 @@ exports.getTransactions = async (transactionColumns, categoryOverrides, currentM
      *    { "category.0": "Food and Drink", "category.1": "Restaurants" }
      */
     _.forEach(transactionColumns, column => {
-      sanitized[column] = _.get(sanitized, column);
+      if(column == "_ACCOUNT_NAME") {
+        sanitized[column] = _.get(sanitized, "account_details.official_name") || _.get(sanitized, "account_details.name");
+      } else {
+        sanitized[column] = _.get(sanitized, column);
+      }
     });
 
     // Map TRUE to 'y' and FALSE to nothing (used for Pending column)
