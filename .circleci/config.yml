@@ -33,13 +33,21 @@ workflows:
 
   test:
     jobs:
-      - build
+      - build:
+        filters:
+            branches:
+              only:
+                - master
 
   hourly:
     triggers:
       - schedule:
           # Hourly cron tab at 12:00, 1:00, etc.
           cron: "0 * * * *"
+          filters:
+            branches:
+              only:
+                - master
 
     jobs:
       - build
