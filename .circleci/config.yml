@@ -5,7 +5,7 @@ jobs:
     branches:
       only:
         - master
-  
+
     docker:
       - image: circleci/node:10
 
@@ -16,8 +16,8 @@ jobs:
 
       - restore_cache:
           keys:
-          - dependency-cache-{{ checksum "package.json" }}
-          - dependency-cache-
+            - dependency-cache-{{ checksum "package.json" }}
+            - dependency-cache-
 
       - run: npm install
 
@@ -35,9 +35,9 @@ workflows:
     jobs:
       - build:
         filters:
-            branches:
-              only:
-                - master
+          branches:
+            only:
+              - master
 
   hourly:
     triggers:
