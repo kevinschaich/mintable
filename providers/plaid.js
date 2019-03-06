@@ -27,11 +27,8 @@ exports.getTransactions = async (transactionColumns, categoryOverrides, currentM
     });
 
     // Map TRUE to 'y' and FALSE to nothing (used for Pending column)
-    sanitized = _.mapValues(sanitized, p => {
-      let prop = p === true ? 'y' : p;
-      prop = p === false ? '' : p;
-      return prop;
-    });
+    sanitized.pending = sanitized.pending === true ? 'y' : sanitized.pending;
+    sanitized.pending = sanitized.pending === false ? '' : sanitized.pending;
 
     // Handle category overrides defined in .env
     _.forEach(categoryOverrides, override => {
