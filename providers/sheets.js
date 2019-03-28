@@ -7,7 +7,7 @@ const {
   resizeColumns,
   duplicateSheet,
   renameSheet
-} = require('../lib/sheets');
+} = require('../lib/google/sheets');
 
 exports.updateSheets = async (
   currentMonthTransactions,

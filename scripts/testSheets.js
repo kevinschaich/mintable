@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { updateSheet } = require('../lib/sheets');
+const { updateSheet } = require('../lib/google/sheets');
 
 updateSheet([
   {

@@ -3,7 +3,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
-const oAuth2Client = require('../lib/googleClient');
+const oAuth2Client = require('../lib/google/googleClient');
 const saveEnv = require('./saveEnv');
 
 const authUrl = oAuth2Client.generateAuthUrl({
