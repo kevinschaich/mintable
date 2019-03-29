@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i');
+
+$default: #5C7080;
+$blue: #137CBD;
+
+body,
+html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 150%;
+  color: $default;
+  margin: 0;
+  padding: 0;
+}
+
+body,
+html,
+#__next,
+.wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-header {
+  display: flex;
+  border-bottom: 2px solid #ddd;
+  padding: 1rem;
+  font-size: 50%;
+
+  h2 {
+    flex-grow: 1;
+    text-align: center;
+    color: $default;
+  }
+}
+
+button {
+  background: $blue;
+  color: white;
+  border: 0;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 100%;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $blue;
+}
