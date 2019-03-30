@@ -1,9 +1,9 @@
 import '../style.scss';
-import ProgressHeader from '../components/progressHeader';
+import ProgressSidebar from '../components/progressSidebar';
 
 const Sheets = () => (
   <div className='wrapper'>
-    <ProgressHeader />
+    <ProgressSidebar />
     <div className='container'>
       <h1>Sheets!</h1>
       <button>Get Started</button>

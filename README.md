@@ -1,6 +1,6 @@
-<h3 align="center"><img width="400" src="./img/logo.png" alt="Mintable"><h4 align="center">Roll-your-own Mint clone for managing personal finances using the Google Sheets and Plaid APIs.</h4></h3>
+<h3 align="center"><img width="400" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Roll-your-own Mint clone for managing personal finances using the Google Sheets and Plaid APIs.</h4></h3>
 
-![Mintable](./img/mintable.png)
+![Mintable](./src/static/mintable.png)
 
 #### Overview
 

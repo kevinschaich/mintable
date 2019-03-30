@@ -1,13 +1,13 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i');
+@import url('https://fonts.googleapis.com/css?family=Roboto:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i');
 
-$default: #5C7080;
-$blue: #137CBD;
+$default: #ffffff;
+$blue: #137cbd;
 
 body,
 html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol';
-  font-size: 150%;
+  background: #161f27;
   color: $default;
   margin: 0;
   padding: 0;
@@ -23,7 +23,7 @@ html,
 
 .wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .container {
@@ -34,35 +34,32 @@ html,
   justify-content: center;
 }
 
-.progress-header {
+.progress-sidebar {
+  justify-content: center;
   display: flex;
-  border-bottom: 2px solid #ddd;
-  padding: 1rem;
-  font-size: 50%;
+  flex-direction: column;
+  border-right: 1px solid #ffffff30;
 
-  h2 {
-    flex-grow: 1;
-    text-align: center;
-    color: $default;
+  span {
+    cursor: pointer;
+    font-size: 20px;
+    margin: 20px 80px;
+    font-weight: 500;
   }
 }
 
+h1 {
+  font-size: 60px;
+  font-weight: 600;
+}
+
 button {
+  font-size: 20px;
+  font-weight: 600;
+  padding: 20px 40px;
+  border-radius: 3px;
   background: $blue;
   color: white;
   border: 0;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  font-size: 100%;
-  font-weight: 700;
   cursor: pointer;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: $blue;
 }

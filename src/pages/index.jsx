@@ -1,12 +1,13 @@
 import '../style.scss';
 import Link from 'next/link';
-import ProgressHeader from '../components/progressHeader';
+import ProgressSidebar from '../components/progressSidebar';
 
 const Index = () => (
   <div className='wrapper'>
-    <ProgressHeader />
+    <ProgressSidebar />
     <div className='container'>
-      <h1>Welcome to Mintable!</h1>
+      <img style={{width: "120px"}} src="/static/icon.png"/>
+      <h1>Welcome to Mintable</h1>
       <Link href="/accounts"><button>Get Started</button></Link>
     </div>
   </div>
