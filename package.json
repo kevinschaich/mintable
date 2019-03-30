@@ -5,11 +5,23 @@
   "author": "Kevin Schaich",
   "license": "MIT",
   "scripts": {
+<<<<<<< Updated upstream
     "test": "node index.js",
     "test-plaid": "node scripts/testPlaid.js",
     "test-sheets": "node scripts/testSheets.js",
     "token-plaid": "node scripts/tokenPlaid.js",
     "token-sheets": "node scripts/tokenSheets.js"
+=======
+    "dev": "next ./src",
+    "build": "next build ./src",
+    "start": "next start ./src",
+    "mintable": "node ./src/index.js",
+    "migrate": "node ./src/scripts/migrate.js",
+    "test-plaid": "node ./src/scripts/testPlaid.js",
+    "test-sheets": "node ./src/scripts/testSheets.js",
+    "token-plaid": "node ./src/scripts/tokenPlaid.js",
+    "token-sheets": "node ./src/scripts/tokenSheets.js"
+>>>>>>> Stashed changes
   },
   "dependencies": {
     "body-parser": "^1.18.3",

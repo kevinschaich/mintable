@@ -6,7 +6,6 @@ if (!account) {
   throw new Error('An account name must be provided.');
 }
 
-const fs = require('fs');
 const util = require('util');
 const path = require('path');
 const moment = require('moment');
