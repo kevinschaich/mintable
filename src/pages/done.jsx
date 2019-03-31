@@ -1,4 +1,5 @@
 import '../style.scss';
+import Link from 'next/link';
 import ProgressSidebar from '../components/progressSidebar';
 import fetch from 'isomorphic-unfetch';
 
@@ -7,7 +8,9 @@ const Done = props => (
     <ProgressSidebar tab='done' config={props.config} />
     <div className='container'>
       <h1>Looks like we're all set here!</h1>
-      <button>Get Started</button>
+      <Link href='/settings'>
+        <button>Get Started</button>
+      </Link>
     </div>
   </div>
 );

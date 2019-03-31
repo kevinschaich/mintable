@@ -2,6 +2,7 @@ import '../style.scss';
 import ProgressSidebar from '../components/progressSidebar';
 import fetch from 'isomorphic-unfetch';
 import ConfigPropertyInputGroup from '../components/configPropertyInputGroup';
+import Link from 'next/link';
 
 const Accounts = props => {
   const configProperties = [
@@ -15,7 +16,7 @@ const Accounts = props => {
       <ProgressSidebar tab='accounts' config={props.config} />
       <div className='container'>
         <div className='inner-container'>
-          <h1>Plaid Setup</h1>
+          <h2>Plaid Setup</h2>
           <ol type='1'>
             <li>
               Sign up for a <a href='https://plaid.com/'>Plaid</a> account.
@@ -30,7 +31,9 @@ const Accounts = props => {
               values:
               <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />
             </li>
-            <li>You're done!</li>
+            <Link href='/sheets'>
+              <button>Next</button>
+            </Link>
           </ol>
         </div>
       </div>

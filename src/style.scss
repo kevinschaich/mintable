@@ -3,6 +3,10 @@
 $default: #ffffff;
 $blue: #137cbd;
 
+.blue {
+  color: $blue;
+}
+
 body,
 html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
@@ -36,6 +40,15 @@ html,
 
 .inner-container {
   max-width: 1000px;
+  overflow-y: scroll;
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
+
+.inner-container::-webkit-scrollbar { /* WebKit */
+  width: 0;
+  height: 0;
 }
 
 .progress-sidebar {
@@ -60,7 +73,7 @@ h1 {
 button {
   font-size: 20px;
   font-weight: 600;
-  padding: 20px 40px;
+  padding: 10px 20px;
   border-radius: 5px;
   background: $blue;
   color: white;
@@ -75,6 +88,7 @@ code {
 li {
   font-size: 20px;
   padding-bottom: 20px;
+  line-height: 30px;
 }
 
 a {
@@ -106,7 +120,7 @@ a:active {
 
 .config-container {
   padding: 20px;
-  margin: 40px;
+  margin: 20px;
   border: 1px solid #ffffff30;
   border-radius: 5px;
   .config-property-input {
@@ -127,7 +141,7 @@ a:active {
       line-height: 20px;
       color: white;
       padding: 10px;
-      margin: 10px;
+      margin: 5px;
       font-family: 'Menlo', 'Monaco', 'Courier New', 'Courier';
     }
   }
