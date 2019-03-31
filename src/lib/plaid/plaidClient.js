@@ -1,9 +1,9 @@
 const plaid = require('plaid');
 
-module.exports = new plaid.Client(
-  process.env.PLAID_CLIENT_ID,
-  process.env.PLAID_SECRET,
-  process.env.PLAID_PUBLIC_KEY,
+module.exports = (client, secret, public_key) => new plaid.Client(
+  client,
+  secret,
+  public_key,
   plaid.environments.development,
   {
     version: '2018-05-22'
