@@ -5,6 +5,8 @@ const opn = require('opn');
 const fs = require('fs');
 const util = require('util');
 const moment = require('moment');
+const { fetchBalances } = require('./lib/plaid/plaid');
+const { getConfigEnv, CONFIG_FILE } = require('./lib/common');
 
 try {
   const port = parseInt(process.env.PORT, 10) || 3000;
@@ -12,19 +14,11 @@ try {
   const app = next({ dev });
   const handle = app.getRequestHandler();
 
-  const CONFIG_FILE = '../mintable.config.json';
   let PUBLIC_TOKEN = null;
   let ITEM_ID = null;
 
-  const config = fs.readFileSync(CONFIG_FILE);
+  getConfigEnv();
 
-  process.env = {
-    ...process.env,
-    ...JSON.parse(config)
-  };
-
-  console.log(process.env);
-  
   const plaidClient = require('./lib/plaid/plaidClient')(
     process.env.PLAID_CLIENT_ID,
     process.env.PLAID_SECRET,
@@ -61,11 +55,20 @@ try {
     });
 
     account = 'cap-one';
-    server.get('/accounts', (req, res, next) => {
+    server.get('/connect', (req, res, next) => {
       res.render('plaid.ejs', {
         PLAID_ACCOUNT: account,
         PLAID_PUBLIC_KEY: process.env.PLAID_PUBLIC_KEY
       });
+    });
+
+    server.get('/balances', async (req, res, next) => {
+      try {
+        const balances = await fetchBalances();
+        res.json(balances);
+      } catch (e) {
+        console.log(e);
+      }
     });
 
     function saveAccessToken(token) {

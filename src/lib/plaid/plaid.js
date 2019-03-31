@@ -1,5 +1,13 @@
 const moment = require("moment");
-const client = require("./plaidClient");
+const common = require("../common");
+
+common.getConfigEnv();
+
+const plaidClient = require('./plaidClient')(
+  process.env.PLAID_CLIENT_ID,
+  process.env.PLAID_SECRET,
+  process.env.PLAID_PUBLIC_KEY
+);
 
 // start from beginning of last month...
 const startDate = moment()
@@ -32,7 +40,7 @@ exports.fetchTransactions = async function() {
 
   const rawTransactions = await Promise.all(
     plaidAccountTokens.map(({ account, token }) => {
-      return client
+      return plaidClient
         .getTransactions(token, ...transactionFetchOptions)
         .then(({ transactions }) => ({
           account,
@@ -70,7 +78,7 @@ exports.fetchBalances = async function() {
   console.log("Fetching Account Balances...");
   return await Promise.all(
     plaidAccountTokens.map(({ account, token }) => {
-      return client
+      return plaidClient
         .getBalance(token)
         .then(data => {
           return data;
