@@ -1,13 +1,16 @@
 const express = require('express');
 const next = require('next');
 const bodyParser = require('body-parser');
+const opn = require('opn');
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const fs = require('fs');
-const CONFIG_FILE = __dirname + '/../../mintable.config.json';
+const join = require('path');
+
+const CONFIG_FILE = '../mintable.config.json';
 
 app.prepare().then(() => {
   const server = express();
@@ -28,7 +31,6 @@ app.prepare().then(() => {
   });
 
   server.put('/config', (req, res) => {
-    console.log("BODY", req.body);
     fs.writeFile(CONFIG_FILE, JSON.stringify(req.body, null, 2), (err) => {
       if (err) {
         const message = 'Error: Could not write config file. ' + err.message;
@@ -48,5 +50,7 @@ app.prepare().then(() => {
   server.listen(port, err => {
     if (err) throw err;
     console.log(`> Ready on http://localhost:${port}`);
+
+    opn(`http://localhost:${port}`);
   });
 });

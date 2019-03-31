@@ -5,11 +5,8 @@
   "author": "Kevin Schaich",
   "license": "MIT",
   "scripts": {
-    "dev": "next ./src",
-    "build": "next build ./src",
-    "start": "next start ./src",
     "mintable": "node ./src/index.js",
-    "config": "node ./src/server.js",
+    "settings": "cd src && node server.js",
     "migrate": "node ./src/scripts/migrate.js",
     "test-plaid": "node ./src/scripts/testPlaid.js",
     "test-sheets": "node ./src/scripts/testSheets.js",
