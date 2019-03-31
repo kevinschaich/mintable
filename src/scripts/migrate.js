@@ -1,6 +1,40 @@
 const fs = require('fs');
-const path = require('path');
-const dotenv = require('dotenv');
-const envPath = path.resolve(__dirname, '../.env');
+const dotenv = require('dotenv').config();
+const _ = require('lodash');
 
-console.log(process.env);
+const CONFIG_FILE = __dirname + '/../../mintable.config.json';
+
+const configProperties = [
+  'PLAID_CLIENT_ID',
+  'PLAID_SECRET',
+  'PLAID_PUBLIC_KEY',
+  'SHEETS_SHEET_ID',
+  'SHEETS_CLIENT_ID',
+  'SHEETS_CLIENT_SECRET',
+  'SHEETS_REDIRECT_URI',
+  'PLAID_TOKEN_CAPITAL_ONE',
+  'PLAID_TOKEN_CHASE',
+  'PLAID_TOKEN_AMEX',
+  'PLAID_TOKEN_DISCOVER',
+  'SHEETS_ACCESS_TOKEN',
+  'SHEETS_REFRESH_TOKEN',
+  'SHEETS_SCOPE',
+  'SHEETS_TOKEN_TYPE',
+  'SHEETS_EXPIRY_DATE',
+  'CATEGORY_OVERRIDES',
+  'FETCH_ACCOUNTS',
+  'TRANSACTION_PROVIDER',
+  'SPREADSHEET_PROVIDER',
+  'TRANSACTION_COLUMNS',
+  'REFERENCE_COLUMNS'
+];
+
+const config = _.pick(process.env, configProperties);
+
+try {
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
+  console.log('Successfully wrote config.');
+} catch (e) {
+  const message = 'Error: Could not write config file. ' + e.message;
+  console.log(message);
+}

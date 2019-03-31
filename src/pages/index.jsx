@@ -2,9 +2,9 @@ import '../style.scss';
 import Link from 'next/link';
 import ProgressSidebar from '../components/progressSidebar';
 
-const Index = () => (
+const Welcome = () => (
   <div className='wrapper'>
-    <ProgressSidebar />
+    <ProgressSidebar tab='' />
     <div className='container'>
       <img style={{width: "120px"}} src="/static/icon.png"/>
       <h1>Welcome to Mintable</h1>
@@ -13,4 +13,4 @@ const Index = () => (
   </div>
 );
 
-export default Index;
+export default Welcome;

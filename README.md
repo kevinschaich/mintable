@@ -12,6 +12,16 @@ Mintable allows you to automatically populate transactional data from your finan
 
 ## Setup
 
+#### Optional: Migrate to the new web-based configuration framework (as of v1.0.0)
+
+If you started using Mintable before v1.0.0, run the following to migrate to the new config (writes to `<repo root>/mintable.config.json`):
+
+```
+yarn migrate
+```
+
+`mintable.config.json` is ignored by Git – keep a backup somewhere safe as you only have 100 Plaid accounts on the free version. You can use Dropbox or another trusted service to sync file this across your machines.
+
 #### Housekeeping
 
 1. Rename `.env.sample` to `.env`. Variables in this file will be loaded as environment variables. This file is ignored by Git.

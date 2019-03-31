@@ -1,15 +1,18 @@
 const express = require('express');
 const next = require('next');
+const bodyParser = require('body-parser');
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const fs = require('fs');
-const CONFIG_FILE = process.argv[2] || '../mintable.config.json';
+const CONFIG_FILE = __dirname + '/../../mintable.config.json';
 
 app.prepare().then(() => {
   const server = express();
+  server.use(bodyParser.urlencoded({ extended: false }));
+  server.use(bodyParser.json());
 
   server.get('/config', (req, res) => {
     fs.readFile(CONFIG_FILE, (err, data) => {
@@ -25,7 +28,8 @@ app.prepare().then(() => {
   });
 
   server.put('/config', (req, res) => {
-    fs.writeFile(CONFIG_FILE, (err) => {
+    console.log("BODY", req.body);
+    fs.writeFile(CONFIG_FILE, JSON.stringify(req.body, null, 2), (err) => {
       if (err) {
         const message = 'Error: Could not write config file. ' + err.message;
         console.log(message);

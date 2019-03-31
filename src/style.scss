@@ -34,6 +34,10 @@ html,
   justify-content: center;
 }
 
+.inner-container {
+  max-width: 800px;
+}
+
 .progress-sidebar {
   justify-content: center;
   display: flex;
@@ -57,9 +61,74 @@ button {
   font-size: 20px;
   font-weight: 600;
   padding: 20px 40px;
-  border-radius: 3px;
+  border-radius: 5px;
   background: $blue;
   color: white;
   border: 0;
   cursor: pointer;
+}
+
+code {
+  font-family: 'Menlo', 'Monaco', 'Courier New', 'Courier';
+}
+
+li {
+  font-size: 20px;
+  padding-bottom: 20px;
+}
+
+a {
+  text-decoration: none;
+  border-bottom: 1px solid $blue;
+  padding-bottom: 2px;
+}
+
+/* unvisited link */
+a:link {
+  color: $blue;
+}
+
+/* visited link */
+a:visited {
+  color: $blue;
+}
+
+/* mouse over link */
+a:hover {
+  color: $default;
+  border-bottom: 1px solid $default;
+}
+
+/* selected link */
+a:active {
+  color: $blue;
+}
+
+.config-container {
+  padding: 20px;
+  margin: 40px;
+  border: 1px solid #ffffff30;
+  border-radius: 5px;
+  .config-property-input {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+
+    * {
+      width: 50%;
+    }
+
+    input {
+      background: #ffffff10;
+      border: 1px solid #ffffff30;
+      border-radius: 5px;
+      font-size: 15px;
+      line-height: 20px;
+      color: white;
+      padding: 10px;
+      margin: 10px;
+      font-family: 'Menlo', 'Monaco', 'Courier New', 'Courier';
+    }
+  }
 }

@@ -3,7 +3,7 @@ import ProgressSidebar from '../components/progressSidebar';
 
 const Sheets = () => (
   <div className='wrapper'>
-    <ProgressSidebar />
+    <ProgressSidebar tab='sheets'/>
     <div className='container'>
       <h1>Sheets!</h1>
       <button>Get Started</button>
