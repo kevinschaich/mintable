@@ -14,7 +14,7 @@ const Accounts = props => {
   return (
     <div className='wrapper'>
       <ProgressSidebar tab='accounts' config={props.config} />
-      <div className='container'>
+      <div className='container container-vc'>
         <div className='inner-container'>
           <h2>Plaid Setup</h2>
           <ol type='1'>

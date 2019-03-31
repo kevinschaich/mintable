@@ -6,7 +6,7 @@ import fetch from 'isomorphic-unfetch';
 const Done = props => (
   <div className='wrapper'>
     <ProgressSidebar tab='done' config={props.config} />
-    <div className='container'>
+    <div className='container container-vc'>
       <h1>Looks like we're all set here!</h1>
       <Link href='/settings'>
         <button>Get Started</button>

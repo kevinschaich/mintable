@@ -11,7 +11,11 @@ const Settings = props => {
   return (
     <div className='wrapper'>
       <div className='container'>
-        <img style={{ width: '120px' }} src='/static/icon.png' />
+        <h1>Accounts</h1>
+        <h1>Update Transactions</h1>
+        <button>Run Mintable</button>
+        <h1>Settings</h1>
+        <span>Any settings changed below will automatically update.</span>
         <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />
       </div>
     </div>

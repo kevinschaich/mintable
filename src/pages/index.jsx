@@ -6,7 +6,7 @@ import fetch from 'isomorphic-unfetch';
 const Welcome = props => (
   <div className='wrapper'>
     <ProgressSidebar tab='' config={props.config} />
-    <div className='container'>
+    <div className='container container-vc'>
       <img style={{ width: '120px' }} src='/static/icon.png' />
       <h1>Welcome to Mintable</h1>
       <Link href='/accounts'>

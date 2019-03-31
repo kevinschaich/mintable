@@ -15,7 +15,7 @@ const Sheets = props => {
   return (
     <div className='wrapper'>
       <ProgressSidebar tab='sheets' config={props.config} />
-      <div className='container'>
+      <div className='container container-vc'>
         <div className='inner-container'>
           <h2>Google Sheets Setup</h2>
           <ol type='1'>
