@@ -9,6 +9,7 @@ exports.getConfigEnv = () => {
     ...process.env,
     ...JSON.parse(config)
   };
+  return JSON.parse(config);
 };
 
 exports.parseEnvOrDefault = (key, defaultValue) => {

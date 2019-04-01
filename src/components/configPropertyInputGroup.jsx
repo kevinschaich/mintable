@@ -1,18 +1,18 @@
 import '../style.scss';
 import * as _ from 'lodash';
 import fetch from 'isomorphic-unfetch';
-import ConfigPropertyInput from "./configPropertyInput";
+import ConfigPropertyInput from './configPropertyInput';
 
 const ConfigPropertyInputGroup = props => {
   const handleInputChange = e => {
-    const newConfig = {
-      ...props.config,
-      [e.currentTarget.id]: e.currentTarget.value
+    const body = {
+      propertyId: e.currentTarget.id,
+      value: e.currentTarget.value
     };
 
     fetch('http://localhost:3000/config', {
       method: 'PUT',
-      body: JSON.stringify(newConfig),
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json'
       }

@@ -17,7 +17,7 @@ try {
   let PUBLIC_TOKEN = null;
   let ITEM_ID = null;
 
-  getConfigEnv();
+  let config = getConfigEnv();
 
   const plaidClient = require('./lib/plaid/plaidClient')(
     process.env.PLAID_CLIENT_ID,
@@ -43,12 +43,18 @@ try {
     });
 
     server.put('/config', (req, res) => {
-      fs.writeFile(CONFIG_FILE, JSON.stringify(req.body, null, 2), err => {
+      const newConfig = {
+        ...config,
+        [req.body.propertyId]: req.body.value
+      };
+
+      fs.writeFile(CONFIG_FILE, JSON.stringify(newConfig, null, 2), err => {
         if (err) {
           const message = 'Error: Could not write config file. ' + err.message;
           console.log(message);
           res.status(400).send(message);
         } else {
+          config = getConfigEnv();
           res.status(201).send('Successfully wrote config.');
         }
       });
