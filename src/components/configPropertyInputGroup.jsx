@@ -1,4 +1,4 @@
-import '../style.scss';
+import '../styles/style.scss';
 import * as _ from 'lodash';
 import fetch from 'isomorphic-unfetch';
 import ConfigPropertyInput from './configPropertyInput';

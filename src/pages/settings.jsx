@@ -1,4 +1,4 @@
-import '../style.scss';
+import '../styles/style.scss';
 import fetch from 'isomorphic-unfetch';
 const _ = require('lodash');
 import ConfigPropertyInputGroup from '../components/configPropertyInputGroup';

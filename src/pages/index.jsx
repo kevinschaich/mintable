@@ -1,4 +1,4 @@
-import '../style.scss';
+import '../styles/style.scss';
 import Link from 'next/link';
 import ProgressSidebar from '../components/progressSidebar';
 import fetch from 'isomorphic-unfetch';

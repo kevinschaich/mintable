@@ -1,4 +1,4 @@
-import '../style.scss';
+import '../styles/style.scss';
 import ProgressSidebar from '../components/progressSidebar';
 import fetch from 'isomorphic-unfetch';
 import ConfigPropertyInputGroup from '../components/configPropertyInputGroup';
