@@ -2,9 +2,7 @@ const express = require('express');
 const next = require('next');
 const bodyParser = require('body-parser');
 const opn = require('opn');
-const util = require('util');
-const moment = require('moment');
-const { fetchBalances } = require('./lib/plaid/plaid');
+const plaid = require('./lib/plaid/plaid');
 const { getConfigEnv, writeConfigProperty } = require('./lib/common');
 
 try {
@@ -13,12 +11,7 @@ try {
   const app = next({ dev });
   const handle = app.getRequestHandler();
 
-  let PUBLIC_TOKEN = null;
-  let ITEM_ID = null;
-
   getConfigEnv();
-
-  const plaidClient = require('./lib/plaid/plaidClient');
 
   app.prepare().then(() => {
     const server = express();
@@ -43,181 +36,37 @@ try {
       }
     });
 
-    account = 'cap-one';
-    server.get('/connect', (req, res, next) => {
-      res.render('plaid.ejs', {
-        PLAID_ACCOUNT: account,
-        PLAID_PUBLIC_KEY: process.env.PLAID_PUBLIC_KEY
-      });
-    });
-
     server.get('/balances', async (req, res, next) => {
       try {
-        const balances = await fetchBalances();
-        res.json(balances);
+        let balances;
+
+        switch (process.env.TRANSACTION_PROVIDER) {
+          default:
+            balances = await plaid.fetchBalances(true);
+            break;
+        }
+
+        res.json(balances || {});
       } catch (e) {
         console.log(e);
       }
     });
 
-    // Exchange token flow - exchange a Link public_token for
-    // an API access_token
-    // https://plaid.com/docs/#exchange-token-flow
-    server.post('/get_access_token', function(request, response, next) {
-      PUBLIC_TOKEN = request.body.public_token;
-      plaidClient.exchangePublicToken(PUBLIC_TOKEN, function(error, tokenResponse) {
-        if (error != null) {
-          prettyPrintResponse(error);
-          return response.json({
-            error: error
-          });
-        }
-        ACCESS_TOKEN = tokenResponse.access_token;
-        writeConfigProperty(`PLAID_TOKEN_${account.toUpperCase()}`, ACCESS_TOKEN);
+    server.post('/token', async (req, res, next) => {
+      let error;
 
-        ITEM_ID = tokenResponse.item_id;
-        prettyPrintResponse(tokenResponse);
-        response.json({
-          access_token: ACCESS_TOKEN,
-          item_id: ITEM_ID,
-          error: null
-        });
-      });
-    });
+      switch (process.env.TRANSACTION_PROVIDER) {
+        default:
+          error = await plaid.saveAccessToken();
+          break;
+      }
 
-    // Retrieve Transactions for an Item
-    // https://plaid.com/docs/#transactions
-    server.get('/transactions', function(request, response, next) {
-      // Pull transactions for the Item for the last 30 days
-      var startDate = moment()
-        .subtract(30, 'days')
-        .format('YYYY-MM-DD');
-      var endDate = moment().format('YYYY-MM-DD');
-      plaidClient.getTransactions(
-        ACCESS_TOKEN,
-        startDate,
-        endDate,
-        {
-          count: 250,
-          offset: 0
-        },
-        function(error, transactionsResponse) {
-          if (error != null) {
-            prettyPrintResponse(error);
-            return response.json({
-              error: error
-            });
-          } else {
-            prettyPrintResponse(transactionsResponse);
-            response.json({ error: null, transactions: transactionsResponse });
-          }
-        }
-      );
-    });
-
-    // Retrieve Identity for an Item
-    // https://plaid.com/docs/#identity
-    server.get('/identity', function(request, response, next) {
-      plaidClient.getIdentity(ACCESS_TOKEN, function(error, identityResponse) {
-        if (error != null) {
-          prettyPrintResponse(error);
-          return response.json({
-            error: error
-          });
-        }
-        prettyPrintResponse(identityResponse);
-        response.json({ error: null, identity: identityResponse });
-      });
-    });
-
-    // Retrieve real-time Balances for each of an Item's accounts
-    // https://plaid.com/docs/#balance
-    server.get('/balance', function(request, response, next) {
-      plaidClient.getBalance(ACCESS_TOKEN, function(error, balanceResponse) {
-        if (error != null) {
-          prettyPrintResponse(error);
-          return response.json({
-            error: error
-          });
-        }
-        prettyPrintResponse(balanceResponse);
-        response.json({ error: null, balance: balanceResponse });
-      });
-    });
-
-    // Retrieve an Item's accounts
-    // https://plaid.com/docs/#accounts
-    server.get('/item-accounts', function(request, response, next) {
-      plaidClient.getAccounts(ACCESS_TOKEN, function(error, accountsResponse) {
-        if (error != null) {
-          prettyPrintResponse(error);
-          return response.json({
-            error: error
-          });
-        }
-        prettyPrintResponse(accountsResponse);
-        response.json({ error: null, accounts: accountsResponse });
-      });
-    });
-
-    // Retrieve ACH or ETF Auth data for an Item's accounts
-    // https://plaid.com/docs/#auth
-    server.get('/auth', function(request, response, next) {
-      plaidClient.getAuth(ACCESS_TOKEN, function(error, authResponse) {
-        if (error != null) {
-          prettyPrintResponse(error);
-          return response.json({
-            error: error
-          });
-        }
-        prettyPrintResponse(authResponse);
-        response.json({ error: null, auth: authResponse });
-      });
-    });
-
-    // Retrieve information about an Item
-    // https://plaid.com/docs/#retrieve-item
-    server.get('/item', function(request, response, next) {
-      // Pull the Item - this includes information about available products,
-      // billed products, webhook information, and more.
-      plaidClient.getItem(ACCESS_TOKEN, function(error, itemResponse) {
-        if (error != null) {
-          prettyPrintResponse(error);
-          return response.json({
-            error: error
-          });
-        }
-        // Also pull information about the institution
-        plaidClient.getInstitutionById(itemResponse.item.institution_id, function(err, instRes) {
-          if (err != null) {
-            var msg = 'Unable to pull institution information from the Plaid API.';
-            console.log(msg + '\n' + JSON.stringify(error));
-            return response.json({
-              error: msg
-            });
-          } else {
-            prettyPrintResponse(itemResponse);
-            response.json({
-              item: itemResponse.item,
-              institution: instRes.institution
-            });
-          }
-        });
-      });
-    });
-
-    var prettyPrintResponse = response => {
-      console.log(util.inspect(response, { colors: true, depth: 4 }));
-    };
-
-    server.post('/set_access_token', function(request, response, next) {
-      ACCESS_TOKEN = request.body.access_token;
-      plaidClient.getItem(ACCESS_TOKEN, function(error, itemResponse) {
-        response.json({
-          item_id: itemResponse.item.item_id,
-          error: false
-        });
-      });
+      if (error) {
+        res.status(400).send('Error: Could not get access token.' + error.message);
+      }
+      else {
+        res.status(201).send('Saved access token.');
+      }
     });
 
     server.get('*', (req, res) => {

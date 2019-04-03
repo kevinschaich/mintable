@@ -1,8 +1,6 @@
-require('dotenv').config();
-
 const readline = require('readline');
 const oAuth2Client = require('../lib/google/googleClient');
-const { getConfigEnv, writeConfigProperty } = require('./lib/common');
+const { writeConfigProperty } = require('./lib/common');
 
 const authUrl = oAuth2Client.generateAuthUrl({
   access_type: 'offline',

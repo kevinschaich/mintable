@@ -9,7 +9,7 @@ const Done = props => (
     <div className='container container-vc'>
       <h1>Looks like we're all set here!</h1>
       <Link href='/settings'>
-        <button>Get Started</button>
+        <button>Go to Settings</button>
       </Link>
     </div>
   </div>

@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { getConfigEnv } = require('../common');
+const { getConfigEnv, writeConfigProperty } = require('../common');
 
 getConfigEnv();
 
@@ -24,18 +24,20 @@ const transactionFetchOptions = [
   }
 ];
 
-const plaidAccountTokens = Object.keys(process.env)
-  .filter(key => key.startsWith(`PLAID_TOKEN`))
-  .map(key => ({
-    account: key.replace(/^PLAID_TOKEN_/, ''),
-    token: process.env[key]
-  }));
+const getPlaidAccountTokens = () => {
+  return Object.keys(process.env)
+    .filter(key => key.startsWith(`PLAID_TOKEN`))
+    .map(key => ({
+      account: key.replace(/^PLAID_TOKEN_/, ''),
+      token: process.env[key]
+    }));
+};
 
-exports.fetchTransactions = async function() {
+const fetchTransactions = async () => {
   console.log('Fetching Transactions...');
 
   const rawTransactions = await Promise.all(
-    plaidAccountTokens.map(({ account, token }) => {
+    getPlaidAccountTokens().map(({ account, token }) => {
       return plaidClient
         .getTransactions(token, ...transactionFetchOptions)
         .then(({ transactions }) => ({
@@ -70,19 +72,50 @@ exports.fetchTransactions = async function() {
   return transactions;
 };
 
-exports.fetchBalances = async function() {
+const fetchBalances = async (quiet = false) => {
   console.log('Fetching Account Balances...');
   return await Promise.all(
-    plaidAccountTokens.map(({ account, token }) => {
+    getPlaidAccountTokens().map(({ account, token }) => {
       return plaidClient
         .getBalance(token)
         .then(data => {
-          return data;
+          return {
+            ...data,
+            nickname: account
+          };
         })
         .catch(error => {
-          console.log(`Error fetching balances for account ${account}:\n`, error);
-          process.exit(1);
+          const message = `Error fetching balances for account ${account} – ${error.error_code}`;
+          console.log(message);
+          if (quiet === true) {
+            return { nickname: account, error: message };
+          } else {
+            process.exit(1);
+          }
         });
     })
   );
+};
+
+// Exchange token flow - exchange a Link public_token for
+// an API access_token
+// https://plaid.com/docs/#exchange-token-flow
+const saveAccessToken = async body => {
+  return await Promise(
+    plaidClient.exchangePublicToken(body.token, (error, tokenResponse) => {
+      if (error) {
+        return error.message;
+      } else {
+        writeConfigProperty(`PLAID_TOKEN_${body.accountNickname.toUpperCase()}`, tokenResponse.access_token);
+        return null;
+      }
+    })
+  );
+};
+
+module.exports = {
+  getPlaidAccountTokens,
+  fetchBalances,
+  fetchTransactions,
+  saveAccessToken
 };
