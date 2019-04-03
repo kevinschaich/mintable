@@ -27,8 +27,8 @@ const Accounts = props => {
             </li>
             <li>
               Once approved, visit the{' '}
-              <a href='https://dashboard.plaid.com/overview/development'>Development Overview</a> and fill the following
-              values:
+              <a href='https://dashboard.plaid.com/overview/development'>Development Overview</a> and copy over the
+              following values:
               <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />
             </li>
             <Link href='/sheets'>

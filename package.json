@@ -27,6 +27,7 @@
     "plaid": "^2.10.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-icons": "^3.5.0",
     "react-plaid-link": "^1.2.0"
   }
 }

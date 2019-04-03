@@ -21,7 +21,6 @@ class ConfigPropertyInputGroup extends React.Component {
         'Content-Type': 'application/json'
       }
     }).then(resp => {
-      console.log(resp);
       if (resp.status === 201) {
         this.setState({
           modifiedProperties: this.state.modifiedProperties.add(id)

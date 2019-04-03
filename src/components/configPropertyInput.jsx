@@ -1,9 +1,9 @@
-import Check from './check';
+import { FiCheckCircle } from 'react-icons/fi';
 
 const ConfigPropertyInput = props => (
   <div className='config-property-input'>
     <code>
-      <Check opacity={props.modified ? 1 : 0}/>
+      <FiCheckCircle className='icon' style={{color: `#FFFFFF${props.modified ? 'FF' : '00'}`}}/>
       {props.displayName}
     </code>
     <input

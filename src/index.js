@@ -1,35 +1,18 @@
 const moment = require('moment');
 const { updateSheets } = require('./providers/sheets');
 const { getTransactions } = require('./providers/plaid');
-const { getConfigEnv, parseEnvOrDefault } = require('./lib/common');
+const { getConfigEnv } = require('./lib/common');
 
 (async () => {
   getConfigEnv();
-  const defaultTransactionColumns = [
-    'date',
-    'amount',
-    'name',
-    'account_details.official_name',
-    'category.0',
-    'category.1',
-    'pending'
-  ];
-  const defaultReferenceColumns = ['notes', 'work', 'joint'];
-  const defaultSpreadsheetProvider = 'sheets';
-  const defaultTransactionProvider = 'plaid';
-
-  const transactionColumns = parseEnvOrDefault('TRANSACTION_COLUMNS', defaultTransactionColumns);
-  const referenceColumns = parseEnvOrDefault('REFERENCE_COLUMNS', defaultReferenceColumns);
-  const categoryOverrides = parseEnvOrDefault('CATEGORY_OVERRIDES', []);
-  const spreadsheetProvider = parseEnvOrDefault('SPREADSHEET_PROVIDER', defaultSpreadsheetProvider);
-  const transactionProvider = parseEnvOrDefault('TRANSACTION_PROVIDER', defaultTransactionProvider);
 
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const firstTransactionColumn = alphabet[0];
-  const lastTransactionColumn = alphabet[transactionColumns.length - 1];
-  const firstReferenceColumn = alphabet[transactionColumns.length];
-  const lastReferenceColumn = alphabet[transactionColumns.length + referenceColumns.length - 1];
-  const numAutomatedColumns = transactionColumns.length + referenceColumns.length;
+  const lastTransactionColumn = alphabet[process.env.TRANSACTION_COLUMNS.length - 1];
+  const firstReferenceColumn = alphabet[process.env.TRANSACTION_COLUMNS.length];
+  const lastReferenceColumn =
+    alphabet[process.env.TRANSACTION_COLUMNS.length + process.env.REFERENCE_COLUMNS.length - 1];
+  const numAutomatedColumns = process.env.TRANSACTION_COLUMNS.length + process.env.REFERENCE_COLUMNS.length;
 
   const currentMonth = moment().startOf('month');
   const lastMonth = moment()
@@ -44,8 +27,8 @@ const { getConfigEnv, parseEnvOrDefault } = require('./lib/common');
   switch (transactionProvider) {
     case 'plaid':
       ({ currentMonthTransactions, lastMonthTransactions } = await getTransactions(
-        transactionColumns,
-        categoryOverrides,
+        process.env.TRANSACTION_COLUMNS,
+        process.env.CATEGORY_OVERRIDES,
         currentMonthSheetTitle
       ));
       break;
@@ -59,8 +42,8 @@ const { getConfigEnv, parseEnvOrDefault } = require('./lib/common');
       await updateSheets(
         currentMonthTransactions,
         lastMonthTransactions,
-        transactionColumns,
-        referenceColumns,
+        process.env.TRANSACTION_COLUMNS,
+        process.env.REFERENCE_COLUMNS,
         currentMonthSheetTitle,
         lastMonthSheetTitle,
         firstTransactionColumn,

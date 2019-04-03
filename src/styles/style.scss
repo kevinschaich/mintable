@@ -69,6 +69,14 @@ html,
   }
 }
 
+ol {
+  padding: 20px 40px;
+  
+  button {
+    margin-top: 10px;
+  }
+}
+
 h1 {
   font-size: 60px;
   font-weight: 600;
@@ -123,6 +131,23 @@ a:active {
   color: $blue;
 }
 
+.icon {
+  padding-right: 10px;
+  vertical-align: bottom;
+}
+
+input {
+  background: #ffffff10;
+  border: 1px solid #ffffff30;
+  border-radius: 5px;
+  font-size: 15px;
+  line-height: 20px;
+  color: white;
+  padding: 10px;
+  margin: 5px;
+  font-family: 'Menlo', 'Monaco', 'Courier New', 'Courier';
+}
+
 .config-container {
   padding: 20px;
   margin: 20px;
@@ -149,17 +174,34 @@ a:active {
   flex-direction: column;
 
   .accounts-list {
-    min-width: 400px;
+    min-width: 800px;
     display: flex;
     width: 100%;
     flex-direction: column;
+    border: 1px solid #ffffff30;
+    border-radius: 5px;
+    padding: 20px 40px;
+    margin: 20px;
+    align-items: center;
 
     .account-details {
       display: flex;
+      align-items: center;
       width: 100%;
       justify-content: space-between;
       padding: 20px;
       font-size: 20px;
+
+      .account-nickname {
+        width: 60%;
+      }
+      .status {
+        width: 30%;
+      }
+      .button {
+        width: 5%;
+        cursor: pointer;
+      }
     }
   }
 
@@ -172,16 +214,4 @@ a:active {
       margin: 20px;
     }
   }
-}
-
-input {
-  background: #ffffff10;
-  border: 1px solid #ffffff30;
-  border-radius: 5px;
-  font-size: 15px;
-  line-height: 20px;
-  color: white;
-  padding: 10px;
-  margin: 5px;
-  font-family: 'Menlo', 'Monaco', 'Courier New', 'Courier';
 }

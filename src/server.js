@@ -2,18 +2,17 @@ const express = require('express');
 const next = require('next');
 const bodyParser = require('body-parser');
 const opn = require('opn');
-const plaid = require('./lib/plaid/plaid');
-const { getConfigEnv, writeConfigProperty } = require('./lib/common');
-
+const { getConfigEnv, writeConfigProperty, maybeWriteDefaultConfig } = require('./lib/common');
 
 try {
   const port = parseInt(process.env.PORT, 10) || 3000;
   const dev = process.env.NODE_ENV !== 'production';
   const app = next({ dev });
   const handle = app.getRequestHandler();
-
+  
+  maybeWriteDefaultConfig();
   getConfigEnv();
-
+  
   app.prepare().then(() => {
     const server = express();
     server.use(bodyParser.urlencoded({ extended: false }));
@@ -31,7 +30,7 @@ try {
     });
 
     server.put('/config', async (req, res) => {
-      const writeStatus = writeConfigProperty(req.body.propertyId, req.body.value);
+      const writeStatus = writeConfigProperty(req.body.id, req.body.value);
       if (writeStatus === false) {
         res.status(400).send('Error: Could not write config file.');
       } else {
@@ -44,8 +43,11 @@ try {
         let balances;
 
         switch (process.env.TRANSACTION_PROVIDER) {
+          case 'plaid':
+            const plaid = require('./lib/plaid/plaid');
+            balances = await plaid.fetchBalances({quiet: true});
+            break;
           default:
-            balances = await plaid.fetchBalances(true);
             break;
         }
 
@@ -59,8 +61,11 @@ try {
       let error;
 
       switch (process.env.TRANSACTION_PROVIDER) {
+        case 'plaid':
+          const plaid = require('./lib/plaid/plaid');
+          error = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname);
+          break;
         default:
-          error = await plaid.saveAccessToken();
           break;
       }
 
