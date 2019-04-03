@@ -33,7 +33,7 @@ const getPlaidAccountTokens = () => {
     }));
 };
 
-const fetchTransactions = async () => {
+const fetchTransactions = async options => {
   console.log('Fetching Transactions...');
 
   const rawTransactions = await Promise.all(
@@ -45,8 +45,12 @@ const fetchTransactions = async () => {
           transactions
         }))
         .catch(error => {
-          console.log(`Error fetching transactions for account ${account}:\n`, error);
-          process.exit(1);
+          console.log(`Error fetching balances for account ${account}.`, JSON.stringify(error));
+          if (options && options.quiet && options.quiet === true) {
+            return { nickname: account, error };
+          } else {
+            process.exit(1);
+          }
         });
     })
   );
@@ -85,10 +89,9 @@ const fetchBalances = async options => {
           };
         })
         .catch(error => {
-          const message = `Error fetching balances for account ${account} – ${error.error_code}`;
-          console.log(message);
-          if (options.quiet && options.quiet === true) {
-            return { nickname: account, error: message };
+          console.log(`Error fetching balances for account ${account}.`, JSON.stringify(error));
+          if (options && options.quiet && options.quiet === true) {
+            return { nickname: account, error };
           } else {
             process.exit(1);
           }
@@ -100,33 +103,24 @@ const fetchBalances = async options => {
 // Exchange token flow - exchange a Link public_token for
 // an API access_token
 // https://plaid.com/docs/#exchange-token-flow
-const saveAccessToken = async (public_token, accountNickname) => {
-  return await Promise(
-    plaidClient.exchangePublicToken(public_token, (error, tokenResponse) => {
-      if (error) {
-        return error.message;
-      } else {
+const saveAccessToken = async (public_token, accountNickname, options) => {
+  console.log(`Saving access token...`);
+  return await Promise.all([
+    plaidClient
+      .exchangePublicToken(public_token)
+      .then(tokenResponse => {
         writeConfigProperty(`PLAID_TOKEN_${accountNickname.toUpperCase()}`, tokenResponse.access_token);
-        return null;
-      }
-    })
-  );
-};
-
-// Exchange token flow - exchange a Link public_token for
-// an API access_token
-// https://plaid.com/docs/#exchange-token-flow
-const createPublicToken = async access_token => {
-  return await Promise(
-    plaidClient.createPublicToken(body.token, (error, tokenResponse) => {
-      if (error) {
-        return error.message;
-      } else {
-        writeConfigProperty(`PLAID_TOKEN_${body.accountNickname.toUpperCase()}`, tokenResponse.access_token);
-        return null;
-      }
-    })
-  );
+        return false;
+      })
+      .catch(error => {
+        console.log(`Error saving access token for account ${accountNickname}.`, JSON.stringify(error));
+        if (options && options.quiet && options.quiet === true) {
+          return { accountNickname, error };
+        } else {
+          process.exit(1);
+        }
+      })
+  ]);
 };
 
 module.exports = {

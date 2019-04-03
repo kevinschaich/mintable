@@ -69,21 +69,26 @@ try {
     });
 
     server.post('/token', async (req, res, next) => {
-      let error;
+      try {
+        let error;
 
-      switch (process.env.TRANSACTION_PROVIDER) {
-        case 'plaid':
-          const plaid = require('./lib/plaid/plaid');
-          error = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname);
-          break;
-        default:
-          break;
-      }
+        switch (process.env.TRANSACTION_PROVIDER) {
+          case 'plaid':
+            const plaid = require('./lib/plaid/plaid');
+            error = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname, { quiet: true });
+            break;
+          default:
+            break;
+        }
 
-      if (error) {
+        if (error != false) {
+          res.status(400).send('Error: Could not get access token.' + error.message);
+        } else {
+          res.status(201).send('Saved access token.');
+        }
+      } catch (e) {
+        console.log(e);
         res.status(400).send('Error: Could not get access token.' + error.message);
-      } else {
-        res.status(201).send('Saved access token.');
       }
     });
 

@@ -20,7 +20,7 @@ class Accounts extends React.Component {
 
   handleOnSuccess = (public_token, metadata) => {
     const body = { public_token, accountNickname: this.state.newAccountNickname };
-
+    console.log(`Public Token:`, body);
     fetch('http://localhost:3000/token', {
       method: 'POST',
       body: JSON.stringify(body),
@@ -48,8 +48,8 @@ class Accounts extends React.Component {
       <div className='accounts'>
         <h1>Accounts</h1>
         <span>
-          <strong>Note</strong>: In the Plaid Development environment, issuing an /item/remove request will not decrement
-          your live credential count.
+          <strong>Note</strong>: In the Plaid Development environment, issuing an /item/remove request will not
+          decrement your live credential count.
         </span>
         <div className='accounts-list'>{accounts.length ? accounts : <span>Loading...</span>}</div>
         <span>Enter a nickname to add a new account:</span>
