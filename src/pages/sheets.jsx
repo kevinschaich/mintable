@@ -5,12 +5,20 @@ import ConfigPropertyInputGroup from '../components/configPropertyInputGroup';
 import Link from 'next/link';
 
 const Sheets = props => {
+  const handleOnClickAuth = async e => {
+    const res = await fetch("http://localhost:3000/google-sheets-url");
+    const URL = (await res.json()).url;
+    var win = window.open(URL, '_blank');
+    win.focus();
+  }
+
   const sheetConfigProperties = [{ displayName: 'sheet_id', propertyId: 'SHEETS_SHEET_ID' }];
   const configFileProperties = [
     { displayName: 'client_id', propertyId: 'SHEETS_CLIENT_ID' },
     { displayName: 'client_secret', propertyId: 'SHEETS_CLIENT_SECRET' },
     { displayName: 'redirect_uri', propertyId: 'SHEETS_REDIRECT_URI' }
   ];
+  const tokenProperties = [{ displayName: 'code', propertyId: 'SHEETS_TEMP_TOKEN' }];
 
   return (
     <div className='wrapper'>
@@ -41,6 +49,14 @@ const Sheets = props => {
             <li>
               Fill in the following values (use the last value in redirect_uris):
               <ConfigPropertyInputGroup configProperties={configFileProperties} config={props.config} />
+            </li>
+            <li>
+              Visit this page to authorize Mintable to use Google Sheets:<br/>
+              <button onClick={handleOnClickAuth}>Authorize Google Sheets</button>
+            </li>
+            <li>
+              Copy and paste the code here:
+              <ConfigPropertyInputGroup configProperties={tokenProperties} config={props.config} />
             </li>
             <Link href='/done'>
               <button>Next</button>
