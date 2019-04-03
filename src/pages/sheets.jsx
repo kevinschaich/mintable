@@ -54,10 +54,6 @@ const Sheets = props => {
               Visit this page to authorize Mintable to use Google Sheets:<br/>
               <button onClick={handleOnClickAuth}>Authorize Google Sheets</button>
             </li>
-            <li>
-              Copy and paste the code here:
-              <ConfigPropertyInputGroup configProperties={tokenProperties} config={props.config} />
-            </li>
             <Link href='/done'>
               <button>Next</button>
             </Link>

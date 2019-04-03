@@ -91,9 +91,8 @@ try {
           Object.keys(token).forEach(key => {
             writeConfigProperty(`SHEETS_${key.toUpperCase()}`, token[key]);
           });
-          const message = `Token stored in .env.`;
-          console.log(message);
-          res.status(201).send(message);
+          console.log(`Token stored in .env.`);
+          res.redirect('http://localhost:3000/sheets');
         }
       });
     });
