@@ -1,9 +1,12 @@
 const plaid = require('plaid');
+const { getConfigEnv } = require('../common');
 
-module.exports = (client, secret, public_key) => new plaid.Client(
-  client,
-  secret,
-  public_key,
+getConfigEnv();
+
+module.exports = new plaid.Client(
+  process.env.PLAID_CLIENT_ID,
+  process.env.PLAID_SECRET,
+  process.env.PLAID_PUBLIC_KEY,
   plaid.environments.development,
   {
     version: '2018-05-22'

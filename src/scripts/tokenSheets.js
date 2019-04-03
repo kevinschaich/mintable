@@ -1,10 +1,8 @@
 require('dotenv').config();
 
-const fs = require('fs');
-const path = require('path');
 const readline = require('readline');
 const oAuth2Client = require('../lib/google/googleClient');
-const saveEnv = require('./saveEnv');
+const { getConfigEnv, writeConfigProperty } = require('./lib/common');
 
 const authUrl = oAuth2Client.generateAuthUrl({
   access_type: 'offline',
@@ -23,12 +21,10 @@ rl.question('Enter the code from that page here: ', code => {
   oAuth2Client.getToken(code, (err, token) => {
     if (err) return console.error('Error while trying to retrieve access token', err);
 
-    let vars = {};
-    const tokenEnvVars = Object.keys(token).forEach(key => {
-      vars[`SHEETS_${key.toUpperCase()}`] = token[key];
+    Object.keys(token).forEach(key => {
+      writeConfigProperty(`SHEETS_${key.toUpperCase()}`, token[key]);
     });
 
-    saveEnv(vars);
     console.log(`Token stored in .env.`);
   });
 });

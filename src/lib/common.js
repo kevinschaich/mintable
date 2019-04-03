@@ -1,15 +1,36 @@
-const fs = require("fs");
+const fs = require('fs');
 
 const CONFIG_FILE = '../mintable.config.json';
-exports.CONFIG_FILE = CONFIG_FILE;
 
 exports.getConfigEnv = () => {
-  const config = fs.readFileSync(CONFIG_FILE);
-  process.env = {
-    ...process.env,
-    ...JSON.parse(config)
+  try {
+    const config = fs.readFileSync(CONFIG_FILE);
+    process.env = {
+      ...process.env,
+      ...JSON.parse(config)
+    };
+    return JSON.parse(config);
+  } catch (e) {
+    const message = 'Error: Could not read config file. ' + err.message;
+    console.log(message);
+    return false;
+  }
+};
+
+exports.writeConfigProperty = (propertyId, value) => {
+  const newConfig = {
+    ...config,
+    [propertyId]: value
   };
-  return JSON.parse(config);
+
+  try {
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2));
+    return getConfigEnv();
+  } catch (e) {
+    const message = 'Error: Could not write config file. ' + err.message;
+    console.log(message);
+    return false;
+  }
 };
 
 exports.parseEnvOrDefault = (key, defaultValue) => {

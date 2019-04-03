@@ -2,11 +2,10 @@ const express = require('express');
 const next = require('next');
 const bodyParser = require('body-parser');
 const opn = require('opn');
-const fs = require('fs');
 const util = require('util');
 const moment = require('moment');
 const { fetchBalances } = require('./lib/plaid/plaid');
-const { getConfigEnv, CONFIG_FILE } = require('./lib/common');
+const { getConfigEnv, writeConfigProperty } = require('./lib/common');
 
 try {
   const port = parseInt(process.env.PORT, 10) || 3000;
@@ -17,13 +16,9 @@ try {
   let PUBLIC_TOKEN = null;
   let ITEM_ID = null;
 
-  let config = getConfigEnv();
+  getConfigEnv();
 
-  const plaidClient = require('./lib/plaid/plaidClient')(
-    process.env.PLAID_CLIENT_ID,
-    process.env.PLAID_SECRET,
-    process.env.PLAID_PUBLIC_KEY
-  );
+  const plaidClient = require('./lib/plaid/plaidClient');
 
   app.prepare().then(() => {
     const server = express();
@@ -31,33 +26,21 @@ try {
     server.use(bodyParser.json());
 
     server.get('/config', (req, res) => {
-      fs.readFile(CONFIG_FILE, (err, data) => {
-        if (err) {
-          const message = 'Error: Could not parse config file. ' + err.message;
-          console.log(message);
-          res.status(400).send(message);
-        } else {
-          res.json(JSON.parse(data));
-        }
-      });
+      const readResult = getConfigEnv();
+      if (readResult === false) {
+        res.status(400).send('Error: Could not read config file.');
+      } else {
+        res.json(readResult);
+      }
     });
 
-    server.put('/config', (req, res) => {
-      const newConfig = {
-        ...config,
-        [req.body.propertyId]: req.body.value
-      };
-
-      fs.writeFile(CONFIG_FILE, JSON.stringify(newConfig, null, 2), err => {
-        if (err) {
-          const message = 'Error: Could not write config file. ' + err.message;
-          console.log(message);
-          res.status(400).send(message);
-        } else {
-          config = getConfigEnv();
-          res.status(201).send('Successfully wrote config.');
-        }
-      });
+    server.put('/config', async (req, res) => {
+      const writeStatus = writeConfigProperty(req.body.propertyId, value);
+      if (writeStatus === false) {
+        res.status(400).send('Error: Could not write config file.');
+      } else {
+        res.status(201).send('Successfully wrote config file.');
+      }
     });
 
     account = 'cap-one';
@@ -77,16 +60,6 @@ try {
       }
     });
 
-    function saveAccessToken(token) {
-      console.log();
-      console.log(`Saving access token for account "${account}": ${token}`);
-      saveEnv({
-        [`PLAID_TOKEN_${account}`]: token
-      });
-      console.log('Saved.');
-      console.log();
-    }
-
     // Exchange token flow - exchange a Link public_token for
     // an API access_token
     // https://plaid.com/docs/#exchange-token-flow
@@ -100,7 +73,8 @@ try {
           });
         }
         ACCESS_TOKEN = tokenResponse.access_token;
-        saveAccessToken(ACCESS_TOKEN);
+        writeConfigProperty(`PLAID_TOKEN_${account.toUpperCase()}`, ACCESS_TOKEN);
+
         ITEM_ID = tokenResponse.item_id;
         prettyPrintResponse(tokenResponse);
         response.json({

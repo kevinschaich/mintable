@@ -1,7 +1,9 @@
 const { google } = require('googleapis');
-const moment = require('moment');
 const oAuth2Client = require('./googleClient');
 const _ = require('lodash');
+const { getConfigEnv } = require('../common');
+
+getConfigEnv();
 
 oAuth2Client.setCredentials({
   access_token: process.env.SHEETS_ACCESS_TOKEN,

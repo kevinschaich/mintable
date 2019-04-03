@@ -1,10 +1,10 @@
-require('dotenv').config();
 const moment = require('moment');
 const { updateSheets } = require('./providers/sheets');
 const { getTransactions } = require('./providers/plaid');
-const { parseEnvOrDefault } = require('./lib/common');
+const { getConfigEnv, parseEnvOrDefault } = require('./lib/common');
 
 (async () => {
+  getConfigEnv();
   const defaultTransactionColumns = [
     'date',
     'amount',
