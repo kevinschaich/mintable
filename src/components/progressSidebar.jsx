@@ -1,4 +1,4 @@
-import ProgressItem from './progressItem';
+import ProgressItem from './progressItem'
 
 const ProgressSidebar = props => {
   return (
@@ -20,7 +20,7 @@ const ProgressSidebar = props => {
       />
       <ProgressItem tab={props.tab} number={4} title='Done!' href='/done' />
     </div>
-  );
-};
+  )
+}
 
-export default ProgressSidebar;
+export default ProgressSidebar

@@ -1,5 +1,5 @@
-const { google } = require('googleapis');
-const { getConfigEnv } = require('../common');
+const { google } = require("googleapis");
+const { getConfigEnv } = require("../common");
 
 getConfigEnv();
 

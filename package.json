@@ -5,6 +5,7 @@
   "author": "Kevin Schaich",
   "license": "MIT",
   "scripts": {
+    "format": "prettier --write ./src/**/*.{css,scss,less,js,jsx,ts,tsx,json} --ignore-path ./.gitignore",
     "mintable": "node ./src/index.js",
     "settings": "cd src && node server.js",
     "migrate": "node ./src/scripts/migrate.js",
@@ -29,5 +30,8 @@
     "react-dom": "^16.8.6",
     "react-icons": "^3.5.0",
     "react-plaid-link": "^1.2.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.16.4"
   }
 }

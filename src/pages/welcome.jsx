@@ -1,7 +1,7 @@
-import '../styles/style.scss';
-import Link from 'next/link';
-import ProgressSidebar from '../components/progressSidebar';
-import fetch from 'isomorphic-unfetch';
+import '../styles/style.scss'
+import Link from 'next/link'
+import ProgressSidebar from '../components/progressSidebar'
+import fetch from 'isomorphic-unfetch'
 
 const Welcome = props => (
   <div className='wrapper'>
@@ -14,12 +14,12 @@ const Welcome = props => (
       </Link>
     </div>
   </div>
-);
+)
 
 Welcome.getInitialProps = async function() {
-  const res = await fetch('http://localhost:3000/config');
+  const res = await fetch('http://localhost:3000/config')
 
-  return { config: await res.json() };
-};
+  return { config: await res.json() }
+}
 
-export default Welcome;
+export default Welcome

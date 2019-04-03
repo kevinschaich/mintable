@@ -1,15 +1,15 @@
-import '../styles/style.scss';
-import ProgressSidebar from '../components/progressSidebar';
-import fetch from 'isomorphic-unfetch';
-import ConfigPropertyInputGroup from '../components/configPropertyInputGroup';
-import Link from 'next/link';
+import '../styles/style.scss'
+import ProgressSidebar from '../components/progressSidebar'
+import fetch from 'isomorphic-unfetch'
+import ConfigPropertyInputGroup from '../components/configPropertyInputGroup'
+import Link from 'next/link'
 
 const Accounts = props => {
   const configProperties = [
     { displayName: 'client_id', propertyId: 'PLAID_CLIENT_ID' },
     { displayName: 'public_key', propertyId: 'PLAID_PUBLIC_KEY' },
     { displayName: 'development_secret', propertyId: 'PLAID_SECRET' }
-  ];
+  ]
 
   return (
     <div className='wrapper'>
@@ -38,13 +38,13 @@ const Accounts = props => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 Accounts.getInitialProps = async function() {
-  const res = await fetch('http://localhost:3000/config');
+  const res = await fetch('http://localhost:3000/config')
 
-  return { config: await res.json() };
-};
+  return { config: await res.json() }
+}
 
-export default Accounts;
+export default Accounts

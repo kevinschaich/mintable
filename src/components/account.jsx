@@ -1,7 +1,7 @@
-import { FiEdit, FiTrash2, FiInfo, FiCheckCircle } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiInfo, FiCheckCircle } from 'react-icons/fi'
 
 const Account = props => {
-  let status = <FiCheckCircle className='icon' />;
+  let status = <FiCheckCircle className='icon' />
 
   if (props.details.error) {
     status = (
@@ -9,7 +9,7 @@ const Account = props => {
         <FiInfo className='icon' />
         Error
       </span>
-    );
+    )
   }
 
   return (
@@ -25,7 +25,7 @@ const Account = props => {
         <FiTrash2 className='icon' />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Account;
+export default Account

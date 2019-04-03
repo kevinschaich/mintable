@@ -1,7 +1,7 @@
-const fs = require('fs');
-const _ = require('lodash');
+const fs = require('fs')
+const _ = require('lodash')
 
-const CONFIG_FILE = __dirname + '/../../mintable.config.json';
+const CONFIG_FILE = __dirname + '/../../mintable.config.json'
 
 const configProperties = [
   'PLAID_CLIENT_ID',
@@ -26,14 +26,14 @@ const configProperties = [
   'SPREADSHEET_PROVIDER',
   'TRANSACTION_COLUMNS',
   'REFERENCE_COLUMNS'
-];
+]
 
-const config = _.pick(process.env, configProperties);
+const config = _.pick(process.env, configProperties)
 
 try {
-  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
-  console.log('Successfully wrote config.');
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2))
+  console.log('Successfully wrote config.')
 } catch (e) {
-  const message = 'Error: Could not write config file. ' + e.message;
-  console.log(message);
+  const message = 'Error: Could not write config file. ' + e.message
+  console.log(message)
 }

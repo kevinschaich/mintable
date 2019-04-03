@@ -1,19 +1,19 @@
-const express = require('express');
-const next = require('next');
-const bodyParser = require('body-parser');
-const opn = require('opn');
+const express = require("express");
+const next = require("next");
+const bodyParser = require("body-parser");
+const opn = require("opn");
 const {
   getConfigEnv,
   writeConfigProperty,
   maybeWriteDefaultConfig,
   accountsSetupCompleted,
   sheetsSetupCompleted
-} = require('./lib/common');
-const _ = require('lodash');
+} = require("./lib/common");
+const _ = require("lodash");
 
 try {
   const port = parseInt(process.env.PORT, 10) || 3000;
-  const dev = process.env.NODE_ENV !== 'production';
+  const dev = process.env.NODE_ENV !== "production";
   const app = next({ dev });
   const handle = app.getRequestHandler();
 
@@ -25,12 +25,12 @@ try {
     server.use(bodyParser.urlencoded({ extended: false }));
     server.use(bodyParser.json());
 
-    const oAuth2Client = require('./lib/google/googleClient');
+    const oAuth2Client = require("./lib/google/googleClient");
 
-    server.get('/config', (req, res) => {
+    server.get("/config", (req, res) => {
       const readResult = getConfigEnv();
       if (readResult === false) {
-        res.status(400).send('Error: Could not read config file.');
+        res.status(400).send("Error: Could not read config file.");
       } else {
         res.json({
           ...readResult,
@@ -40,22 +40,22 @@ try {
       }
     });
 
-    server.put('/config', async (req, res) => {
+    server.put("/config", async (req, res) => {
       const writeStatus = writeConfigProperty(req.body.id, req.body.value);
       if (writeStatus === false) {
-        res.status(400).send('Error: Could not write config file.');
+        res.status(400).send("Error: Could not write config file.");
       } else {
-        res.status(201).send('Successfully wrote config file.');
+        res.status(201).send("Successfully wrote config file.");
       }
     });
 
-    server.get('/balances', async (req, res, next) => {
+    server.get("/balances", async (req, res, next) => {
       try {
         let balances;
 
         switch (process.env.TRANSACTION_PROVIDER) {
-          case 'plaid':
-            const plaid = require('./lib/plaid/plaid');
+          case "plaid":
+            const plaid = require("./lib/plaid/plaid");
             balances = await plaid.fetchBalances({ quiet: true });
             break;
           default:
@@ -68,13 +68,13 @@ try {
       }
     });
 
-    server.post('/token', async (req, res, next) => {
+    server.post("/token", async (req, res, next) => {
       try {
         let error;
 
         switch (process.env.TRANSACTION_PROVIDER) {
-          case 'plaid':
-            const plaid = require('./lib/plaid/plaid');
+          case "plaid":
+            const plaid = require("./lib/plaid/plaid");
             error = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname, { quiet: true });
             break;
           default:
@@ -82,30 +82,30 @@ try {
         }
 
         if (error != false) {
-          res.status(400).send('Error: Could not get access token.' + error.message);
+          res.status(400).send("Error: Could not get access token." + error.message);
         } else {
-          res.status(201).send('Saved access token.');
+          res.status(201).send("Saved access token.");
         }
       } catch (e) {
         console.log(e);
-        res.status(400).send('Error: Could not get access token.' + error.message);
+        res.status(400).send("Error: Could not get access token." + error.message);
       }
     });
 
-    server.get('/google-sheets-url', (req, res) => {
+    server.get("/google-sheets-url", (req, res) => {
       res.json({
         url: oAuth2Client.generateAuthUrl({
-          access_type: 'offline',
-          scope: ['https://www.googleapis.com/auth/spreadsheets']
+          access_type: "offline",
+          scope: ["https://www.googleapis.com/auth/spreadsheets"]
         })
       });
     });
 
-    server.get('/google-sheets-oauth2callback', (req, res) => {
+    server.get("/google-sheets-oauth2callback", (req, res) => {
       const code = req.query.code;
       oAuth2Client.getToken(code, (err, token) => {
         if (err) {
-          const message = 'Error while trying to retrieve access token' + err.message;
+          const message = "Error while trying to retrieve access token" + err.message;
           console.log(message);
           res.status(400).send(message);
         } else {
@@ -113,17 +113,17 @@ try {
             writeConfigProperty(`SHEETS_${key.toUpperCase()}`, token[key]);
           });
           console.log(`Token stored in .env.`);
-          res.redirect('http://localhost:3000/sheets');
+          res.redirect("http://localhost:3000/sheets");
         }
       });
     });
 
-    server.get('/', (req, res) => {
-      const page = accountsSetupCompleted() && sheetsSetupCompleted() ? 'settings' : 'welcome';
+    server.get("/", (req, res) => {
+      const page = accountsSetupCompleted() && sheetsSetupCompleted() ? "settings" : "welcome";
       return res.redirect(`http://localhost:3000/${page}`);
     });
 
-    server.get('*', (req, res) => {
+    server.get("*", (req, res) => {
       return handle(req, res);
     });
 

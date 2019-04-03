@@ -1,12 +1,12 @@
-const moment = require('moment');
-const { updateSheets } = require('./providers/sheets');
-const { getTransactions } = require('./providers/plaid');
-const { getConfigEnv } = require('./lib/common');
+const moment = require("moment");
+const { updateSheets } = require("./providers/sheets");
+const { getTransactions } = require("./providers/plaid");
+const { getConfigEnv } = require("./lib/common");
 
 (async () => {
   getConfigEnv();
 
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const firstTransactionColumn = alphabet[0];
   const lastTransactionColumn = alphabet[process.env.TRANSACTION_COLUMNS.length - 1];
   const firstReferenceColumn = alphabet[process.env.TRANSACTION_COLUMNS.length];
@@ -14,18 +14,18 @@ const { getConfigEnv } = require('./lib/common');
     alphabet[process.env.TRANSACTION_COLUMNS.length + process.env.REFERENCE_COLUMNS.length - 1];
   const numAutomatedColumns = process.env.TRANSACTION_COLUMNS.length + process.env.REFERENCE_COLUMNS.length;
 
-  const currentMonth = moment().startOf('month');
+  const currentMonth = moment().startOf("month");
   const lastMonth = moment()
-    .subtract(1, 'month')
-    .startOf('month');
-  const currentMonthSheetTitle = currentMonth.format('YYYY.MM');
-  const lastMonthSheetTitle = lastMonth.format('YYYY.MM');
+    .subtract(1, "month")
+    .startOf("month");
+  const currentMonthSheetTitle = currentMonth.format("YYYY.MM");
+  const lastMonthSheetTitle = lastMonth.format("YYYY.MM");
 
   let currentMonthTransactions;
   let lastMonthTransactions;
 
   switch (transactionProvider) {
-    case 'plaid':
+    case "plaid":
       ({ currentMonthTransactions, lastMonthTransactions } = await getTransactions(
         process.env.TRANSACTION_COLUMNS,
         process.env.CATEGORY_OVERRIDES,
@@ -38,7 +38,7 @@ const { getConfigEnv } = require('./lib/common');
   }
 
   switch (spreadsheetProvider) {
-    case 'sheets':
+    case "sheets":
       await updateSheets(
         currentMonthTransactions,
         lastMonthTransactions,

@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { FiCheckCircle } from 'react-icons/fi';
+import Link from 'next/link'
+import { FiCheckCircle } from 'react-icons/fi'
 
 const ProgressItem = props => {
   return (
@@ -9,7 +9,7 @@ const ProgressItem = props => {
         {props.number}. {props.title}
       </span>
     </Link>
-  );
-};
+  )
+}
 
-export default ProgressItem;
+export default ProgressItem

@@ -1,9 +1,9 @@
-import { FiCheckCircle } from 'react-icons/fi';
+import { FiCheckCircle } from 'react-icons/fi'
 
 const ConfigPropertyInput = props => (
   <div className='config-property-input'>
     <code>
-      <FiCheckCircle className='icon' style={{color: `#FFFFFF${props.modified ? 'FF' : '00'}`}}/>
+      <FiCheckCircle className='icon' style={{ color: `#FFFFFF${props.modified ? 'FF' : '00'}` }} />
       {props.displayName}
     </code>
     <input
@@ -14,6 +14,6 @@ const ConfigPropertyInput = props => (
       onChange={props.onChange}
     />
   </div>
-);
+)
 
-export default ConfigPropertyInput;
+export default ConfigPropertyInput

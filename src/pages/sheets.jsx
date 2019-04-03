@@ -1,22 +1,22 @@
-import '../styles/style.scss';
-import ProgressSidebar from '../components/progressSidebar';
-import fetch from 'isomorphic-unfetch';
-import ConfigPropertyInputGroup from '../components/configPropertyInputGroup';
-import Link from 'next/link';
+import '../styles/style.scss'
+import ProgressSidebar from '../components/progressSidebar'
+import fetch from 'isomorphic-unfetch'
+import ConfigPropertyInputGroup from '../components/configPropertyInputGroup'
+import Link from 'next/link'
 
 const Sheets = props => {
   const handleOnClickAuth = async e => {
-    const res = await fetch('http://localhost:3000/google-sheets-url');
-    const URL = (await res.json()).url;
-    var win = window.open(URL, '_blank');
-    win.focus();
-  };
+    const res = await fetch('http://localhost:3000/google-sheets-url')
+    const URL = (await res.json()).url
+    var win = window.open(URL, '_blank')
+    win.focus()
+  }
 
-  const sheetConfigProperties = [{ displayName: 'sheet_id', propertyId: 'SHEETS_SHEET_ID' }];
+  const sheetConfigProperties = [{ displayName: 'sheet_id', propertyId: 'SHEETS_SHEET_ID' }]
   const configFileProperties = [
     { displayName: 'Client ID', propertyId: 'SHEETS_CLIENT_ID' },
     { displayName: 'Client Secret', propertyId: 'SHEETS_CLIENT_SECRET' }
-  ];
+  ]
 
   return (
     <div className='wrapper'>
@@ -30,7 +30,8 @@ const Sheets = props => {
               over the <code>sheet_id</code> from the URL:
               <br />
               <code>
-                docs.google.com/spreadsheets/d/<strong className='blue'>{'sheet_id'}</strong>/edit
+                docs.google.com/spreadsheets/d/
+                <strong className='blue'>{'sheet_id'}</strong>/edit
               </code>
               <ConfigPropertyInputGroup configProperties={sheetConfigProperties} config={props.config} />
             </li>
@@ -57,13 +58,13 @@ const Sheets = props => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 Sheets.getInitialProps = async function() {
-  const res = await fetch('http://localhost:3000/config');
+  const res = await fetch('http://localhost:3000/config')
 
-  return { config: await res.json() };
-};
+  return { config: await res.json() }
+}
 
-export default Sheets;
+export default Sheets

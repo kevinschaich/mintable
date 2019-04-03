@@ -1,7 +1,7 @@
-const { google } = require('googleapis');
-const oAuth2Client = require('./googleClient');
-const _ = require('lodash');
-const { getConfigEnv } = require('../common');
+const { google } = require("googleapis");
+const oAuth2Client = require("./googleClient");
+const _ = require("lodash");
+const { getConfigEnv } = require("../common");
 
 getConfigEnv();
 
@@ -14,7 +14,7 @@ oAuth2Client.setCredentials({
 });
 
 const sheets = google.sheets({
-  version: 'v4',
+  version: "v4",
   auth: oAuth2Client
 });
 
@@ -22,7 +22,7 @@ exports.getSheets = async function(spreadsheetId) {
   return new Promise((resolve, reject) =>
     sheets.spreadsheets.get({ spreadsheetId }, (err, res) => {
       if (err) {
-        console.log('Fetch failed:', err);
+        console.log("Fetch failed:", err);
         reject(err);
       }
       console.log(`Success! Fetched current sheets.`);
@@ -43,7 +43,7 @@ exports.duplicateSheet = async function(sourceSpreadsheetId, sourceSheetId) {
       },
       (err, res) => {
         if (err) {
-          console.log('Copy failed:', err);
+          console.log("Copy failed:", err);
           reject(err);
         }
         console.log(`Success! Sheet copied.`);
@@ -70,7 +70,7 @@ exports.addSheet = async function(title) {
       },
       (err, res) => {
         if (err) {
-          console.log('Add failed: ', err);
+          console.log("Add failed: ", err);
           reject(err);
         }
         console.log(`Success! ${title} sheet added.`);
@@ -93,7 +93,7 @@ exports.renameSheet = async function(sheetId, title) {
                   sheetId: sheetId,
                   title: title
                 },
-                fields: 'title'
+                fields: "title"
               }
             }
           ]
@@ -101,7 +101,7 @@ exports.renameSheet = async function(sheetId, title) {
       },
       (err, res) => {
         if (err) {
-          console.log('Rename failed: ', err);
+          console.log("Rename failed: ", err);
           reject(err);
         }
         console.log(`Success! ${title} sheet renamed.`);
@@ -120,7 +120,7 @@ exports.clearSheet = async function(title) {
       },
       (err, res) => {
         if (err) {
-          console.log('Clear failed: ', err);
+          console.log("Clear failed: ", err);
           reject(err);
         }
         console.log(`Success! ${title} cleared.`);
@@ -145,7 +145,7 @@ exports.updateSheet = async function(updates) {
       },
       (err, res) => {
         if (err) {
-          console.log('Update failed: ', err);
+          console.log("Update failed: ", err);
           reject(err);
         }
         console.log(`Success! ${res.data.totalUpdatedCells} cells updated.`);
@@ -176,7 +176,7 @@ exports.formatHeaderRow = async function(sheetId) {
                       green: 0.3,
                       blue: 0.3
                     },
-                    horizontalAlignment: 'CENTER',
+                    horizontalAlignment: "CENTER",
                     textFormat: {
                       foregroundColor: {
                         red: 1.0,
@@ -188,7 +188,7 @@ exports.formatHeaderRow = async function(sheetId) {
                     }
                   }
                 },
-                fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)'
+                fields: "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)"
               }
             },
             {
@@ -199,7 +199,7 @@ exports.formatHeaderRow = async function(sheetId) {
                     frozenRowCount: 1
                   }
                 },
-                fields: 'gridProperties.frozenRowCount'
+                fields: "gridProperties.frozenRowCount"
               }
             }
           ]
@@ -207,7 +207,7 @@ exports.formatHeaderRow = async function(sheetId) {
       },
       (err, res) => {
         if (err) {
-          console.log('Format failed: ', err);
+          console.log("Format failed: ", err);
           reject(err);
         }
         console.log(`Success! ${sheetId} sheet formatted.`);
@@ -228,7 +228,7 @@ exports.resizeColumns = async function(sheetId, numColumns) {
               autoResizeDimensions: {
                 dimensions: {
                   sheetId: sheetId,
-                  dimension: 'COLUMNS',
+                  dimension: "COLUMNS",
                   startIndex: 0,
                   endIndex: numColumns
                 }
@@ -239,7 +239,7 @@ exports.resizeColumns = async function(sheetId, numColumns) {
       },
       (err, res) => {
         if (err) {
-          console.log('Resize failed: ', err);
+          console.log("Resize failed: ", err);
           reject(err);
         }
         console.log(`Success! ${sheetId} columns resized.`);

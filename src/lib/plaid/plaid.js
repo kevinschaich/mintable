@@ -1,19 +1,19 @@
-const moment = require('moment');
-const { getConfigEnv, writeConfigProperty } = require('../common');
+const moment = require("moment");
+const { getConfigEnv, writeConfigProperty } = require("../common");
 
 getConfigEnv();
 
-const plaidClient = require('./plaidClient');
+const plaidClient = require("./plaidClient");
 
 // start from beginning of last month...
 const startDate = moment()
-  .subtract(1, 'month')
-  .startOf('month')
-  .format('YYYY-MM-DD');
+  .subtract(1, "month")
+  .startOf("month")
+  .format("YYYY-MM-DD");
 // ends now.
 // this ensures we always fully update last month,
 // and keep current month up-to-date
-const endDate = moment().format('YYYY-MM-DD');
+const endDate = moment().format("YYYY-MM-DD");
 
 const transactionFetchOptions = [
   startDate,
@@ -28,13 +28,13 @@ const getPlaidAccountTokens = () => {
   return Object.keys(process.env)
     .filter(key => key.startsWith(`PLAID_TOKEN`))
     .map(key => ({
-      account: key.replace(/^PLAID_TOKEN_/, ''),
+      account: key.replace(/^PLAID_TOKEN_/, ""),
       token: process.env[key]
     }));
 };
 
 const fetchTransactions = async options => {
-  console.log('Fetching Transactions...');
+  console.log("Fetching Transactions...");
 
   const rawTransactions = await Promise.all(
     getPlaidAccountTokens().map(({ account, token }) => {
@@ -69,7 +69,7 @@ const fetchTransactions = async options => {
   }, []);
 
   if (transactions.length >= 500) {
-    console.error('Error: More than 500 transactions for this month!');
+    console.error("Error: More than 500 transactions for this month!");
     process.exit(1);
   }
 
@@ -77,7 +77,7 @@ const fetchTransactions = async options => {
 };
 
 const fetchBalances = async options => {
-  console.log('Fetching Account Balances...');
+  console.log("Fetching Account Balances...");
   return await Promise.all(
     getPlaidAccountTokens().map(({ account, token }) => {
       return plaidClient

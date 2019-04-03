@@ -1,26 +1,29 @@
-import '../styles/style.scss';
-import PlaidLink from 'react-plaid-link';
-import React from 'react';
-import Account from './account';
+import '../styles/style.scss'
+import PlaidLink from 'react-plaid-link'
+import React from 'react'
+import Account from './account'
 
 class Accounts extends React.Component {
   constructor(props) {
-    super(props);
-    this.state = { newAccountNickname: '', accounts: [], publicToken: null };
+    super(props)
+    this.state = { newAccountNickname: '', accounts: [], publicToken: null }
   }
 
   componentDidMount = async () => {
-    const accounts = await fetch('http://localhost:3000/balances');
-    this.setState({ accounts: await accounts.json() });
-  };
+    const accounts = await fetch('http://localhost:3000/balances')
+    this.setState({ accounts: await accounts.json() })
+  }
 
   handleOnNewAccountNameChange = e => {
-    this.setState({ newAccountNickname: e.currentTarget.value });
-  };
+    this.setState({ newAccountNickname: e.currentTarget.value })
+  }
 
   handleOnSuccess = (public_token, metadata) => {
-    const body = { public_token, accountNickname: this.state.newAccountNickname };
-    console.log(`Public Token:`, body);
+    const body = {
+      public_token,
+      accountNickname: this.state.newAccountNickname
+    }
+    console.log(`Public Token:`, body)
     fetch('http://localhost:3000/token', {
       method: 'POST',
       body: JSON.stringify(body),
@@ -30,18 +33,18 @@ class Accounts extends React.Component {
     })
       .then(resp => {
         if (resp.status === 201) {
-          console.log('Saved access token.');
+          console.log('Saved access token.')
         }
       })
-      .catch(e => console.log(e));
-  };
+      .catch(e => console.log(e))
+  }
 
   handleOnExit = () => {
-    console.log('Authentication cancelled: Could not save access token.');
-  };
+    console.log('Authentication cancelled: Could not save access token.')
+  }
 
   render = () => {
-    const accounts = this.state.accounts.map(account => <Account details={account} key={account.nickname} />);
+    const accounts = this.state.accounts.map(account => <Account details={account} key={account.nickname} />)
     // console.log(window.linkHandler);
 
     return (
@@ -67,14 +70,17 @@ class Accounts extends React.Component {
             publicKey={this.props.config.PLAID_PUBLIC_KEY}
             onExit={this.handleOnExit}
             onSuccess={this.handleOnSuccess}
-            style={{ background: '#137cbd', display: this.state.newAccountNickname ? 'flex' : 'none' }}
+            style={{
+              background: '#137cbd',
+              display: this.state.newAccountNickname ? 'flex' : 'none'
+            }}
           >
             Add New Account
           </PlaidLink>
         </div>
       </div>
-    );
-  };
+    )
+  }
 }
 
-export default Accounts;
+export default Accounts
