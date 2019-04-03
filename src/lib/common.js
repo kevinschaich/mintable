@@ -15,7 +15,8 @@ const DEFAULT_CONFIG = {
   REFERENCE_COLUMNS: ['notes', 'work', 'joint'],
   SPREADSHEET_PROVIDER: 'sheets',
   TRANSACTION_PROVIDER: 'plaid',
-  CATEGORY_OVERRIDES: []
+  CATEGORY_OVERRIDES: [],
+  SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback'
 };
 
 const getConfigEnv = () => {
@@ -63,9 +64,49 @@ const maybeWriteDefaultConfig = () => {
   }
 };
 
+const checkEnv = props => {
+  return _.every(_.pick(process.env, props), prop => {
+    return prop && prop.length > 0;
+  });
+};
+
+const accountsSetupCompleted = () => {
+  if (!process.env) {
+    return false;
+  }
+
+  switch (process.env.TRANSACTION_PROVIDER) {
+    case 'plaid':
+      return checkEnv('PLAID_CLIENT_ID', 'PLAID_PUBLIC_KEY', 'PLAID_SECRET');
+    default:
+      return false;
+  }
+};
+
+const sheetsSetupCompleted = () => {
+  if (!process.env) {
+    return false;
+  }
+
+  switch (process.env.SPREADSHEET_PROVIDER) {
+    case 'sheets':
+      return checkEnv(
+        'SHEETS_SHEET_ID',
+        'SHEETS_CLIENT_ID',
+        'SHEETS_CLIENT_SECRET',
+        'SHEETS_REDIRECT_URI',
+        'SHEETS_ACCESS_TOKEN'
+      );
+    default:
+      return false;
+  }
+};
+
 module.exports = {
   getConfigEnv,
   writeConfigProperty,
   writeConfig,
-  maybeWriteDefaultConfig
+  maybeWriteDefaultConfig,
+  accountsSetupCompleted,
+  sheetsSetupCompleted
 };

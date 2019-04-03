@@ -2,18 +2,25 @@ const express = require('express');
 const next = require('next');
 const bodyParser = require('body-parser');
 const opn = require('opn');
-const { getConfigEnv, writeConfigProperty, maybeWriteDefaultConfig } = require('./lib/common');
+const {
+  getConfigEnv,
+  writeConfigProperty,
+  maybeWriteDefaultConfig,
+  accountsSetupCompleted,
+  sheetsSetupCompleted
+} = require('./lib/common');
+const _ = require('lodash');
 
 try {
   const port = parseInt(process.env.PORT, 10) || 3000;
   const dev = process.env.NODE_ENV !== 'production';
   const app = next({ dev });
   const handle = app.getRequestHandler();
-  
-  maybeWriteDefaultConfig();
-  getConfigEnv();
-  
+
   app.prepare().then(() => {
+    maybeWriteDefaultConfig();
+    getConfigEnv();
+
     const server = express();
     server.use(bodyParser.urlencoded({ extended: false }));
     server.use(bodyParser.json());
@@ -25,7 +32,11 @@ try {
       if (readResult === false) {
         res.status(400).send('Error: Could not read config file.');
       } else {
-        res.json(readResult);
+        res.json({
+          ...readResult,
+          accountsSetupCompleted: accountsSetupCompleted(),
+          sheetsSetupCompleted: sheetsSetupCompleted()
+        });
       }
     });
 
@@ -45,7 +56,7 @@ try {
         switch (process.env.TRANSACTION_PROVIDER) {
           case 'plaid':
             const plaid = require('./lib/plaid/plaid');
-            balances = await plaid.fetchBalances({quiet: true});
+            balances = await plaid.fetchBalances({ quiet: true });
             break;
           default:
             break;
@@ -100,6 +111,11 @@ try {
           res.redirect('http://localhost:3000/sheets');
         }
       });
+    });
+
+    server.get('/', (req, res) => {
+      const page = accountsSetupCompleted() && sheetsSetupCompleted() ? 'settings' : 'welcome';
+      return res.redirect(`http://localhost:3000/${page}`);
     });
 
     server.get('*', (req, res) => {
