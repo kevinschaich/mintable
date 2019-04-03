@@ -64,10 +64,9 @@ const maybeWriteDefaultConfig = () => {
   }
 };
 
-const checkEnv = props => {
-  return _.every(_.pick(process.env, props), prop => {
-    return prop && prop.length > 0;
-  });
+const checkEnv = propertyIds => {
+  const values = _.values(_.pick(process.env, propertyIds));
+  return values.length === propertyIds.length && _.every(values, v => v.length);
 };
 
 const accountsSetupCompleted = () => {
@@ -77,7 +76,7 @@ const accountsSetupCompleted = () => {
 
   switch (process.env.TRANSACTION_PROVIDER) {
     case 'plaid':
-      return checkEnv('PLAID_CLIENT_ID', 'PLAID_PUBLIC_KEY', 'PLAID_SECRET');
+      return checkEnv(['PLAID_CLIENT_ID', 'PLAID_PUBLIC_KEY', 'PLAID_SECRET']);
     default:
       return false;
   }
@@ -90,13 +89,13 @@ const sheetsSetupCompleted = () => {
 
   switch (process.env.SPREADSHEET_PROVIDER) {
     case 'sheets':
-      return checkEnv(
+      return checkEnv([
         'SHEETS_SHEET_ID',
         'SHEETS_CLIENT_ID',
         'SHEETS_CLIENT_SECRET',
         'SHEETS_REDIRECT_URI',
         'SHEETS_ACCESS_TOKEN'
-      );
+      ]);
     default:
       return false;
   }
