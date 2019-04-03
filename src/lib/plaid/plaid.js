@@ -3,11 +3,7 @@ const { getConfigEnv } = require('../common');
 
 getConfigEnv();
 
-const plaidClient = require('./plaidClient')(
-  process.env.PLAID_CLIENT_ID,
-  process.env.PLAID_SECRET,
-  process.env.PLAID_PUBLIC_KEY
-);
+const plaidClient = require('./plaidClient');
 
 // start from beginning of last month...
 const startDate = moment()

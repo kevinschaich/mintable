@@ -35,7 +35,7 @@ try {
     });
 
     server.put('/config', async (req, res) => {
-      const writeStatus = writeConfigProperty(req.body.propertyId, value);
+      const writeStatus = writeConfigProperty(req.body.propertyId, req.body.value);
       if (writeStatus === false) {
         res.status(400).send('Error: Could not write config file.');
       } else {
@@ -147,7 +147,7 @@ try {
 
     // Retrieve an Item's accounts
     // https://plaid.com/docs/#accounts
-    server.get('/accounts', function(request, response, next) {
+    server.get('/item-accounts', function(request, response, next) {
       plaidClient.getAccounts(ACCESS_TOKEN, function(error, accountsResponse) {
         if (error != null) {
           prettyPrintResponse(error);

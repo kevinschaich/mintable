@@ -1,8 +1,7 @@
 const fs = require('fs');
-
 const CONFIG_FILE = '../mintable.config.json';
 
-exports.getConfigEnv = () => {
+const getConfigEnv = () => {
   try {
     const config = fs.readFileSync(CONFIG_FILE);
     process.env = {
@@ -17,9 +16,9 @@ exports.getConfigEnv = () => {
   }
 };
 
-exports.writeConfigProperty = (propertyId, value) => {
+const writeConfigProperty = (propertyId, value) => {
   const newConfig = {
-    ...config,
+    ...getConfigEnv(),
     [propertyId]: value
   };
 
@@ -33,7 +32,7 @@ exports.writeConfigProperty = (propertyId, value) => {
   }
 };
 
-exports.parseEnvOrDefault = (key, defaultValue) => {
+const parseEnvOrDefault = (key, defaultValue) => {
   const value = process.env[key];
   if (value) {
     const parsed = JSON.parse(value);
@@ -42,4 +41,10 @@ exports.parseEnvOrDefault = (key, defaultValue) => {
     }
   }
   return defaultValue;
+};
+
+module.exports = {
+  getConfigEnv,
+  writeConfigProperty,
+  parseEnvOrDefault
 };

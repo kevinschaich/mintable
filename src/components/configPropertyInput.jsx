@@ -1,6 +1,11 @@
+import Check from './check';
+
 const ConfigPropertyInput = props => (
   <div className='config-property-input'>
-    <code>{props.displayName}</code>
+    <code>
+      <Check opacity={props.modified ? 1 : 0}/>
+      {props.displayName}
+    </code>
     <input
       type='text'
       id={props.propertyId}
