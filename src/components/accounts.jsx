@@ -6,7 +6,7 @@ import Account from './account'
 class Accounts extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { newAccountNickname: '', accounts: [], publicToken: null }
+    this.state = { newAccountNickname: '', accounts: [] }
   }
 
   componentDidMount = async () => {
@@ -18,9 +18,12 @@ class Accounts extends React.Component {
     this.setState({ newAccountNickname: e.currentTarget.value })
   }
 
-  handleOnSuccess = (public_token, metadata) => {
+  handleOnSuccess = (publicToken, metadata) => {
+    if (!publicToken) {
+      return
+    }
     const body = {
-      public_token,
+      publicToken,
       accountNickname: this.state.newAccountNickname
     }
     console.log(`Public Token:`, body)
@@ -36,23 +39,40 @@ class Accounts extends React.Component {
           console.log('Saved access token.')
         }
       })
-      .catch(e => console.log(e))
+      .catch(error => console.log(error))
+  }
+
+  handleOnUpdateAccountResponse = data => {
+    window.Plaid.create({
+      clientName: 'Mintable',
+      env: 'development',
+      product: ['auth', 'transactions'],
+      key: this.props.config.PLAID_PUBLIC_KEY,
+      onExit: this.handleOnExit,
+      onSuccess: this.handleOnSuccess,
+      token: data.publicToken[0]
+    }).open()
   }
 
   handleOnExit = () => {
-    console.log('Authentication cancelled: Could not save access token.')
+    console.log('Plaid authentication cancelled.')
   }
 
   render = () => {
-    const accounts = this.state.accounts.map(account => <Account details={account} key={account.nickname} />)
-    // console.log(window.linkHandler);
+    const accounts = this.state.accounts.map(account => (
+      <Account
+        details={account}
+        key={account.nickname}
+        handleOnUpdateAccountResponse={this.handleOnUpdateAccountResponse}
+      />
+    ))
 
     return (
       <div className='accounts'>
         <h1>Accounts</h1>
         <span>
-          <strong>Note</strong>: In the Plaid Development environment, issuing an /item/remove request will not
-          decrement your live credential count.
+          <strong>Note</strong>: In the Plaid Development environment, removing an item will not decrement your live
+          credential count.
         </span>
         <div className='accounts-list'>{accounts.length ? accounts : <span>Loading...</span>}</div>
         <span>Enter a nickname to add a new account:</span>

@@ -1,139 +1,157 @@
-const express = require("express");
-const next = require("next");
-const bodyParser = require("body-parser");
-const opn = require("opn");
+const express = require('express')
+const next = require('next')
+const bodyParser = require('body-parser')
+const opn = require('opn')
 const {
   getConfigEnv,
   writeConfigProperty,
   maybeWriteDefaultConfig,
   accountsSetupCompleted,
   sheetsSetupCompleted
-} = require("./lib/common");
-const _ = require("lodash");
+} = require('./lib/common')
+const _ = require('lodash')
 
 try {
-  const port = parseInt(process.env.PORT, 10) || 3000;
-  const dev = process.env.NODE_ENV !== "production";
-  const app = next({ dev });
-  const handle = app.getRequestHandler();
+  const port = parseInt(process.env.PORT, 10) || 3000
+  const dev = process.env.NODE_ENV !== 'production'
+  const app = next({ dev })
+  const handle = app.getRequestHandler()
 
   app.prepare().then(() => {
-    maybeWriteDefaultConfig();
-    getConfigEnv();
+    maybeWriteDefaultConfig()
+    getConfigEnv()
 
-    const server = express();
-    server.use(bodyParser.urlencoded({ extended: false }));
-    server.use(bodyParser.json());
+    const server = express()
+    server.use(bodyParser.urlencoded({ extended: false }))
+    server.use(bodyParser.json())
 
-    const oAuth2Client = require("./lib/google/googleClient");
+    const oAuth2Client = require('./lib/google/googleClient')
 
-    server.get("/config", (req, res) => {
-      const readResult = getConfigEnv();
+    server.get('/config', (req, res) => {
+      const readResult = getConfigEnv()
       if (readResult === false) {
-        res.status(400).send("Error: Could not read config file.");
+        res.status(400).send('Error: Could not read config file.')
       } else {
         res.json({
           ...readResult,
           accountsSetupCompleted: accountsSetupCompleted(),
           sheetsSetupCompleted: sheetsSetupCompleted()
-        });
+        })
       }
-    });
+    })
 
-    server.put("/config", async (req, res) => {
-      const writeStatus = writeConfigProperty(req.body.id, req.body.value);
+    server.put('/config', async (req, res) => {
+      const writeStatus = writeConfigProperty(req.body.id, req.body.value)
       if (writeStatus === false) {
-        res.status(400).send("Error: Could not write config file.");
+        res.status(400).send('Error: Could not write config file.')
       } else {
-        res.status(201).send("Successfully wrote config file.");
+        res.status(201).send('Successfully wrote config file.')
       }
-    });
+    })
 
-    server.get("/balances", async (req, res, next) => {
+    server.get('/balances', async (req, res, next) => {
       try {
-        let balances;
+        let balances
 
         switch (process.env.TRANSACTION_PROVIDER) {
-          case "plaid":
-            const plaid = require("./lib/plaid/plaid");
-            balances = await plaid.fetchBalances({ quiet: true });
-            break;
+          case 'plaid':
+            const plaid = require('./lib/plaid/plaid')
+            balances = await plaid.fetchBalances({ quiet: true })
+            break
           default:
-            break;
+            break
         }
 
-        res.json(balances || {});
-      } catch (e) {
-        console.log(e);
+        res.json(balances || {})
+      } catch (error) {
+        console.log(error)
+        res.status(400).send('Error: Could not get balances.' + JSON.stringify(error))
       }
-    });
+    })
 
-    server.post("/token", async (req, res, next) => {
+    server.post('/token', async (req, res, next) => {
       try {
-        let error;
+        let error
 
         switch (process.env.TRANSACTION_PROVIDER) {
-          case "plaid":
-            const plaid = require("./lib/plaid/plaid");
-            error = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname, { quiet: true });
-            break;
+          case 'plaid':
+            const plaid = require('./lib/plaid/plaid')
+            error = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname, { quiet: true })
+            break
           default:
-            break;
+            break
         }
 
         if (error != false) {
-          res.status(400).send("Error: Could not get access token." + error.message);
+          res.status(400).send('Error: Could not get access token.' + JSON.stringify(error))
         } else {
-          res.status(201).send("Saved access token.");
+          res.status(201).send('Saved access token.')
         }
-      } catch (e) {
-        console.log(e);
-        res.status(400).send("Error: Could not get access token." + error.message);
+      } catch (error) {
+        console.log(error)
+        res.status(400).send('Error: Could not get access token.' + JSON.stringify(error))
       }
-    });
+    })
 
-    server.get("/google-sheets-url", (req, res) => {
+    server.post('/update', async (req, res, next) => {
+      try {
+        switch (process.env.TRANSACTION_PROVIDER) {
+          case 'plaid':
+            const plaid = require('./lib/plaid/plaid')
+            const nickname = req.body.accountNickname
+            const accessToken = process.env[`PLAID_TOKEN_${nickname}`]
+            const publicToken = await plaid.createPublicToken(accessToken, nickname, { quiet: true })
+            // return res.redirect(`http://localhost:3000/settings?token=${publicToken[0]}`)
+            return res.json({publicToken});
+          default:
+            break
+        }
+      } catch (error) {
+        console.log(error)
+        res.status(400).send('Error: Could not get access token.' + JSON.stringify(error))
+      }
+    })
+
+    server.get('/google-sheets-url', (req, res) => {
       res.json({
         url: oAuth2Client.generateAuthUrl({
-          access_type: "offline",
-          scope: ["https://www.googleapis.com/auth/spreadsheets"]
+          access_type: 'offline',
+          scope: ['https://www.googleapis.com/auth/spreadsheets']
         })
-      });
-    });
+      })
+    })
 
-    server.get("/google-sheets-oauth2callback", (req, res) => {
-      const code = req.query.code;
-      oAuth2Client.getToken(code, (err, token) => {
-        if (err) {
-          const message = "Error while trying to retrieve access token" + err.message;
-          console.log(message);
-          res.status(400).send(message);
+    server.get('/google-sheets-oauth2callback', (req, res) => {
+      const code = req.query.code
+      oAuth2Client.getToken(code, (error, token) => {
+        if (error) {
+          res.status(400).send('Error while trying to retrieve access token' + JSON.stringify(error))
         } else {
           Object.keys(token).forEach(key => {
-            writeConfigProperty(`SHEETS_${key.toUpperCase()}`, token[key]);
-          });
-          console.log(`Token stored in .env.`);
-          res.redirect("http://localhost:3000/sheets");
+            writeConfigProperty(`SHEETS_${key.toUpperCase()}`, token[key])
+          })
+          console.log(`Token stored in .env.`)
+          return res.redirect('http://localhost:3000/sheets')
         }
-      });
-    });
+      })
+    })
 
-    server.get("/", (req, res) => {
-      const page = accountsSetupCompleted() && sheetsSetupCompleted() ? "settings" : "welcome";
-      return res.redirect(`http://localhost:3000/${page}`);
-    });
+    server.get('/', (req, res) => {
+      const page = accountsSetupCompleted() && sheetsSetupCompleted() ? 'settings' : 'welcome'
+      return res.redirect(`http://localhost:3000/${page}`)
+    })
 
-    server.get("*", (req, res) => {
-      return handle(req, res);
-    });
+    server.get('*', (req, res) => {
+      return handle(req, res)
+    })
 
-    server.listen(port, err => {
-      if (err) throw err;
-      console.log(`> Ready on http://localhost:${port}`);
+    server.listen(port, error => {
+      if (error) throw error
+      console.log(`> Ready on http://localhost:${port}`)
 
-      opn(`http://localhost:${port}`);
-    });
-  });
-} catch (e) {
-  console.log(e);
+      opn(`http://localhost:${port}`)
+    })
+  })
+} catch (error) {
+  console.log(error)
 }

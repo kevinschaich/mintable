@@ -33,7 +33,6 @@ const config = _.pick(process.env, configProperties)
 try {
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2))
   console.log('Successfully wrote config.')
-} catch (e) {
-  const message = 'Error: Could not write config file. ' + e.message
-  console.log(message)
+} catch (error) {
+  console.log('Error: Could not write config file.' + JSON.stringify(error))
 }

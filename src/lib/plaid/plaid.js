@@ -100,9 +100,7 @@ const fetchBalances = async options => {
   );
 };
 
-// Exchange token flow - exchange a Link public_token for
-// an API access_token
-// https://plaid.com/docs/#exchange-token-flow
+// Exchange token flow - exchange a Link public_token for an API access_token
 const saveAccessToken = async (public_token, accountNickname, options) => {
   console.log(`Saving access token...`);
   return await Promise.all([
@@ -123,9 +121,30 @@ const saveAccessToken = async (public_token, accountNickname, options) => {
   ]);
 };
 
+// Exchange an expired API access_token for a new Link public_token
+const createPublicToken = async (access_token, accountNickname, options) => {
+  console.log(`Creating public token...`);
+  return await Promise.all([
+    plaidClient
+      .createPublicToken(access_token)
+      .then(tokenResponse => {
+        return tokenResponse.public_token;
+      })
+      .catch(error => {
+        console.log(`Error creating public token for account ${accountNickname}.`, JSON.stringify(error));
+        if (options && options.quiet && options.quiet === true) {
+          return false;
+        } else {
+          process.exit(1);
+        }
+      })
+  ]);
+};
+
 module.exports = {
   getPlaidAccountTokens,
   fetchBalances,
   fetchTransactions,
-  saveAccessToken
+  saveAccessToken,
+  createPublicToken
 };
