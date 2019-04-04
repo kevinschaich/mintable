@@ -7,7 +7,7 @@
   "scripts": {
     "format": "prettier --write ./src/**/*.{css,scss,less,js,jsx,ts,tsx,json} --ignore-path ./.gitignore",
     "mintable": "node ./src/index.js",
-    "settings": "cd src && node server.js",
+    "setup": "cd src && node setup.js",
     "migrate": "node ./src/scripts/migrate.js",
     "test-plaid": "node ./src/scripts/testPlaid.js",
     "test-sheets": "node ./src/scripts/testSheets.js",

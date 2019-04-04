@@ -16,8 +16,7 @@ const DEFAULT_CONFIG = {
   SPREADSHEET_PROVIDER: 'sheets',
   TRANSACTION_PROVIDER: 'plaid',
   CATEGORY_OVERRIDES: [],
-  SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback',
-  FETCH_ACCOUNTS: 'true'
+  SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback'
 }
 
 const getConfigEnv = () => {
