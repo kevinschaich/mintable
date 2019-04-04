@@ -32,7 +32,7 @@ to populate your spreadsheet!
 
 ![Mintable](./src/static/mintable.png)
 
-Mintable simplifies keeping track of your finances, for free, without ads, and without tracking your information. Here's how it works:
+Mintable simplifies managing your finances, for free, without ads, and without tracking your information. Here's how it works:
 
 1. You connect your accounts and a spreadsheet to Mintable.
 1. Mintable integrates with financial institutions to automatically populate transactions in your spreadsheet.
@@ -46,14 +46,14 @@ Mintable simplifies keeping track of your finances, for free, without ads, and w
 
 ![Setup Wizard](./src/static/setup.png)
 
-You can see a full list of options in the [Config Docs](./docs/CONFIG.md).
+You can see a full list of options in the **[Config Docs](./docs/CONFIG.md)**.
 
 ## FAQs
 
 **How is this different from [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)?**
 
-* [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint) is a set of scripts to integrate Plaid and Google Sheets. It makes no assumptions about what you want your spreadsheet to look like, and you define your own logic to map transactions to spreadsheet updates.
-* [Mintable](#) is and end-to-end system that works out of the box. It comes with a setup wizard, a web-based configuration server, pluggable providers (you're not limited to just Plaid & Google Sheets), and a spreadsheet template.
+* **[build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)** is a set of scripts which solely facilitates the integration between Plaid and Google Sheets. It makes no assumptions about what you want your spreadsheet to look like, and you have to define your own logic to map transactions to spreadsheet updates.
+* **[Mintable](#)** is and end-to-end system that works out of the box. It comes with a setup wizard, a web-based configuration server, pluggable providers (you're not limited to just Plaid & Google Sheets), and a spreadsheet template.
 
 **Do I have to give my data to Plaid and Google? Are there any completely self-hosted alternatives I can use?**
 
