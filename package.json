@@ -6,9 +6,9 @@
   "license": "MIT",
   "scripts": {
     "format": "yarn prettier",
-    "migrate": "cd src && node ./scripts/migrate.js",
+    "migrate": "node ./src/scripts/migrate.js",
     "mintable": "node ./src/index.js",
-    "setup": "cd src && node setup.js",
+    "setup": "node ./src/setup.js",
     "prettier": "prettier --write ./src/**/*.{css,scss,less,js,jsx,ts,tsx,json} --ignore-path ./.gitignore"
   },
   "dependencies": {

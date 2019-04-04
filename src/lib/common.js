@@ -1,7 +1,7 @@
 const fs = require('fs')
 const _ = require('lodash')
 
-const CONFIG_FILE = '../mintable.config.json'
+const CONFIG_FILE = 'mintable.config.json'
 const DEFAULT_CONFIG = {
   TRANSACTION_COLUMNS: [
     'date',
