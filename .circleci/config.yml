@@ -22,7 +22,7 @@ jobs:
           paths:
             - node_modules
 
-      - run: node index.js
+      - run: node mintable.js
 
 workflows:
   version: 2

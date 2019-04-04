@@ -1,6 +1,9 @@
 .DS_Store
 node_modules
 .env
+mintable.config.json
 yarn.lock
 package-lock.json
 yarn-error.log
+.next
+*/.next

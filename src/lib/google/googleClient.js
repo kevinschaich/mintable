@@ -1,4 +1,7 @@
-const { google } = require('googleapis');
+const { google } = require("googleapis");
+const { getConfigEnv } = require("../common");
+
+getConfigEnv();
 
 module.exports = new google.auth.OAuth2(
   process.env.SHEETS_CLIENT_ID,
