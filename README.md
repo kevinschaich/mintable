@@ -1,4 +1,11 @@
-<h4 align="center"><img width="200" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Roll-your-own Mint clone for managing personal finances using (by default) the Google Sheets and Plaid APIs.</h4><br></h4>
+<h4 align="center"><img width="200" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Roll your own ad-free Mint clone for managing personal finances using publicly available APIs.</h4><br></h4>
+
+![](https://img.shields.io/github/release/kevinschaich/mintable.svg)
+![](https://img.shields.io/github/license/kevinschaich/mintable.svg)
+![](https://img.shields.io/github/contributors/kevinschaich/mintable.svg)
+![](https://img.shields.io/github/last-commit/kevinschaich/mintable.svg)
+![](https://img.shields.io/github/issues/kevinschaich/mintable.svg)
+![](https://img.shields.io/github/issues-pr/kevinschaich/mintable.svg)
 
 ## Quickstart
 
@@ -15,11 +22,19 @@ yarn setup
 
 ![Mintable](./src/static/mintable.png)
 
-Mintable allows you to automatically populate transaction data from your financial institutions into a spreadsheet for analysis and visualization. Here's how it works:
+Mintable simplifies keeping track of your finances, for free, without ads, and without tracking your information. Here's how it works:
 
-1. You connect your accounts (default provider: Plaid) and a spreadsheet provider (default provider: Google Sheets) to Mintable.
-1. Mintable automates the connection to financial institutions and populates new transactions as they occur.
-1. Each month, Mintable will use the current month's sheet as the "base" for the next month, keeping all the formatting and calculations on top of your data intact.
+1. You connect your accounts and a spreadsheet to Mintable.
+1. Mintable integrates with financial institutions to automatically populate transactions in your spreadsheet.
+1. You can add whatever formulas, charts, or calculations you want (just like a normal spreadsheet). We also have templates to get you started.
+
+## Features
+
+* Locally hosted, open-source, 100% free, ad-free, no personal data tracking, no data stored by Mintable on central servers
+* Integrates with your financial institutions for fully-automated spreadsheet updates
+* Web based setup wizard and configuration framework:
+
+![Setup Wizard](./src/static/setup.png)
 
 You can see a full list of options in the [Config Docs](./docs/CONFIG.md).
 
@@ -27,12 +42,12 @@ You can see a full list of options in the [Config Docs](./docs/CONFIG.md).
 
 **How is this different from [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)?**
 
-* [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint) is an awesome set of scripts that makes the integration between Plaid and Google Sheets painless. It makes no assumptions about what you want your spreadsheet to look like or how updates should be handled each month, and allows you to define your own logic in [`transform.js`](https://github.com/yyx990803/build-your-own-mint/blob/master/lib/transform.js) to map transactional data to cell updates.
-* [Mintable](#) enforces a specific spreadsheet layout (transactions flow in on the left and overwrite certain columns, while you are free to do analysis on the right). It creates a new sheet for every month and uses the previous month's sheet as a template, giving you a working end-to-end analytics toolkit out of the box if you use the [Template Sheet](#updating-your-template-sheet) above. [Mintable](#) relies on some of the same scripts used in [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint) and you can examine the additional logic yourself in [`mintable.js`](https://github.com/kevinschaich/mintable/blob/master/mintable.js) and [`lib/sheets.js`](https://github.com/kevinschaich/mintable/blob/master/lib/sheets.js) to determine if it fits your needs. The end goal would be to accept contributions for a *variety* of other Template Sheets above which follow the same format – making them completely plug-and-play.
+* [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint) is a set of scripts to integrate Plaid and Google Sheets. It makes no assumptions about what you want your spreadsheet to look like, and you define your own logic to map transactions to spreadsheet updates.
+* [Mintable](#) is and end-to-end system that works out of the box. It comes with a setup wizard, a web-based configuration server, pluggable providers (you're not limited to just Plaid & Google Sheets), and a spreadsheet template.
 
 **Do I have to give my data to Plaid and Google? Are there any completely self-hosted alternatives I can use?**
 
-It's pluggable! Plaid & Sheets are working right now – but contributions are welcome for other providers!
+It's pluggable! Plaid & Sheets are working right now – contributions are welcome for other providers!
 
 ## Credits
 
