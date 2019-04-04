@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const { writeConfig, maybeWriteDefaultConfig } = require('../lib/common')
+require('dotenv').config()
 
 const configProperties = [
   'PLAID_CLIENT_ID',
