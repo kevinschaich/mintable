@@ -3,6 +3,8 @@ const _ = require('lodash')
 const path = require('path')
 
 const CONFIG_FILE = path.join(__dirname, '../..', 'mintable.config.json')
+const FALLBACK_ENV_FILE = path.join(__dirname, '../..', '.env')
+
 console.log(`Using config ${CONFIG_FILE}...`)
 
 const DEFAULT_CONFIG = {
@@ -24,6 +26,16 @@ const DEFAULT_CONFIG = {
 
 const getConfigEnv = () => {
   try {
+    require('dotenv').config({ path: FALLBACK_ENV_FILE })
+
+    // Fallback for CI
+    if (process.env.MINTABLE_CONFIG) {
+      process.env = {
+        ...JSON.parse(process.env.MINTABLE_CONFIG)
+      }
+      return JSON.parse(process.env.MINTABLE_CONFIG)
+    }
+
     const config = fs.readFileSync(CONFIG_FILE)
     process.env = {
       ...process.env,
