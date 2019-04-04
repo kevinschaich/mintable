@@ -45,11 +45,11 @@ CATEGORY_OVERRIDES=[{ "pattern": ".*(autopay|e.payment).*", "flags": "i", "categ
 
 #### Transaction Provider
 
-`TRANSACTION_PROVIDER` specifies which service to use to fetch transactions. At this time, the only possible value is `"plaid"`, but we plan to add other providers in the future.
+`ACCOUNT_PROVIDER` specifies which service to use to fetch transactions. At this time, the only possible value is `"plaid"`, but we plan to add other providers in the future.
 
 #### Spreadsheet Provider
 
-`SPREADSHEET_PROVIDER` specifies which service to use to automate spreadsheet updates. At this time, the only possible value is `"sheets"`, but we plan to add other providers in the future.
+`SHEET_PROVIDER` specifies which service to use to automate spreadsheet updates. At this time, the only possible value is `"sheets"`, but we plan to add other providers in the future.
 
 #### Automated Updates
 

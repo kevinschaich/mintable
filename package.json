@@ -5,14 +5,11 @@
   "author": "Kevin Schaich",
   "license": "MIT",
   "scripts": {
-    "format": "prettier --write ./src/**/*.{css,scss,less,js,jsx,ts,tsx,json} --ignore-path ./.gitignore",
+    "format": "yarn prettier",
+    "migrate": "cd src && node ./scripts/migrate.js",
     "mintable": "node ./src/index.js",
     "setup": "cd src && node setup.js",
-    "migrate": "node ./src/scripts/migrate.js",
-    "test-plaid": "node ./src/scripts/testPlaid.js",
-    "test-sheets": "node ./src/scripts/testSheets.js",
-    "token-plaid": "node ./src/scripts/tokenPlaid.js",
-    "token-sheets": "node ./src/scripts/tokenSheets.js"
+    "prettier": "prettier --write ./src/**/*.{css,scss,less,js,jsx,ts,tsx,json} --ignore-path ./.gitignore"
   },
   "dependencies": {
     "@zeit/next-sass": "^1.0.1",

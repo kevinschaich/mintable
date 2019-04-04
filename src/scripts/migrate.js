@@ -1,7 +1,5 @@
-const fs = require('fs')
 const _ = require('lodash')
-
-const CONFIG_FILE = __dirname + '/../../mintable.config.json'
+const { writeConfig, maybeWriteDefaultConfig } = require('../lib/common')
 
 const configProperties = [
   'PLAID_CLIENT_ID',
@@ -27,11 +25,13 @@ const configProperties = [
   'REFERENCE_COLUMNS'
 ]
 
-const config = _.pick(process.env, configProperties)
+let config = _.pick(process.env, configProperties)
 
-try {
-  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2))
-  console.log('Successfully wrote config.')
-} catch (error) {
-  console.log('Error: Could not write config file.' + JSON.stringify(error))
+config = {
+  ...config,
+  ACCOUNT_PROVIDER: config.TRANSACTION_PROVIDER,
+  SHEET_PROVIDER: config.SPREADSHEET_PROVIDER
 }
+
+writeConfig(config);
+maybeWriteDefaultConfig();

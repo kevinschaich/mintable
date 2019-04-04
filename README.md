@@ -1,4 +1,4 @@
-<h4 align="center"><img width="200" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Roll-your-own Mint clone for managing personal finances using the Google Sheets and Plaid APIs.</h4><br></h4>
+<h4 align="center"><img width="200" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Roll-your-own Mint clone for managing personal finances using (by default) the Google Sheets and Plaid APIs.</h4><br></h4>
 
 ## Quickstart
 
@@ -17,7 +17,7 @@ yarn setup
 
 Mintable allows you to automatically populate transaction data from your financial institutions into a spreadsheet for analysis and visualization. Here's how it works:
 
-1. You connect your accounts (default: Plaid) and a spreadsheet provider (default: Google Sheets) to Mintable.
+1. You connect your accounts (default provider: Plaid) and a spreadsheet provider (default provider: Google Sheets) to Mintable.
 1. Mintable automates the connection to financial institutions and populates new transactions as they occur.
 1. Each month, Mintable will use the current month's sheet as the "base" for the next month, keeping all the formatting and calculations on top of your data intact.
 

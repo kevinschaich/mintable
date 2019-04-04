@@ -63,7 +63,7 @@ try {
       try {
         let balances
 
-        switch (process.env.TRANSACTION_PROVIDER) {
+        switch (process.env.ACCOUNT_PROVIDER) {
           case 'plaid':
             const plaid = require('./lib/plaid/plaid')
             balances = await plaid.fetchBalances({ quiet: true })
@@ -83,7 +83,7 @@ try {
       try {
         let error
 
-        switch (process.env.TRANSACTION_PROVIDER) {
+        switch (process.env.ACCOUNT_PROVIDER) {
           case 'plaid':
             const plaid = require('./lib/plaid/plaid')
             error = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname, { quiet: true })
@@ -105,7 +105,7 @@ try {
 
     server.post('/update', async (req, res, next) => {
       try {
-        switch (process.env.TRANSACTION_PROVIDER) {
+        switch (process.env.ACCOUNT_PROVIDER) {
           case 'plaid':
             const plaid = require('./lib/plaid/plaid')
             const nickname = req.body.accountNickname

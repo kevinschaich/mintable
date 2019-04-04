@@ -13,8 +13,8 @@ const DEFAULT_CONFIG = {
     'pending'
   ],
   REFERENCE_COLUMNS: ['notes', 'work', 'joint'],
-  SPREADSHEET_PROVIDER: 'sheets',
-  TRANSACTION_PROVIDER: 'plaid',
+  SHEET_PROVIDER: 'sheets',
+  ACCOUNT_PROVIDER: 'plaid',
   CATEGORY_OVERRIDES: [],
   SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback'
 }
@@ -80,7 +80,7 @@ const accountsSetupCompleted = () => {
     return false
   }
 
-  switch (process.env.TRANSACTION_PROVIDER) {
+  switch (process.env.ACCOUNT_PROVIDER) {
     case 'plaid':
       return checkEnv(['PLAID_CLIENT_ID', 'PLAID_PUBLIC_KEY', 'PLAID_SECRET'])
     default:
@@ -93,7 +93,7 @@ const sheetsSetupCompleted = () => {
     return false
   }
 
-  switch (process.env.SPREADSHEET_PROVIDER) {
+  switch (process.env.SHEET_PROVIDER) {
     case 'sheets':
       return checkEnv([
         'SHEETS_SHEET_ID',
