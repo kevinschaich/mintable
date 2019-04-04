@@ -4,6 +4,7 @@
   "main": "mintable.js",
   "author": "Kevin Schaich",
   "license": "MIT",
+  "version": "1.0.0",
   "scripts": {
     "format": "yarn prettier",
     "migrate": "node ./src/scripts/migrate.js",
