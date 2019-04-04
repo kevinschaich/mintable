@@ -19,16 +19,23 @@ const Accounts = props => {
           <h2>Plaid Setup</h2>
           <ol type='1'>
             <li>
-              Sign up for a <a href='https://plaid.com/'>Plaid</a> account.
+              <a target='_blank' href='https://dashboard.plaid.com/signup'>
+                Sign up
+              </a>{' '}
+              for a Plaid account.
             </li>
             <li>
-              <a href='https://plaid.com/pricing/'>Apply</a> for the free, 100-account development plan (takes 1-2
-              days).
+              <a target='_blank' href='https://plaid.com/pricing/'>
+                Apply
+              </a>{' '}
+              for the free, 100-account development plan (takes 1-2 days).
             </li>
             <li>
               Once approved, visit the{' '}
-              <a href='https://dashboard.plaid.com/overview/development'>Development Overview</a> and copy over the
-              following values:
+              <a target='_blank' href='https://dashboard.plaid.com/overview/development'>
+                Development Overview
+              </a>{' '}
+              and copy over the following values:
               <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />
             </li>
             <Link href='/sheets'>

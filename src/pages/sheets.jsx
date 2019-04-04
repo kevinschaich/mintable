@@ -26,8 +26,10 @@ const Sheets = props => {
           <h2>Google Sheets Setup</h2>
           <ol type='1'>
             <li>
-              <a href='https://docs.google.com/spreadsheets/create'>Create a new Google Sheets spreadsheet</a> and copy
-              over the <code>sheet_id</code> from the URL:
+              <a target='_blank' href='https://docs.google.com/spreadsheets/create'>
+                Create a new Google Sheets spreadsheet
+              </a>{' '}
+              and copy over the <code>sheet_id</code> from the URL:
               <br />
               <code>
                 docs.google.com/spreadsheets/d/

@@ -18,6 +18,14 @@ yarn
 yarn setup
 ```
 
+`yarn setup` will launch a web server & open a page in your web browser to walk you through the set-up. After you have your accounts connected, run:
+
+```
+yarn mintable
+```
+
+to populate your spreadsheet!
+
 > **Note**: If you started using Mintable before `v1.0.0`, run `yarn migrate` to migrate to the new web-based configuration framework.
 
 ## Overview

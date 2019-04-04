@@ -13,8 +13,6 @@ const Settings = props => {
     <div className='wrapper'>
       <div className='container'>
         <Accounts config={props.config} />
-        <h1>Update Transactions</h1>
-        <button>Run Mintable</button>
         <h1>Settings</h1>
         <span>Any settings changed below will automatically update.</span>
         <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />

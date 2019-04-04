@@ -6,7 +6,7 @@ import Account from './account'
 class Accounts extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { newAccountNickname: '', accounts: [] }
+    this.state = { newAccountNickname: '', accounts: false }
   }
 
   componentDidMount = async () => {
@@ -18,12 +18,12 @@ class Accounts extends React.Component {
     this.setState({ newAccountNickname: e.currentTarget.value })
   }
 
-  handleOnSuccess = (publicToken, metadata) => {
-    if (!publicToken) {
+  handleOnSuccess = (public_token, metadata) => {
+    if (!public_token) {
       return
     }
     const body = {
-      publicToken,
+      public_token,
       accountNickname: this.state.newAccountNickname
     }
     console.log(`Public Token:`, body)
@@ -50,7 +50,7 @@ class Accounts extends React.Component {
       key: this.props.config.PLAID_PUBLIC_KEY,
       onExit: this.handleOnExit,
       onSuccess: this.handleOnSuccess,
-      token: data.publicToken[0]
+      token: data.public_token[0]
     }).open()
   }
 
@@ -59,13 +59,21 @@ class Accounts extends React.Component {
   }
 
   render = () => {
-    const accounts = this.state.accounts.map(account => (
-      <Account
-        details={account}
-        key={account.nickname}
-        handleOnUpdateAccountResponse={this.handleOnUpdateAccountResponse}
-      />
-    ))
+    let accounts
+
+    if (this.state.accounts === false) {
+      accounts = <span>Loading Accounts...</span>
+    } else if (this.state.accounts && this.state.accounts.length > 0) {
+      accounts = this.state.accounts.map(account => (
+        <Account
+          details={account}
+          key={account.nickname}
+          handleOnUpdateAccountResponse={this.handleOnUpdateAccountResponse}
+        />
+      ))
+    } else {
+      accounts = <span>No accounts set up yet. Type an account nickname below to add one.</span>
+    }
 
     return (
       <div className='accounts'>
@@ -74,7 +82,7 @@ class Accounts extends React.Component {
           <strong>Note</strong>: In the Plaid Development environment, removing an item will not decrement your live
           credential count.
         </span>
-        <div className='accounts-list'>{accounts.length ? accounts : <span>Loading Accounts...</span>}</div>
+        <div className='accounts-list'>{accounts}</div>
         <span>Enter a nickname to add a new account:</span>
         <div className='new-account'>
           <input

@@ -34,8 +34,11 @@ const getPlaidAccountTokens = () => {
 };
 
 const fetchTransactions = async options => {
+  if (!getPlaidAccountTokens()) {
+    return [];
+  }
+  
   console.log("Fetching Transactions...");
-
   const rawTransactions = await Promise.all(
     getPlaidAccountTokens().map(({ account, token }) => {
       return plaidClient
@@ -77,6 +80,10 @@ const fetchTransactions = async options => {
 };
 
 const fetchBalances = async options => {
+  if (!getPlaidAccountTokens()) {
+    return [];
+  }
+
   console.log("Fetching Account Balances...");
   return await Promise.all(
     getPlaidAccountTokens().map(({ account, token }) => {

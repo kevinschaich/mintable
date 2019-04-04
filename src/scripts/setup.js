@@ -26,8 +26,6 @@ try {
     server.use(bodyParser.urlencoded({ extended: false }))
     server.use(bodyParser.json())
 
-    const oAuth2Client = require('../lib/google/googleClient')
-
     server.get('/config', (req, res) => {
       const readResult = getConfigEnv()
       if (readResult === false) {
@@ -109,10 +107,9 @@ try {
           case 'plaid':
             const plaid = require('../lib/plaid/plaid')
             const nickname = req.body.accountNickname
-            const accessToken = process.env[`PLAID_TOKEN_${nickname}`]
-            const publicToken = await plaid.createPublicToken(accessToken, nickname, { quiet: true })
-            // return res.redirect(`http://localhost:3000/settings?token=${publicToken[0]}`)
-            return res.json({ publicToken })
+            const access_token = process.env[`PLAID_TOKEN_${nickname}`]
+            const public_token = await plaid.createPublicToken(access_token, nickname, { quiet: true })
+            return res.json({ public_token })
           default:
             break
         }
@@ -123,6 +120,8 @@ try {
     })
 
     server.get('/google-sheets-url', (req, res) => {
+      const oAuth2Client = require('../lib/google/googleClient')
+
       res.json({
         url: oAuth2Client.generateAuthUrl({
           access_type: 'offline',
@@ -132,6 +131,8 @@ try {
     })
 
     server.get('/google-sheets-oauth2callback', (req, res) => {
+      const oAuth2Client = require('../lib/google/googleClient')
+
       const code = req.query.code
       oAuth2Client.getToken(code, (error, token) => {
         if (error) {

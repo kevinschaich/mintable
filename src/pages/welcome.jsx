@@ -12,7 +12,8 @@ const Welcome = props => {
         <h1>Welcome to Mintable</h1>
         <h3 style={{ fontWeight: 300, fontSize: '30px', textAlign: 'center', paddingBottom: '40px' }}>
           Mintable automates transactions from your financial institutions into a spreadsheet for analysis.
-          <br/><br/>
+          <br />
+          <br />
           We'll walk you through everything you need to get set up.
         </h3>
         <Link href='/accounts'>
