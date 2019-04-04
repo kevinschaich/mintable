@@ -5,6 +5,7 @@ const opn = require('opn')
 const {
   getConfigEnv,
   writeConfigProperty,
+  deleteConfigProperty,
   maybeWriteDefaultConfig,
   accountsSetupCompleted,
   sheetsSetupCompleted
@@ -42,6 +43,15 @@ try {
 
     server.put('/config', async (req, res) => {
       const writeStatus = writeConfigProperty(req.body.id, req.body.value)
+      if (writeStatus === false) {
+        res.status(400).send('Error: Could not write config file.')
+      } else {
+        res.status(201).send('Successfully wrote config file.')
+      }
+    })
+
+    server.delete('/config', async (req, res) => {
+      const writeStatus = deleteConfigProperty(req.body.id)
       if (writeStatus === false) {
         res.status(400).send('Error: Could not write config file.')
       } else {

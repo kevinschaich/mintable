@@ -74,7 +74,7 @@ class Accounts extends React.Component {
           <strong>Note</strong>: In the Plaid Development environment, removing an item will not decrement your live
           credential count.
         </span>
-        <div className='accounts-list'>{accounts.length ? accounts : <span>Loading...</span>}</div>
+        <div className='accounts-list'>{accounts.length ? accounts : <span>Loading Accounts...</span>}</div>
         <span>Enter a nickname to add a new account:</span>
         <div className='new-account'>
           <input

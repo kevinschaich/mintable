@@ -11,6 +11,26 @@ const Account = props => {
     )
   }
 
+  const handleOnClickDelete = e => {
+    if (confirm(`Are you sure you want to remove the account ${props.details.nickname}?`)) {
+      const body = {
+        id: `PLAID_TOKEN_${props.details.nickname}`
+      }
+
+      fetch('http://localhost:3000/config', {
+        method: 'DELETE',
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(async resp => {
+          console.log(`Deleted account ${props.details.nickname}.`)
+        })
+        .catch(error => console.log(error))
+    }
+  }
+
   const handleOnClickUpdate = e => {
     const body = {
       accountNickname: props.details.nickname
@@ -39,7 +59,7 @@ const Account = props => {
       <div className='button' title='Refresh Credentials' onClick={handleOnClickUpdate}>
         <FiRefreshCw className='icon' />
       </div>
-      <div className='button' title='Remove Account'>
+      <div className='button' title='Remove Account' onClick={handleOnClickDelete}>
         <FiTrash2 className='icon' />
       </div>
     </div>

@@ -53,6 +53,12 @@ const writeConfigProperty = (propertyId, value) => {
   writeConfig(newConfig)
 }
 
+const deleteConfigProperty = propertyId => {
+  const newConfig = _.omit(getConfigEnv(), [propertyId])
+
+  writeConfig(newConfig)
+}
+
 const maybeWriteDefaultConfig = () => {
   const currentConfig = getConfigEnv()
 
@@ -105,6 +111,7 @@ const sheetsSetupCompleted = () => {
 module.exports = {
   getConfigEnv,
   writeConfigProperty,
+  deleteConfigProperty,
   writeConfig,
   maybeWriteDefaultConfig,
   accountsSetupCompleted,
