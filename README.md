@@ -2,6 +2,8 @@
 
 ![](https://img.shields.io/github/release/kevinschaich/mintable.svg)
 ![](https://img.shields.io/github/license/kevinschaich/mintable.svg)
+![](https://img.shields.io/librariesio/github/kevinschaich/mintable.svg)
+![](https://img.shields.io/github/languages/code-size/kevinschaich/mintable.svg)
 ![](https://img.shields.io/github/contributors/kevinschaich/mintable.svg)
 ![](https://img.shields.io/github/last-commit/kevinschaich/mintable.svg)
 ![](https://img.shields.io/github/issues/kevinschaich/mintable.svg)
