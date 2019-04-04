@@ -9,7 +9,7 @@ const {
   maybeWriteDefaultConfig,
   accountsSetupCompleted,
   sheetsSetupCompleted
-} = require('./lib/common')
+} = require('../lib/common')
 const _ = require('lodash')
 
 try {
@@ -26,7 +26,7 @@ try {
     server.use(bodyParser.urlencoded({ extended: false }))
     server.use(bodyParser.json())
 
-    const oAuth2Client = require('./lib/google/googleClient')
+    const oAuth2Client = require('../lib/google/googleClient')
 
     server.get('/config', (req, res) => {
       const readResult = getConfigEnv()
@@ -65,7 +65,7 @@ try {
 
         switch (process.env.ACCOUNT_PROVIDER) {
           case 'plaid':
-            const plaid = require('./lib/plaid/plaid')
+            const plaid = require('../lib/plaid/plaid')
             balances = await plaid.fetchBalances({ quiet: true })
             break
           default:
@@ -85,7 +85,7 @@ try {
 
         switch (process.env.ACCOUNT_PROVIDER) {
           case 'plaid':
-            const plaid = require('./lib/plaid/plaid')
+            const plaid = require('../lib/plaid/plaid')
             error = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname, { quiet: true })
             break
           default:
@@ -107,12 +107,12 @@ try {
       try {
         switch (process.env.ACCOUNT_PROVIDER) {
           case 'plaid':
-            const plaid = require('./lib/plaid/plaid')
+            const plaid = require('../lib/plaid/plaid')
             const nickname = req.body.accountNickname
             const accessToken = process.env[`PLAID_TOKEN_${nickname}`]
             const publicToken = await plaid.createPublicToken(accessToken, nickname, { quiet: true })
             // return res.redirect(`http://localhost:3000/settings?token=${publicToken[0]}`)
-            return res.json({publicToken});
+            return res.json({ publicToken })
           default:
             break
         }

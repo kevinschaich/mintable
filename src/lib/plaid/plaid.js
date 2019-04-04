@@ -45,7 +45,7 @@ const fetchTransactions = async options => {
           transactions
         }))
         .catch(error => {
-          console.log(`Error fetching balances for account ${account}.`, JSON.stringify(error));
+          console.log(`Error fetching transactions for account ${account}.`, JSON.stringify(error));
           if (options && options.quiet && options.quiet === true) {
             return { nickname: account, error };
           } else {
@@ -90,6 +90,7 @@ const fetchBalances = async options => {
         })
         .catch(error => {
           console.log(`Error fetching balances for account ${account}.`, JSON.stringify(error));
+          console.log('\nYou may need to re-authenticate this account using `yarn setup`.')
           if (options && options.quiet && options.quiet === true) {
             return { nickname: account, error };
           } else {

@@ -1,7 +1,8 @@
-const plaid = require("plaid");
 const { getConfigEnv } = require("../common");
 
 getConfigEnv();
+
+const plaid = require("plaid");
 
 module.exports = new plaid.Client(
   process.env.PLAID_CLIENT_ID,

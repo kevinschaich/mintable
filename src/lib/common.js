@@ -1,9 +1,9 @@
 const fs = require('fs')
 const _ = require('lodash')
-const path = require("path")
+const path = require('path')
 
-const CONFIG_FILE = path.join(__dirname, '../..', 'mintable.config.json');
-console.log(`Using config ${CONFIG_FILE}...`);
+const CONFIG_FILE = path.join(__dirname, '../..', 'mintable.config.json')
+console.log(`Using config ${CONFIG_FILE}...`)
 
 const DEFAULT_CONFIG = {
   TRANSACTION_COLUMNS: [

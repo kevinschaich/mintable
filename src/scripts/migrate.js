@@ -34,5 +34,5 @@ config = {
   SHEET_PROVIDER: config.SPREADSHEET_PROVIDER
 }
 
-writeConfig(config);
-maybeWriteDefaultConfig();
+writeConfig(config)
+maybeWriteDefaultConfig()
