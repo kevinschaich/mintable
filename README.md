@@ -40,9 +40,9 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 ## Features
 
-* Locally hosted, open-source, 100% free, ad-free, no personal data tracking, no data stored by Mintable on central servers
-* Integrates with your financial institutions for fully-automated spreadsheet updates
-* Web based setup wizard and configuration framework:
+- Locally hosted, open-source, 100% free, ad-free, no personal data tracking, no data stored by Mintable on central servers
+- Integrates with your financial institutions for fully-automated spreadsheet updates
+- Web based setup wizard and configuration framework:
 
 ![Setup Wizard](./src/static/setup.png)
 
@@ -52,12 +52,16 @@ You can see a full list of options in the **[Config Docs](./docs/CONFIG.md)**.
 
 **How is this different from [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)?**
 
-* **[build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)** is a set of scripts which solely facilitates the integration between Plaid and Google Sheets. It makes no assumptions about what you want your spreadsheet to look like, and you have to define your own logic to map transactions to spreadsheet updates.
-* **[Mintable](#)** is and end-to-end system that works out of the box. It comes with a setup wizard, a web-based configuration server, pluggable providers (you're not limited to just Plaid & Google Sheets), and a spreadsheet template.
+- **[build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)** is a set of scripts which solely facilitates the integration between Plaid and Google Sheets. It makes no assumptions about what you want your spreadsheet to look like, and you have to define your own logic to map transactions to spreadsheet updates.
+- **[Mintable](#)** is and end-to-end system that works out of the box. It comes with a setup wizard, a web-based configuration server, pluggable providers (you're not limited to just Plaid & Google Sheets), and a spreadsheet template.
 
 **Do I have to give my data to Plaid and Google? Are there any completely self-hosted alternatives I can use?**
 
 It's pluggable! Plaid & Sheets are working right now – contributions are welcome for other providers!
+
+**Do I have to manually run this every time I want new transactions in my spreadsheet?**
+
+You can **[Automate Updates with a CI Provider](./docs/CONFIG.md#automate-updates-with-a-ci-provider)** to get free, automated updates!
 
 ## Credits
 

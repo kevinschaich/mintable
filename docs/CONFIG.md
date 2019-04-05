@@ -2,7 +2,25 @@
 
 All configurations below can be made using the web configuration framework or by editing `mintable.config.json`.
 
-`mintable.config.json` is ignored by Git – keep a backup somewhere safe as you only have 100 Plaid accounts on the free version. You can use Dropbox or another trusted service to sync file this across your machines.
+`mintable.config.json` is the secret sauce – it contains all of your private tokens and is never sent to third-party servers.
+
+This file is ignored by Git – keep a backup somewhere safe as you only have 100 Plaid accounts on the free version. You can use Dropbox or another trusted service to sync across your machines.
+
+#### Automate Updates with a CI Provider
+
+This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run builds automatically.
+
+Most CI providers allow you to set **environment variables** to configure sensitive information (like the stuff in `mintable.config.json`). We've included a handy script to get that set up:
+
+```
+yarn export
+```
+
+Run this command and paste the result into an environment variable called `MINTABLE_CONFIG` in your CI provider of choice. Mintable will handle the rest.
+
+> **Note:** Some CI providers (like Travis) require you to wrap this variable in single quotes, i.e. `'{ PLAID_TOKEN: "" ...}'`. If you get an error similar to `Unable to parse JSON...` when you run your CI build, give this a try.
+
+> **Warning:** If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
 
 #### Transaction Columns
 
@@ -50,7 +68,3 @@ CATEGORY_OVERRIDES=[{ "pattern": ".*(autopay|e.payment).*", "flags": "i", "categ
 #### Spreadsheet Provider
 
 `SHEET_PROVIDER` specifies which service to use to automate spreadsheet updates. At this time, the only possible value is `"sheets"`, but we plan to add other providers in the future.
-
-#### Automated Updates
-
-This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run hourly builds automatically. If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
