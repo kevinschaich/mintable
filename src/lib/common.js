@@ -27,22 +27,16 @@ const DEFAULT_CONFIG = {
 const getConfigEnv = () => {
   try {
     // Fallback for CI
-    let ENV = process.env.MINTABLE_CONFIG
-    if (ENV) {
-      // CI has picked up this environment variable as a string (Circle default)
-      if (typeof ENV === 'string') {
-        process.env = {
-          ...JSON.parse(ENV)
-        }
-        return JSON.parse(ENV)
+    if (process.env.MINTABLE_CONFIG) {
+      let envConfig = process.env.MINTABLE_CONFIG
+
+      // CI has inconsistent behavior and sometimes parses this as a object, other times as a string
+      envConfig = typeof envConfig === 'string' ? JSON.parse(envConfig) : envConfig
+
+      process.env = {
+        ...envConfig
       }
-      // CI has picked up this environment variable as an object (Travis default)
-      else {
-        process.env = {
-          ...ENV
-        }
-        return ENV
-      }
+      return envConfig
     }
 
     const config = fs.readFileSync(CONFIG_FILE)
