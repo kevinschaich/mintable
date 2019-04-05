@@ -1,9 +1,10 @@
 .DS_Store
-node_modules
 .env
-mintable.config.json
-yarn.lock
-package-lock.json
-yarn-error.log
 .next
 */.next
+mintable.config.json
+mintable.sandbox.json
+node_modules
+package-lock.json
+yarn-error.log
+yarn.lock
