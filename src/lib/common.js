@@ -37,14 +37,14 @@ const getConfigEnv = () => {
         ...envConfig
       }
       return envConfig
+    } else {
+      const config = fs.readFileSync(CONFIG_FILE)
+      process.env = {
+        ...process.env,
+        ...JSON.parse(config)
+      }
+      return JSON.parse(config)
     }
-
-    const config = fs.readFileSync(CONFIG_FILE)
-    process.env = {
-      ...process.env,
-      ...JSON.parse(config)
-    }
-    return JSON.parse(config)
   } catch (e) {
     console.log('Error: Could not read config file. ' + e.message)
     return false

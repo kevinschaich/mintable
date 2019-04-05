@@ -1,7 +1,3 @@
-const { getConfigEnv } = require('../common')
-
-getConfigEnv()
-
 const plaid = require('plaid')
 
 const environment = () => {

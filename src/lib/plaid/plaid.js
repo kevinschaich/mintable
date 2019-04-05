@@ -1,7 +1,5 @@
 const moment = require("moment");
-const { getConfigEnv, writeConfigProperty } = require("../common");
-
-getConfigEnv();
+const { writeConfigProperty } = require("../common");
 
 const plaidClient = require("./plaidClient");
 
