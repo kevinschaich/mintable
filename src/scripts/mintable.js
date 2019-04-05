@@ -3,7 +3,6 @@ const { getConfigEnv } = require('../lib/common')
 
 ;(async () => {
   getConfigEnv()
-  console.log(process.env)
   const { updateSheets } = require('../providers/sheets')
   const { getTransactions } = require('../providers/plaid')
 
