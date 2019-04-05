@@ -6,6 +6,7 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
+    "export": "node ./src/scripts/export.js",
     "format": "yarn prettier",
     "migrate": "node ./src/scripts/migrate.js",
     "mintable": "node ./src/scripts/mintable.js",
@@ -15,6 +16,7 @@
   "dependencies": {
     "@zeit/next-sass": "^1.0.1",
     "body-parser": "^1.18.3",
+    "clipboardy": "^1.2.3",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "googleapis": "27",

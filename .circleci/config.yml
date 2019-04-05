@@ -4,29 +4,25 @@ jobs:
   build:
     docker:
       - image: circleci/node:10
-
     working_directory: ~/repo
-
     steps:
       - checkout
-
       - restore_cache:
+          name: Restore Yarn Package Cache
           keys:
-            - dependency-cache-{{ checksum "package.json" }}
-            - dependency-cache-
-
-      - run: npm install
-
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Dependencies
+          command: yarn install --frozen-lockfile
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules
-
-      - run: node mintable.js
+            - ~/.cache/yarn
+      - run: yarn mintable
 
 workflows:
   version: 2
-
   hourly:
     triggers:
       - schedule:
@@ -36,6 +32,5 @@ workflows:
             branches:
               only:
                 - master
-
     jobs:
       - build
