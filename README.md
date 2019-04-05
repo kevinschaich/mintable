@@ -1,5 +1,6 @@
 <h4 align="center"><img width="200" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Roll your own ad-free Mint clone for managing personal finances using publicly available APIs.</h4><br></h4>
 
+![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)
 ![](https://img.shields.io/github/release/kevinschaich/mintable.svg)
 ![](https://img.shields.io/github/license/kevinschaich/mintable.svg)
 ![](https://img.shields.io/librariesio/github/kevinschaich/mintable.svg)
