@@ -1,9 +1,5 @@
 const moment = require('moment')
 const _ = require('lodash')
-const { getConfigEnv } = require('../lib/common')
-
-getConfigEnv()
-
 const { fetchTransactions, fetchBalances } = require('../lib/plaid/plaid')
 
 exports.getTransactions = async (transactionColumns, categoryOverrides, currentMonthSheetTitle) => {
