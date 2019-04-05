@@ -27,11 +27,22 @@ const DEFAULT_CONFIG = {
 const getConfigEnv = () => {
   try {
     // Fallback for CI
-    if (process.env.MINTABLE_CONFIG) {
-      process.env = {
-        ...JSON.parse(process.env.MINTABLE_CONFIG)
+    let ENV = process.env.MINTABLE_CONFIG
+    if (ENV) {
+      // CI has picked up this environment variable as a string (Circle default)
+      if (typeof ENV === 'string') {
+        process.env = {
+          ...JSON.parse(ENV)
+        }
+        return JSON.parse(ENV)
       }
-      return JSON.parse(process.env.MINTABLE_CONFIG)
+      // CI has picked up this environment variable as an object (Travis default)
+      else {
+        process.env = {
+          ...ENV
+        }
+        return ENV
+      }
     }
 
     const config = fs.readFileSync(CONFIG_FILE)
