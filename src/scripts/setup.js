@@ -79,12 +79,11 @@ try {
 
     server.post('/token', async (req, res, next) => {
       try {
-        let error
-
         switch (process.env.ACCOUNT_PROVIDER) {
           case 'plaid':
             const plaid = require('../lib/plaid/plaid')
-            error = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname, { quiet: true })
+            resp = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname, { quiet: true })
+            error = await resp[0]
             break
           default:
             break
@@ -96,7 +95,6 @@ try {
           res.status(201).send('Saved access token.')
         }
       } catch (error) {
-        console.log(error)
         res.status(400).send('Error: Could not get access token.' + JSON.stringify(error))
       }
     })

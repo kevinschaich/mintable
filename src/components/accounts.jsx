@@ -45,7 +45,7 @@ class Accounts extends React.Component {
   handleOnUpdateAccountResponse = data => {
     window.Plaid.create({
       clientName: 'Mintable',
-      env: 'development',
+      env: this.props.config.PLAID_ENVIRONMENT,
       product: ['auth', 'transactions'],
       key: this.props.config.PLAID_PUBLIC_KEY,
       onExit: this.handleOnExit,
@@ -93,7 +93,7 @@ class Accounts extends React.Component {
           />
           <PlaidLink
             clientName='Mintable'
-            env='development'
+            env={this.props.config.PLAID_ENVIRONMENT}
             product={['auth', 'transactions']}
             publicKey={this.props.config.PLAID_PUBLIC_KEY}
             onExit={this.handleOnExit}

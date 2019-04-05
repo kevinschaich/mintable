@@ -21,7 +21,8 @@ const DEFAULT_CONFIG = {
   SHEET_PROVIDER: 'sheets',
   ACCOUNT_PROVIDER: 'plaid',
   CATEGORY_OVERRIDES: [],
-  SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback'
+  SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback',
+  PLAID_ENVIRONMENT: 'development'
 }
 
 const getConfigEnv = () => {
