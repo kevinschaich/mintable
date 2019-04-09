@@ -30,6 +30,9 @@ exports.getTransactions = async (transactionColumns, categoryOverrides, currentM
     sanitized.pending = sanitized.pending === true ? 'y' : sanitized.pending
     sanitized.pending = sanitized.pending === false ? '' : sanitized.pending
 
+    // Handle corner case where this was set before v1.0.0 & scripts/migrate.js double escapes it
+    categoryOverrides = typeof categoryOverrides === 'string' ? JSON.parse(categoryOverrides) : categoryOverrides
+
     // Handle category overrides defined in .env
     _.forEach(categoryOverrides, override => {
       if (new RegExp(override.pattern, _.get(override, 'flags', '')).test(sanitized.name)) {
