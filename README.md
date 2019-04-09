@@ -19,7 +19,7 @@ yarn
 yarn setup
 ```
 
-`yarn setup` will launch a web server & open a page in your web browser to walk you through the set-up. After you have your accounts connected, run:
+`yarn setup` will start a local server & open a page in your web browser to walk you through the set-up. After you have your accounts connected, run:
 
 ```
 yarn mintable
@@ -27,7 +27,7 @@ yarn mintable
 
 to populate your spreadsheet!
 
-> **Note**: If you started using Mintable before `v1.0.0`, run `yarn migrate` to migrate to the new web-based configuration framework.
+> **Note**: If you started using Mintable before `v1.0.0`, you can run `yarn migrate` to migrate to the new web-based configuration framework.
 
 ## Overview
 
@@ -58,11 +58,11 @@ You can see a full list of options in the **[Config Docs](./docs/CONFIG.md)**.
 
 **Do I have to give my data to Plaid and Google? Are there any completely self-hosted alternatives I can use?**
 
-It's pluggable! Plaid & Sheets are working right now – contributions are welcome for other providers!
+- It's pluggable! Plaid & Google Sheets are working right now – contributions are welcome for other providers!
 
 **Do I have to manually run this every time I want new transactions in my spreadsheet?**
 
-You can **[Automate Updates with a CI Provider](./docs/CONFIG.md#automate-updates-with-a-ci-provider)** to get free, automated updates!
+- You can **[Automate Updates with a CI Provider](./docs/CONFIG.md#automate-updates-with-a-ci-provider)** to get free, automated updates!
 
 ## Credits
 
