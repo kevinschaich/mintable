@@ -1,7 +1,7 @@
 const moment = require('moment')
 const { writeConfigProperty } = require('../common')
 const plaidClient = require('./plaidClient')
-const { logPromise } = require('./../logging')
+const { logPromise } = require('../logging')
 const pMapSeries = require('p-map-series')
 
 // Starting from beginning of last month ensures we fully update pending or revised transactions

@@ -1,7 +1,7 @@
 const { google } = require('googleapis')
 const oAuth2Client = require('./googleClient')
 const _ = require('lodash')
-const { logPromise } = require('./../logging')
+const { logPromise } = require('../logging')
 
 oAuth2Client.setCredentials({
   access_token: process.env.SHEETS_ACCESS_TOKEN,

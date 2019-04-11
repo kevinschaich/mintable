@@ -38,11 +38,10 @@ const Account = props => {
       headers: {
         'Content-Type': 'application/json'
       }
+    }).then(async resp => {
+      const data = await resp.json()
+      props.handleOnUpdateAccountResponse(data)
     })
-      .then(async resp => {
-        const data = await resp.json()
-        props.handleOnUpdateAccountResponse(data)
-      })
   }
 
   return (

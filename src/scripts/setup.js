@@ -10,6 +10,7 @@ const {
   accountsSetupCompleted,
   sheetsSetupCompleted
 } = require('../lib/common')
+const { logPromise } = require('../lib/logging')
 const _ = require('lodash')
 
 try {
@@ -20,23 +21,18 @@ try {
 
   app.prepare().then(() => {
     maybeWriteDefaultConfig()
-    getConfigEnv()
 
     const server = express()
     server.use(bodyParser.urlencoded({ extended: false }))
     server.use(bodyParser.json())
 
-    server.get('/config', (req, res) => {
-      const readResult = getConfigEnv()
-      if (readResult === false) {
-        res.status(400).send('Error: Could not read config file.')
-      } else {
-        res.json({
-          ...readResult,
-          accountsSetupCompleted: accountsSetupCompleted(),
-          sheetsSetupCompleted: sheetsSetupCompleted()
-        })
-      }
+    server.get('/config', async (req, res) => {
+      const config = await logPromise(getConfigEnv(), 'Getting current config')
+      res.json({
+        ...config,
+        accountsSetupCompleted: accountsSetupCompleted(),
+        sheetsSetupCompleted: sheetsSetupCompleted()
+      })
     })
 
     server.put('/config', async (req, res) => {

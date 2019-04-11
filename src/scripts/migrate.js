@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const { writeConfig, maybeWriteDefaultConfig } = require('../lib/common')
 const dotenv = require('dotenv')
+const { logPromise } = require('../lib/logging')
 
 ;(async () => {
   dotenv.config()
@@ -37,6 +38,8 @@ const dotenv = require('dotenv')
     SHEET_PROVIDER: config.SPREADSHEET_PROVIDER
   }
 
-  await writeConfig(config)
+  await logPromise(writeConfig(config), 'Migrating existing parameters from .env')
   await maybeWriteDefaultConfig()
+
+  console.log('\nSuccessfully migrated to config version 1.x.x.\n')
 })()

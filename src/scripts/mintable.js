@@ -1,8 +1,9 @@
 const moment = require('moment')
 const { getConfigEnv } = require('../lib/common')
+const { logPromise } = require('../lib/logging')
 
 ;(async () => {
-  getConfigEnv()
+  await logPromise(getConfigEnv(), 'Getting current config')
   const { updateSheets } = require('../providers/sheets')
   const { getTransactions } = require('../providers/plaid')
 
