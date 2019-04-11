@@ -2,9 +2,9 @@
 
 All configurations below can be made using the web configuration framework or by editing `mintable.config.json`.
 
-`mintable.config.json` is the secret sauce – it contains all of your private tokens and is never sent to third-party servers.
+`mintable.config.json` is the secret sauce – it contains all of your private tokens and is never sent to third-party servers. This file is ignored by Git – keep a backup somewhere safe as you only have 100 Plaid accounts on the free version.
 
-This file is ignored by Git – keep a backup somewhere safe as you only have 100 Plaid accounts on the free version. You can use Dropbox or another trusted service to sync across your machines.
+> **Pro Tip:** You can use Dropbox or another trusted service to sync `mintable.config.json` across your machines. Run `ln -s <path_to_cloud_folder>/mintable.config.json .` from the repo root to symlink Mintable to the cloud version.
 
 #### Automate Updates with a CI Provider
 
