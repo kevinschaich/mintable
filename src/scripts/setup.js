@@ -58,23 +58,18 @@ try {
     })
 
     server.get('/balances', async (req, res, next) => {
-      try {
-        let balances
+      let balances
 
-        switch (process.env.ACCOUNT_PROVIDER) {
-          case 'plaid':
-            const plaid = require('../lib/plaid/plaid')
-            balances = await plaid.fetchBalances({ quiet: true })
-            break
-          default:
-            break
-        }
-
-        res.json(balances || {})
-      } catch (error) {
-        console.log(error)
-        res.status(400).send('Error: Could not get balances.' + JSON.stringify(error))
+      switch (process.env.ACCOUNT_PROVIDER) {
+        case 'plaid':
+          const plaid = require('../lib/plaid/plaid')
+          balances = await plaid.fetchBalances({ quiet: true })
+          break
+        default:
+          break
       }
+
+      res.json(balances || {})
     })
 
     server.post('/token', async (req, res, next) => {
@@ -100,20 +95,15 @@ try {
     })
 
     server.post('/update', async (req, res, next) => {
-      try {
-        switch (process.env.ACCOUNT_PROVIDER) {
-          case 'plaid':
-            const plaid = require('../lib/plaid/plaid')
-            const nickname = req.body.accountNickname
-            const access_token = process.env[`PLAID_TOKEN_${nickname}`]
-            const public_token = await plaid.createPublicToken(access_token, nickname, { quiet: true })
-            return res.json({ public_token })
-          default:
-            break
-        }
-      } catch (error) {
-        console.log(error)
-        res.status(400).send('Error: Could not get access token.' + JSON.stringify(error))
+      switch (process.env.ACCOUNT_PROVIDER) {
+        case 'plaid':
+          const plaid = require('../lib/plaid/plaid')
+          const nickname = req.body.accountNickname
+          const access_token = process.env[`PLAID_TOKEN_${nickname}`]
+          const public_token = await plaid.createPublicToken(access_token, nickname, { quiet: true })
+          return res.json({ public_token })
+        default:
+          break
       }
     })
 

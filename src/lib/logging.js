@@ -1,9 +1,10 @@
 const ora = require('ora')
 const logSymbols = require('log-symbols')
 const indentString = require('indent-string')
+const { inspect } = require('util')
 
 const paddedJSON = data => {
-  return indentString(`\n\n${JSON.stringify(data, null, 2)}\n`, 4)
+  return indentString(`\n\n${inspect(data)}\n`, 4)
 }
 
 const defaultOptions = {

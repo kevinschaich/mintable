@@ -1,6 +1,7 @@
-const { google } = require("googleapis");
-const oAuth2Client = require("./googleClient");
-const _ = require("lodash");
+const { google } = require('googleapis')
+const oAuth2Client = require('./googleClient')
+const _ = require('lodash')
+const { logPromise } = require('./../logging')
 
 oAuth2Client.setCredentials({
   access_token: process.env.SHEETS_ACCESS_TOKEN,
@@ -8,240 +9,119 @@ oAuth2Client.setCredentials({
   scope: process.env.SHEETS_SCOPE,
   token_type: process.env.SHEETS_TOKEN_TYPE,
   expiry_date: process.env.SHEETS_EXPIRY_DATE
-});
+})
 
 const sheets = google.sheets({
-  version: "v4",
+  version: 'v4',
   auth: oAuth2Client
-});
+})
+
+const wrapPromise = (f, args) =>
+  new Promise((resolve, reject) => f(args, (error, data) => (error ? reject(error) : resolve(data))))
 
 exports.getSheets = async function(spreadsheetId) {
-  return new Promise((resolve, reject) =>
-    sheets.spreadsheets.get({ spreadsheetId }, (err, res) => {
-      if (err) {
-        console.log("Fetch failed:", err);
-        reject(err);
-      }
-      console.log(`Fetched current sheets.`);
-      resolve(res.data.sheets);
-    })
-  );
-};
+  return await logPromise(
+    wrapPromise(sheets.spreadsheets.get, { spreadsheetId: spreadsheetId }),
+    `Fetching sheets for spreadsheet ID ${spreadsheetId}`
+  ).then(res => res.data.sheets)
+}
 
 exports.duplicateSheet = async function(sourceSpreadsheetId, sourceSheetId) {
-  return new Promise((resolve, reject) =>
-    sheets.spreadsheets.sheets.copyTo(
-      {
-        spreadsheetId: sourceSpreadsheetId,
-        sheetId: sourceSheetId,
-        resource: {
-          destinationSpreadsheetId: process.env.SHEETS_SHEET_ID
-        }
-      },
-      (err, res) => {
-        if (err) {
-          console.log("Copy failed:", err);
-          reject(err);
-        }
-        console.log(`Sheet copied.`);
-        resolve({ properties: res.data });
-      }
-    )
-  );
-};
+  return await logPromise(
+    wrapPromise(sheets.spreadsheets.sheets.copyTo, {
+      spreadsheetId: sourceSpreadsheetId,
+      sheetId: sourceSheetId,
+      resource: { destinationSpreadsheetId: process.env.SHEETS_SHEET_ID }
+    }),
+    `Duplicating sheet ${sourceSheetId}`
+  ).then(res => ({ properties: res.data }))
+}
 
 exports.addSheet = async function(title) {
-  return new Promise((resolve, reject) =>
-    sheets.spreadsheets.batchUpdate(
-      {
-        spreadsheetId: process.env.SHEETS_SHEET_ID,
-        resource: {
-          requests: [
-            {
-              addSheet: {
-                properties: { title }
-              }
-            }
-          ]
-        }
-      },
-      (err, res) => {
-        if (err) {
-          console.log("Add failed: ", err);
-          reject(err);
-        }
-        console.log(`${title} sheet added.`);
-        resolve(res.data.replies[0].addSheet);
-      }
-    )
-  );
-};
+  return await logPromise(
+    wrapPromise(sheets.spreadsheets.batchUpdate, {
+      spreadsheetId: process.env.SHEETS_SHEET_ID,
+      resource: { requests: [{ addSheet: { properties: { title } } }] }
+    }),
+    `Creating new sheet ${title}`
+  ).then(res => res.data.replies[0].addSheet)
+}
 
 exports.renameSheet = async function(sheetId, title) {
-  return new Promise((resolve, reject) =>
-    sheets.spreadsheets.batchUpdate(
-      {
-        spreadsheetId: process.env.SHEETS_SHEET_ID,
-        resource: {
-          requests: [
-            {
-              updateSheetProperties: {
-                properties: {
-                  sheetId: sheetId,
-                  title: title
-                },
-                fields: "title"
-              }
-            }
-          ]
-        }
-      },
-      (err, res) => {
-        if (err) {
-          console.log("Rename failed: ", err);
-          reject(err);
-        }
-        console.log(`${title} sheet renamed.`);
-        resolve(res.data);
+  return await logPromise(
+    wrapPromise(sheets.spreadsheets.batchUpdate, {
+      spreadsheetId: process.env.SHEETS_SHEET_ID,
+      resource: {
+        requests: [{ updateSheetProperties: { properties: { sheetId: sheetId, title: title }, fields: 'title' } }]
       }
-    )
-  );
-};
+    }),
+    `Renaming sheet ${title}`
+  ).then(res => res.data)
+}
 
-exports.clearSheet = async function(title) {
-  return new Promise((resolve, reject) =>
-    sheets.spreadsheets.values.clear(
-      {
-        spreadsheetId: process.env.SHEETS_SHEET_ID,
-        range: title
-      },
-      (err, res) => {
-        if (err) {
-          console.log("Clear failed: ", err);
-          reject(err);
-        }
-        console.log(`${title} cleared.`);
-        resolve(res);
-      }
-    )
-  );
-};
+exports.clearSheet = async function(range) {
+  return await logPromise(
+    wrapPromise(sheets.spreadsheets.values.clear, { spreadsheetId: process.env.SHEETS_SHEET_ID, range: range }),
+    `Clearing range ${range}`
+  ).then(res => res)
+}
 
 exports.updateSheet = async function(updates) {
-  return new Promise((resolve, reject) =>
-    sheets.spreadsheets.values.batchUpdate(
-      {
-        spreadsheetId: process.env.SHEETS_SHEET_ID,
-        resource: {
-          valueInputOption: `USER_ENTERED`,
-          data: _.map(updates, p => ({
-            range: p.range,
-            values: p.values
-          }))
-        }
-      },
-      (err, res) => {
-        if (err) {
-          console.log("Update failed: ", err);
-          reject(err);
-        }
-        console.log(`${res.data.totalUpdatedCells} cells updated.`);
-        resolve();
-      }
-    )
-  );
-};
+  return await logPromise(
+    wrapPromise(sheets.spreadsheets.values.batchUpdate, {
+      spreadsheetId: process.env.SHEETS_SHEET_ID,
+      resource: { valueInputOption: `USER_ENTERED`, data: _.map(updates, p => ({ range: p.range, values: p.values })) }
+    }),
+    `Updating ranges ${_.map(updates, p => p.range).join(', ')}`
+  ).then(res => res)
+}
 
 exports.formatHeaderRow = async function(sheetId) {
-  return new Promise((resolve, reject) =>
-    sheets.spreadsheets.batchUpdate(
-      {
-        spreadsheetId: process.env.SHEETS_SHEET_ID,
-        resource: {
-          requests: [
-            {
-              repeatCell: {
-                range: {
-                  sheetId: sheetId,
-                  startRowIndex: 0,
-                  endRowIndex: 1
-                },
-                cell: {
-                  userEnteredFormat: {
-                    backgroundColor: {
-                      red: 0.3,
-                      green: 0.3,
-                      blue: 0.3
-                    },
-                    horizontalAlignment: "CENTER",
-                    textFormat: {
-                      foregroundColor: {
-                        red: 1.0,
-                        green: 1.0,
-                        blue: 1.0
-                      },
-                      fontSize: 12,
-                      bold: true
-                    }
-                  }
-                },
-                fields: "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)"
-              }
-            },
-            {
-              updateSheetProperties: {
-                properties: {
-                  sheetId: sheetId,
-                  gridProperties: {
-                    frozenRowCount: 1
-                  }
-                },
-                fields: "gridProperties.frozenRowCount"
-              }
+  return await logPromise(
+    wrapPromise(sheets.spreadsheets.batchUpdate, {
+      spreadsheetId: process.env.SHEETS_SHEET_ID,
+      resource: {
+        requests: [
+          {
+            repeatCell: {
+              range: { sheetId: sheetId, startRowIndex: 0, endRowIndex: 1 },
+              cell: {
+                userEnteredFormat: {
+                  backgroundColor: { red: 0.3, green: 0.3, blue: 0.3 },
+                  horizontalAlignment: 'CENTER',
+                  textFormat: { foregroundColor: { red: 1.0, green: 1.0, blue: 1.0 }, fontSize: 12, bold: true }
+                }
+              },
+              fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)'
             }
-          ]
-        }
-      },
-      (err, res) => {
-        if (err) {
-          console.log("Format failed: ", err);
-          reject(err);
-        }
-        console.log(`Sheet formatted.`);
-        resolve();
+          },
+          {
+            updateSheetProperties: {
+              properties: { sheetId: sheetId, gridProperties: { frozenRowCount: 1 } },
+              fields: 'gridProperties.frozenRowCount'
+            }
+          }
+        ]
       }
-    )
-  );
-};
+    }),
+    `Formatting sheet ${sheetId}`
+  ).then(res => res)
+}
 
 exports.resizeColumns = async function(sheetId, numColumns) {
-  return new Promise((resolve, reject) =>
-    sheets.spreadsheets.batchUpdate(
-      {
-        spreadsheetId: process.env.SHEETS_SHEET_ID,
-        resource: {
-          requests: [
-            {
-              autoResizeDimensions: {
-                dimensions: {
-                  sheetId: sheetId,
-                  dimension: "COLUMNS",
-                  startIndex: 0,
-                  endIndex: numColumns
-                }
-              }
+  return await logPromise(
+    wrapPromise(sheets.spreadsheets.batchUpdate, {
+      spreadsheetId: process.env.SHEETS_SHEET_ID,
+      resource: {
+        requests: [
+          {
+            autoResizeDimensions: {
+              dimensions: { sheetId: sheetId, dimension: 'COLUMNS', startIndex: 0, endIndex: numColumns }
             }
-          ]
-        }
-      },
-      (err, res) => {
-        if (err) {
-          console.log("Resize failed: ", err);
-          reject(err);
-        }
-        console.log(`Sheet columns resized.`);
-        resolve();
+          }
+        ]
       }
-    )
-  );
-};
+    }),
+    `Resizing columns for sheet ${sheetId}`
+  ).then(res => res)
+}

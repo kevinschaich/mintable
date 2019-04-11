@@ -24,10 +24,6 @@ const Account = props => {
           'Content-Type': 'application/json'
         }
       })
-        .then(async resp => {
-          console.log(`Deleted account ${props.details.nickname}.`)
-        })
-        .catch(error => console.log(error))
     }
   }
 
@@ -47,7 +43,6 @@ const Account = props => {
         const data = await resp.json()
         props.handleOnUpdateAccountResponse(data)
       })
-      .catch(error => console.log(error))
   }
 
   return (

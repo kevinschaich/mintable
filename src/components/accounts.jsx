@@ -26,7 +26,6 @@ class Accounts extends React.Component {
       public_token,
       accountNickname: this.state.newAccountNickname
     }
-    console.log(`Public Token:`, body)
     fetch('http://localhost:3000/token', {
       method: 'POST',
       body: JSON.stringify(body),
@@ -34,12 +33,6 @@ class Accounts extends React.Component {
         'Content-Type': 'application/json'
       }
     })
-      .then(resp => {
-        if (resp.status === 201) {
-          console.log('Saved access token.')
-        }
-      })
-      .catch(error => console.log(error))
   }
 
   handleOnUpdateAccountResponse = data => {
@@ -52,10 +45,6 @@ class Accounts extends React.Component {
       onSuccess: this.handleOnSuccess,
       token: data.public_token[0]
     }).open()
-  }
-
-  handleOnExit = () => {
-    console.log('Plaid authentication cancelled.')
   }
 
   render = () => {
@@ -96,7 +85,6 @@ class Accounts extends React.Component {
             env={this.props.config.PLAID_ENVIRONMENT}
             product={['auth', 'transactions']}
             publicKey={this.props.config.PLAID_PUBLIC_KEY}
-            onExit={this.handleOnExit}
             onSuccess={this.handleOnSuccess}
             style={{
               background: '#137cbd',

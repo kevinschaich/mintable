@@ -32,6 +32,7 @@
     "ora": "^3.4.0",
     "p-map-series": "^2.1.0",
     "plaid": "^2.10.0",
+    "promise-fs": "^2.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-icons": "^3.5.0",

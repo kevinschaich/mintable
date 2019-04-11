@@ -1,10 +1,11 @@
-const fs = require('fs')
+const fs = require('promise-fs')
 const _ = require('lodash')
 const path = require('path')
+const { logPromise } = require('./logging')
 
 const CONFIG_FILE = path.join(__dirname, '../..', process.argv[2] || 'mintable.config.json')
 
-console.log(`Using config ${CONFIG_FILE}...\n`)
+console.log(`\nUsing config ${CONFIG_FILE}...\n`)
 
 const DEFAULT_CONFIG = {
   TRANSACTION_COLUMNS: [
@@ -24,63 +25,52 @@ const DEFAULT_CONFIG = {
   PLAID_ENVIRONMENT: 'development'
 }
 
-const getConfigEnv = () => {
-  try {
-    // Fallback for CI
-    if (process.env.MINTABLE_CONFIG) {
-      let envConfig = process.env.MINTABLE_CONFIG
+const getConfigEnv = async () => {
+  // Fallback for CI
+  if (process.env.MINTABLE_CONFIG) {
+    let envConfig = process.env.MINTABLE_CONFIG
 
-      // CI has inconsistent behavior and sometimes parses this as a object, other times as a string
-      envConfig = typeof envConfig === 'string' ? JSON.parse(envConfig) : envConfig
+    // CI has inconsistent behavior and sometimes parses this as a object, other times as a string
+    envConfig = typeof envConfig === 'string' ? JSON.parse(envConfig) : envConfig
 
-      process.env = {
-        ...envConfig
-      }
-      return envConfig
-    } else {
-      const config = fs.readFileSync(CONFIG_FILE)
-      process.env = {
-        ...process.env,
-        ...JSON.parse(config)
-      }
-      return JSON.parse(config)
+    process.env = {
+      ...process.env,
+      ...envConfig
     }
-  } catch (e) {
-    console.log('Error: Could not read config file. ' + e.message)
-    return false
+    return envConfig
+  } else {
+    return await logPromise(fs.readFile(CONFIG_FILE), 'Reading config').then(config => {
+      process.env = { ...process.env, ...JSON.parse(config) }
+      return JSON.parse(config)
+    })
   }
 }
 
-const writeConfig = newConfig => {
-  try {
-    fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2))
-    return getConfigEnv()
-  } catch (e) {
-    console.log('Error: Could not write config file. ' + e.message)
-    return false
-  }
+const writeConfig = async newConfig => {
+  await logPromise(fs.writeFile(CONFIG_FILE, JSON.stringify(newConfig, null, 2)), 'Writing config')
+  return await getConfigEnv()
 }
 
-const writeConfigProperty = (propertyId, value) => {
+const writeConfigProperty = async (propertyId, value) => {
   const newConfig = {
     ...getConfigEnv(),
     [propertyId]: value
   }
 
-  writeConfig(newConfig)
+  await writeConfig(newConfig)
 }
 
-const deleteConfigProperty = propertyId => {
-  const newConfig = _.omit(getConfigEnv(), [propertyId])
+const deleteConfigProperty = async propertyId => {
+  const newConfig = _.omit(await getConfigEnv(), [propertyId])
 
-  writeConfig(newConfig)
+  await writeConfig(newConfig)
 }
 
-const maybeWriteDefaultConfig = () => {
-  const currentConfig = getConfigEnv()
+const maybeWriteDefaultConfig = async () => {
+  const currentConfig = await getConfigEnv()
 
   if (!_.every(_.keys(DEFAULT_CONFIG), _.partial(_.has, currentConfig))) {
-    writeConfig({
+    await writeConfig({
       ...DEFAULT_CONFIG,
       ...(currentConfig || {})
     })
