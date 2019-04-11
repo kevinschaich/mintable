@@ -2,7 +2,7 @@ const fs = require('fs')
 const _ = require('lodash')
 const path = require('path')
 
-const CONFIG_FILE = path.join(__dirname, '../..', 'mintable.config.json')
+const CONFIG_FILE = path.join(__dirname, '../..', process.argv[2] || 'mintable.config.json')
 
 console.log(`Using config ${CONFIG_FILE}...\n`)
 
