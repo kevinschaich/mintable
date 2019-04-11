@@ -19,14 +19,32 @@ const sheets = google.sheets({
 const wrapPromise = (f, args) =>
   new Promise((resolve, reject) => f(args, (error, data) => (error ? reject(error) : resolve(data))))
 
-exports.getSheets = async function(spreadsheetId) {
+const getAuthURL = async () => {
+  return await logPromise(
+    wrapPromise(oAuth2Client.generateAuthUrl, {
+      access_type: 'offline',
+      scope: ['https://www.googleapis.com/auth/spreadsheets']
+    }),
+    `Getting auth URL`
+  )
+}
+
+const getToken = async code => {
+  return await logPromise(wrapPromise(oAuth2Client.getToken, code), `Fetching token for code ${code}`).then(token => {
+    Object.keys(token).forEach(key => {
+      writeConfigProperty(`SHEETS_${key.toUpperCase()}`, token[key])
+    })
+  })
+}
+
+const getSheets = async spreadsheetId => {
   return await logPromise(
     wrapPromise(sheets.spreadsheets.get, { spreadsheetId: spreadsheetId }),
     `Fetching sheets for spreadsheet ID ${spreadsheetId}`
   ).then(res => res.data.sheets)
 }
 
-exports.duplicateSheet = async function(sourceSpreadsheetId, sourceSheetId) {
+const duplicateSheet = async (sourceSpreadsheetId, sourceSheetId) => {
   return await logPromise(
     wrapPromise(sheets.spreadsheets.sheets.copyTo, {
       spreadsheetId: sourceSpreadsheetId,
@@ -37,7 +55,7 @@ exports.duplicateSheet = async function(sourceSpreadsheetId, sourceSheetId) {
   ).then(res => ({ properties: res.data }))
 }
 
-exports.addSheet = async function(title) {
+const addSheet = async title => {
   return await logPromise(
     wrapPromise(sheets.spreadsheets.batchUpdate, {
       spreadsheetId: process.env.SHEETS_SHEET_ID,
@@ -47,7 +65,7 @@ exports.addSheet = async function(title) {
   ).then(res => res.data.replies[0].addSheet)
 }
 
-exports.renameSheet = async function(sheetId, title) {
+const renameSheet = async (sheetId, title) => {
   return await logPromise(
     wrapPromise(sheets.spreadsheets.batchUpdate, {
       spreadsheetId: process.env.SHEETS_SHEET_ID,
@@ -59,14 +77,14 @@ exports.renameSheet = async function(sheetId, title) {
   ).then(res => res.data)
 }
 
-exports.clearSheet = async function(range) {
+const clearSheet = async range => {
   return await logPromise(
     wrapPromise(sheets.spreadsheets.values.clear, { spreadsheetId: process.env.SHEETS_SHEET_ID, range: range }),
     `Clearing range ${range}`
   ).then(res => res)
 }
 
-exports.updateSheet = async function(updates) {
+const updateSheet = async updates => {
   return await logPromise(
     wrapPromise(sheets.spreadsheets.values.batchUpdate, {
       spreadsheetId: process.env.SHEETS_SHEET_ID,
@@ -76,7 +94,7 @@ exports.updateSheet = async function(updates) {
   ).then(res => res)
 }
 
-exports.formatHeaderRow = async function(sheetId) {
+const formatHeaderRow = async sheetId => {
   return await logPromise(
     wrapPromise(sheets.spreadsheets.batchUpdate, {
       spreadsheetId: process.env.SHEETS_SHEET_ID,
@@ -108,7 +126,7 @@ exports.formatHeaderRow = async function(sheetId) {
   ).then(res => res)
 }
 
-exports.resizeColumns = async function(sheetId, numColumns) {
+const resizeColumns = async (sheetId, numColumns) => {
   return await logPromise(
     wrapPromise(sheets.spreadsheets.batchUpdate, {
       spreadsheetId: process.env.SHEETS_SHEET_ID,
@@ -124,4 +142,17 @@ exports.resizeColumns = async function(sheetId, numColumns) {
     }),
     `Resizing columns for sheet ${sheetId}`
   ).then(res => res)
+}
+
+module.exports = {
+  getAuthURL,
+  getToken,
+  getSheets,
+  duplicateSheet,
+  addSheet,
+  renameSheet,
+  clearSheet,
+  updateSheet,
+  formatHeaderRow,
+  resizeColumns
 }
