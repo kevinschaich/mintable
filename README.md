@@ -1,14 +1,13 @@
 <h4 align="center"><img width="200" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Roll your own ad-free Mint clone for managing personal finances using publicly available APIs.</h4><br></h4>
 
-![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)
-![](https://img.shields.io/github/release/kevinschaich/mintable.svg)
-![](https://img.shields.io/github/license/kevinschaich/mintable.svg)
-![](https://img.shields.io/librariesio/github/kevinschaich/mintable.svg)
-![](https://img.shields.io/github/languages/code-size/kevinschaich/mintable.svg)
-![](https://img.shields.io/github/contributors/kevinschaich/mintable.svg)
-![](https://img.shields.io/github/last-commit/kevinschaich/mintable.svg)
-![](https://img.shields.io/github/issues/kevinschaich/mintable.svg)
-![](https://img.shields.io/github/issues-pr/kevinschaich/mintable.svg)
+[![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)](https://travis-ci.com/kevinschaich/mintable)
+[![](https://img.shields.io/github/release/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/releases)
+[![](https://img.shields.io/github/license/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/blob/master/LICENSE)
+[![](https://img.shields.io/librariesio/github/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/network/dependencies)
+[![](https://img.shields.io/github/contributors/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/graphs/contributors)
+[![](https://img.shields.io/github/last-commit/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/commits/master)
+[![](https://img.shields.io/github/issues/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/issues)
+[![](https://img.shields.io/github/issues-pr/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/pulls)
 
 ## Quickstart
 
