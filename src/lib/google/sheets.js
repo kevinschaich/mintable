@@ -22,7 +22,7 @@ exports.getSheets = async function(spreadsheetId) {
         console.log("Fetch failed:", err);
         reject(err);
       }
-      console.log(`Success! Fetched current sheets.`);
+      console.log(`Fetched current sheets.`);
       resolve(res.data.sheets);
     })
   );
@@ -43,7 +43,7 @@ exports.duplicateSheet = async function(sourceSpreadsheetId, sourceSheetId) {
           console.log("Copy failed:", err);
           reject(err);
         }
-        console.log(`Success! Sheet copied.`);
+        console.log(`Sheet copied.`);
         resolve({ properties: res.data });
       }
     )
@@ -70,7 +70,7 @@ exports.addSheet = async function(title) {
           console.log("Add failed: ", err);
           reject(err);
         }
-        console.log(`Success! ${title} sheet added.`);
+        console.log(`${title} sheet added.`);
         resolve(res.data.replies[0].addSheet);
       }
     )
@@ -101,7 +101,7 @@ exports.renameSheet = async function(sheetId, title) {
           console.log("Rename failed: ", err);
           reject(err);
         }
-        console.log(`Success! ${title} sheet renamed.`);
+        console.log(`${title} sheet renamed.`);
         resolve(res.data);
       }
     )
@@ -120,7 +120,7 @@ exports.clearSheet = async function(title) {
           console.log("Clear failed: ", err);
           reject(err);
         }
-        console.log(`Success! ${title} cleared.`);
+        console.log(`${title} cleared.`);
         resolve(res);
       }
     )
@@ -145,7 +145,7 @@ exports.updateSheet = async function(updates) {
           console.log("Update failed: ", err);
           reject(err);
         }
-        console.log(`Success! ${res.data.totalUpdatedCells} cells updated.`);
+        console.log(`${res.data.totalUpdatedCells} cells updated.`);
         resolve();
       }
     )
@@ -207,7 +207,7 @@ exports.formatHeaderRow = async function(sheetId) {
           console.log("Format failed: ", err);
           reject(err);
         }
-        console.log(`Success! ${sheetId} sheet formatted.`);
+        console.log(`Sheet formatted.`);
         resolve();
       }
     )
@@ -239,7 +239,7 @@ exports.resizeColumns = async function(sheetId, numColumns) {
           console.log("Resize failed: ", err);
           reject(err);
         }
-        console.log(`Success! ${sheetId} columns resized.`);
+        console.log(`Sheet columns resized.`);
         resolve();
       }
     )
