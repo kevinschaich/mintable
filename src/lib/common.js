@@ -4,7 +4,7 @@ const path = require('path')
 
 const CONFIG_FILE = path.join(__dirname, '../..', 'mintable.config.json')
 
-console.log(`Using config ${CONFIG_FILE}...`)
+console.log(`Using config ${CONFIG_FILE}...\n`)
 
 const DEFAULT_CONFIG = {
   TRANSACTION_COLUMNS: [

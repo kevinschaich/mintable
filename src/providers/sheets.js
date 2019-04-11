@@ -75,4 +75,6 @@ exports.updateSheets = async (
 
   await resizeColumns(currentMonthSheet.properties.sheetId, numAutomatedColumns)
   await resizeColumns(lastMonthSheet.properties.sheetId, numAutomatedColumns)
+
+  console.log(`\nView your spreadsheet at https://docs.google.com/spreadsheets/d/${process.env.SHEETS_SHEET_ID}\n`)
 }
