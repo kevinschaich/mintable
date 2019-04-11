@@ -44,8 +44,10 @@ const getConfigEnv = () =>
 const writeConfig = async newConfig =>
   new Promise(async (resolve, reject) => {
     try {
+      console.log("NEW", newConfig)
       fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2))
       const config = await logPromise(getConfigEnv(), 'Updating cached config')
+      console.log("OLD", config)
       resolve(config)
     } catch (error) {
       reject(error)
@@ -58,7 +60,7 @@ const writeConfigProperty = async (propertyId, value) => {
     [propertyId]: value
   }
 
-  await logPromise(writeConfig(newConfig), 'Writing default config')
+  await logPromise(writeConfig(newConfig), `Writing config property ${propertyId}`)
 }
 
 const deleteConfigProperty = async propertyId => {
@@ -68,7 +70,7 @@ const deleteConfigProperty = async propertyId => {
 }
 
 const maybeWriteDefaultConfig = async () => {
-  const currentConfig = await logPromise(getConfigEnv(), 'Validating current config')
+  const currentConfig = await logPromise(getConfigEnv(), 'Validating current config', { quiet: true })
 
   if (!_.every(_.keys(DEFAULT_CONFIG), _.partial(_.has, currentConfig))) {
     await logPromise(writeConfig({ ...DEFAULT_CONFIG, ...(currentConfig || {}) }), 'Writing default config')

@@ -2,6 +2,7 @@ const { google } = require('googleapis')
 const oAuth2Client = require('./googleClient')
 const _ = require('lodash')
 const { logPromise } = require('../logging')
+const {writeConfigProperty} = require ('../common')
 
 oAuth2Client.setCredentials({
   access_token: process.env.SHEETS_ACCESS_TOKEN,
@@ -19,20 +20,21 @@ const sheets = google.sheets({
 const wrapPromise = (f, args) =>
   new Promise((resolve, reject) => f(args, (error, data) => (error ? reject(error) : resolve(data))))
 
-const getAuthURL = async () => {
-  return await logPromise(
-    wrapPromise(oAuth2Client.generateAuthUrl, {
-      access_type: 'offline',
-      scope: ['https://www.googleapis.com/auth/spreadsheets']
-    }),
-    `Getting auth URL`
-  )
+const getAuthURL = () => {
+  return oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: ['https://www.googleapis.com/auth/spreadsheets'],
+    client_id: process.env.SHEETS_CLIENT_ID,
+    redirect_uri: process.env.SHEETS_REDIRECT_URI
+  })
 }
 
 const getToken = async code => {
-  return await logPromise(wrapPromise(oAuth2Client.getToken, code), `Fetching token for code ${code}`).then(token => {
-    Object.keys(token).forEach(key => {
-      writeConfigProperty(`SHEETS_${key.toUpperCase()}`, token[key])
+  return await logPromise(oAuth2Client.getToken(code), `Fetching token for code ${code}`).then(async res => {
+    const tokens = await res.tokens
+    await Object.keys(tokens).forEach(async key => {
+      console.log('\nKEY\n', key)
+      await writeConfigProperty(`SHEETS_${key.toUpperCase()}`, tokens[key])
     })
   })
 }

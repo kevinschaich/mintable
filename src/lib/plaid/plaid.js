@@ -30,7 +30,7 @@ const getPlaidAccountTokens = () => {
     }))
 }
 
-const fetchTransactions = async options => {
+const fetchTransactions = async () => {
   const accounts = getPlaidAccountTokens()
 
   if (!accounts) {
@@ -56,7 +56,7 @@ const fetchTransactions = async options => {
   return transactions
 }
 
-const fetchBalances = async options => {
+const fetchBalances = async () => {
   const accounts = getPlaidAccountTokens()
 
   if (!accounts) {
@@ -76,7 +76,7 @@ const fetchBalances = async options => {
 }
 
 // Exchange token flow - exchange a Link public_token for an API access_token
-const saveAccessToken = async (public_token, accountNickname, options) => {
+const saveAccessToken = async (public_token, accountNickname) => {
   return await logPromise(
     plaidClient.exchangePublicToken(public_token),
     `Saving access token for account ${account}`
@@ -87,7 +87,7 @@ const saveAccessToken = async (public_token, accountNickname, options) => {
 }
 
 // Exchange an expired API access_token for a new Link public_token
-const createPublicToken = async (access_token, accountNickname, options) => {
+const createPublicToken = async (access_token, accountNickname) => {
   return await logPromise(
     plaidClient.createPublicToken(access_token),
     `Creating public token for account ${accountNickname}`
