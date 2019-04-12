@@ -27,53 +27,46 @@ const DEFAULT_CONFIG = {
 
 const getConfigEnv = () =>
   new Promise((resolve, reject) => {
-    try {
-      // Fallback for CI
-      let config = process.env.MINTABLE_CONFIG || fs.readFileSync(CONFIG_FILE, 'utf8')
+    // Fallback for CI
+    let config = process.env.MINTABLE_CONFIG || fs.readFileSync(CONFIG_FILE, 'utf8')
 
-      // CI has inconsistent behavior and sometimes parses this as a object, other times as a string
-      config = typeof config === 'string' ? JSON.parse(config) : config
+    // CI has inconsistent behavior and sometimes parses this as a object, other times as a string
+    config = typeof config === 'string' ? JSON.parse(config) : config
 
-      process.env = { ...process.env, ...config }
-      resolve(config)
-    } catch (error) {
-      reject(error)
-    }
+    process.env = { ...process.env, ...config }
+    resolve(config)
   })
 
 const writeConfig = async newConfig =>
   new Promise(async (resolve, reject) => {
-    try {
-      console.log("NEW", newConfig)
-      fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2))
-      const config = await logPromise(getConfigEnv(), 'Updating cached config')
-      console.log("OLD", config)
-      resolve(config)
-    } catch (error) {
-      reject(error)
-    }
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2))
+    const config = await logPromise(getConfigEnv(), 'Updating cached config after writing')
+    resolve(config)
   })
 
-const writeConfigProperty = async (propertyId, value) => {
-  const newConfig = {
-    ...(await logPromise(getConfigEnv(), 'Getting current config')),
-    [propertyId]: value
+const updateConfig = async updates => {
+  const currentConfig = await logPromise(getConfigEnv(), `Getting current config to update`)
+  const newConfig = await {
+    ...currentConfig,
+    ...updates
   }
 
-  await logPromise(writeConfig(newConfig), `Writing config property ${propertyId}`)
+  await logPromise(writeConfig(newConfig), `Writing updated config`)
 }
 
 const deleteConfigProperty = async propertyId => {
-  const newConfig = _.omit(await logPromise(getConfigEnv(), 'Getting current config'), [propertyId])
+  const newConfig = _.omit(
+    await logPromise(getConfigEnv(), `Getting current config to delete property ${propertyId}`),
+    [propertyId]
+  )
 
-  await logPromise(writeConfig(newConfig), 'Writing default config')
+  await logPromise(writeConfig(newConfig), `Writing updated config without property ${propertyId}`)
 }
 
 const maybeWriteDefaultConfig = async () => {
-  const currentConfig = await logPromise(getConfigEnv(), 'Validating current config', { quiet: true })
-
+  const currentConfig = (await logPromise(getConfigEnv(), 'Validating current config', { quiet: true })) || {}
   if (!_.every(_.keys(DEFAULT_CONFIG), _.partial(_.has, currentConfig))) {
-    await logPromise(writeConfig({ ...DEFAULT_CONFIG, ...(currentConfig || {}) }), 'Writing default config')
+    await logPromise(writeConfig({ ...DEFAULT_CONFIG, ...(currentConfig || {}) }), 'Updating config defaults')
   }
 }
 
@@ -116,7 +109,7 @@ const sheetsSetupCompleted = () => {
 
 module.exports = {
   getConfigEnv,
-  writeConfigProperty,
+  updateConfig,
   deleteConfigProperty,
   writeConfig,
   maybeWriteDefaultConfig,

@@ -1,5 +1,5 @@
 const moment = require('moment')
-const { writeConfigProperty } = require('../common')
+const { updateConfig } = require('../common')
 const plaidClient = require('./plaidClient')
 const { logPromise } = require('../logging')
 const pMapSeries = require('p-map-series')
@@ -81,7 +81,7 @@ const saveAccessToken = async (public_token, accountNickname) => {
     plaidClient.exchangePublicToken(public_token),
     `Saving access token for account ${account}`
   ).then(tokenResponse => {
-    writeConfigProperty(`PLAID_TOKEN_${accountNickname.toUpperCase()}`, tokenResponse.access_token)
+    updateConfig({ [`PLAID_TOKEN_${accountNickname.toUpperCase()}`]: tokenResponse.access_token })
     return false
   })
 }

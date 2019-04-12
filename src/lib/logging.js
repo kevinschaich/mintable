@@ -44,20 +44,12 @@ const logPromise = async (promise, text, options = defaultOptions) => {
 
         if (options.quiet === false) {
           process.exit(1)
+        } else {
+          resolve()
         }
-        resolve(errorJSON)
       })
   })
 }
-
-// Usage:
-// ;(async () => {
-//   const fetch = require('isomorphic-unfetch')
-//   await logPromise(fetch('https://google.com'), 'Fetching Google.com')
-//   await logPromise(fetch('https://google.com'), 'Fetching Google.com (verbose)', { debug: true })
-//   await logPromise(fetch('asdfasdfjlvonaosnbonaobnaosdho.com'), 'Fetching bogus site (quiet)', { quiet: true })
-//   await logPromise(fetch('asdfasdfjlvonaosnbonaobnaosdho.com'), 'Fetching bogus site')
-// })()
 
 module.exports = {
   logPromise

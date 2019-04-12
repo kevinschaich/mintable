@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const opn = require('opn')
 const {
   getConfigEnv,
-  writeConfigProperty,
+  updateConfig,
   deleteConfigProperty,
   maybeWriteDefaultConfig,
   accountsSetupCompleted,
@@ -27,7 +27,7 @@ try {
     server.use(bodyParser.json())
 
     server.get('/config', async (req, res) => {
-      const config = await logPromise(getConfigEnv(), 'Getting current config')
+      const config = await logPromise(getConfigEnv(), 'Serving current config')
       return res.json({
         ...config,
         accountsSetupCompleted: accountsSetupCompleted(),
@@ -36,7 +36,7 @@ try {
     })
 
     server.put('/config', async (req, res) => {
-      return writeConfigProperty(req.body.id, req.body.value)
+      return updateConfig({ [req.body.id]: req.body.value })
     })
 
     server.delete('/config', async (req, res) => {

@@ -2,7 +2,7 @@ const { google } = require('googleapis')
 const oAuth2Client = require('./googleClient')
 const _ = require('lodash')
 const { logPromise } = require('../logging')
-const {writeConfigProperty} = require ('../common')
+const { updateConfig } = require('../common')
 
 oAuth2Client.setCredentials({
   access_token: process.env.SHEETS_ACCESS_TOKEN,
@@ -30,12 +30,10 @@ const getAuthURL = () => {
 }
 
 const getToken = async code => {
-  return await logPromise(oAuth2Client.getToken(code), `Fetching token for code ${code}`).then(async res => {
+  await logPromise(oAuth2Client.getToken(code), `Fetching token for code ${code}`).then(async res => {
     const tokens = await res.tokens
-    await Object.keys(tokens).forEach(async key => {
-      console.log('\nKEY\n', key)
-      await writeConfigProperty(`SHEETS_${key.toUpperCase()}`, tokens[key])
-    })
+    const updates = await _.mapKeys(tokens, (value, key) => `SHEETS_${key.toUpperCase()}`)
+    await updateConfig(updates)
   })
 }
 
