@@ -74,7 +74,7 @@ const getConfigEnv = async () =>
       process.env = { ...process.env, ...config }
       resolve(config)
     }),
-    'Getting current Config'
+    'Fetching current config'
   )
 
 const writeConfig = async newConfig =>
@@ -84,18 +84,18 @@ const writeConfig = async newConfig =>
       await getConfigEnv()
       resolve()
     }),
-    'Writing new config'
+    'Writing config'
   )
 
 const updateConfig = async updates => {
   const currentConfig = await getConfigEnv()
   const newConfig = { ...currentConfig, ...updates }
-  return wrapPromise(writeConfig(newConfig), 'Updating config')
+  return wrapPromise(writeConfig(newConfig), `Updating config properties ${_.join(_.keys(updates), ', ')}`)
 }
 
 const deleteConfigProperty = async propertyId => {
   const newConfig = _.omit(await getConfigEnv(), [propertyId])
-  return wrapPromise(writeConfig(newConfig), 'Deleting config')
+  return wrapPromise(writeConfig(newConfig), `Deleting config property ${propertyId}`)
 }
 
 const maybeWriteDefaultConfig = async () => {
