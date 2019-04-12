@@ -9,7 +9,7 @@ const paddedJSON = data => {
 
 const defaultOptions = {
   debug: false, // Print success output    (default: only error output printed)
-  quiet: false // Don't exit on failures  (default: exit on failures)
+  quiet: false  // Don't exit on failures  (default: exit on failures)
 }
 
 const wrapPromise = async (promise, text, options = defaultOptions) => {
@@ -26,7 +26,7 @@ const wrapPromise = async (promise, text, options = defaultOptions) => {
         resolve(data)
       })
       .catch(error => {
-        text = `Error ${text}:`
+        text = `Error ${text.toLowerCase()}:`
         let errorJSON = { error: JSON.stringify(error) }
 
         if (error.message) {

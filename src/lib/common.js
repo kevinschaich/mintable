@@ -74,7 +74,7 @@ const getConfigEnv = async () =>
       process.env = { ...process.env, ...config }
       resolve(config)
     }),
-    'Fetching current config'
+    'Fetching current config', {quiet: true}
   )
 
 const writeConfig = async newConfig =>
@@ -99,8 +99,13 @@ const deleteConfigProperty = async propertyId => {
 }
 
 const maybeWriteDefaultConfig = async () => {
-  const currentConfig = await getConfigEnv()
-  return wrapPromise(writeConfig({ ...DEFAULT_CONFIG, ...(currentConfig || {}) }), 'Writing default config')
+  try {
+    const currentConfig = getConfigEnv()
+    return wrapPromise(writeConfig({ ...DEFAULT_CONFIG, ...currentConfig }), 'Attempting to update config defaults')
+  }
+  catch(e) {
+    return wrapPromise(writeConfig({ ...DEFAULT_CONFIG }), 'Failed to fetch config, writing default config')
+  }
 }
 
 module.exports = {
