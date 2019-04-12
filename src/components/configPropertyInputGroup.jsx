@@ -1,6 +1,6 @@
 import '../styles/style.scss'
 import * as _ from 'lodash'
-import fetch from 'isomorphic-unfetch'
+import { fetch } from './helpers'
 import ConfigPropertyInput from './configPropertyInput'
 import React from 'react'
 

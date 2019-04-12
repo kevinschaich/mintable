@@ -10,8 +10,7 @@ class Accounts extends React.Component {
   }
 
   componentDidMount = async () => {
-    const accounts = await fetch('http://localhost:3000/balances')
-    this.setState({ accounts: await accounts.json() })
+    this.setState({ accounts: await fetch('http://localhost:3000/balances') })
   }
 
   handleOnNewAccountNameChange = e => {

@@ -1,13 +1,12 @@
 import '../styles/style.scss'
 import ProgressSidebar from '../components/progressSidebar'
-import fetch from 'isomorphic-unfetch'
+import { fetch } from '../components/helpers'
 import ConfigPropertyInputGroup from '../components/configPropertyInputGroup'
 import Link from 'next/link'
 
 const Sheets = props => {
   const handleOnClickAuth = async e => {
-    const res = await fetch('http://localhost:3000/google-sheets-url')
-    const URL = (await res.json()).url
+    const URL = (await fetch('http://localhost:3000/google-sheets-url')).url
     var win = window.open(URL, '_blank')
     win.focus()
   }
@@ -64,9 +63,7 @@ const Sheets = props => {
 }
 
 Sheets.getInitialProps = async function() {
-  const res = await fetch('http://localhost:3000/config')
-
-  return { config: await res.json() }
+  return { config: await fetch('http://localhost:3000/config') }
 }
 
 export default Sheets

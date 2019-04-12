@@ -1,6 +1,6 @@
 import '../styles/style.scss'
 import ProgressSidebar from '../components/progressSidebar'
-import fetch from 'isomorphic-unfetch'
+import { fetch } from '../components/helpers'
 import ConfigPropertyInputGroup from '../components/configPropertyInputGroup'
 import Link from 'next/link'
 
@@ -49,9 +49,7 @@ const Accounts = props => {
 }
 
 Accounts.getInitialProps = async function() {
-  const res = await fetch('http://localhost:3000/config')
-
-  return { config: await res.json() }
+  return { config: await fetch('http://localhost:3000/config') }
 }
 
 export default Accounts

@@ -1,7 +1,7 @@
 import '../styles/style.scss'
 import Link from 'next/link'
 import ProgressSidebar from '../components/progressSidebar'
-import fetch from 'isomorphic-unfetch'
+import { fetch } from '../components/helpers'
 
 const Welcome = props => {
   return (
@@ -19,9 +19,7 @@ const Welcome = props => {
 }
 
 Welcome.getInitialProps = async () => {
-  const res = await fetch('http://localhost:3000/config')
-
-  return { config: await res.json() }
+  return { config: await fetch('http://localhost:3000/config') }
 }
 
 export default Welcome

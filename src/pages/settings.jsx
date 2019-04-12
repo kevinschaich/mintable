@@ -1,5 +1,5 @@
 import '../styles/style.scss'
-import fetch from 'isomorphic-unfetch'
+import { fetch } from '../components/helpers'
 const _ = require('lodash')
 import ConfigPropertyInputGroup from '../components/configPropertyInputGroup'
 import Accounts from '../components/accounts'
@@ -22,9 +22,7 @@ const Settings = props => {
 }
 
 Settings.getInitialProps = async function() {
-  const config = await fetch('http://localhost:3000/config')
-
-  return { config: await config.json() }
+  return { config: await fetch('http://localhost:3000/config') }
 }
 
 export default Settings
