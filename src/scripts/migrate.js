@@ -31,13 +31,16 @@ const dotenv = require('dotenv')
 
   let config = _.pick(process.env, configProperties)
 
-  config = {
-    ...config,
-    ACCOUNT_PROVIDER: config.TRANSACTION_PROVIDER,
-    SHEET_PROVIDER: config.SPREADSHEET_PROVIDER
+  if (config) {
+    config = {
+      ...config,
+      ACCOUNT_PROVIDER: config.TRANSACTION_PROVIDER,
+      SHEET_PROVIDER: config.SPREADSHEET_PROVIDER
+    }
+
+    await writeConfig(config)
   }
 
-  await writeConfig(config)
   await maybeWriteDefaultConfig()
 
   console.log('\nSuccessfully migrated to config version 1.x.x.\n')

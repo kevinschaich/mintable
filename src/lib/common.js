@@ -62,7 +62,7 @@ const sheetsSetupCompleted = () => {
   }
 }
 
-const getConfigEnv = async () =>
+const getConfigEnv = async options =>
   wrapPromise(
     new Promise((resolve, reject) => {
       let config = process.env.MINTABLE_CONFIG || fs.readFileSync(CONFIG_FILE, 'utf8')
@@ -74,7 +74,8 @@ const getConfigEnv = async () =>
       process.env = { ...process.env, ...config }
       resolve(config)
     }),
-    'Fetching current config', {quiet: true}
+    'Fetching current config',
+    options
   )
 
 const writeConfig = async newConfig =>
@@ -99,13 +100,13 @@ const deleteConfigProperty = async propertyId => {
 }
 
 const maybeWriteDefaultConfig = async () => {
-  try {
-    const currentConfig = getConfigEnv()
-    return wrapPromise(writeConfig({ ...DEFAULT_CONFIG, ...currentConfig }), 'Attempting to update config defaults')
-  }
-  catch(e) {
-    return wrapPromise(writeConfig({ ...DEFAULT_CONFIG }), 'Failed to fetch config, writing default config')
-  }
+  return wrapPromise(
+    getConfigEnv({ quiet: true })
+      .then(currentConfig => writeConfig({ ...DEFAULT_CONFIG, ...currentConfig }))
+      .catch(writeConfig({ ...DEFAULT_CONFIG })),
+    'Writing default config',
+    { quiet: true }
+  ).catch(e => e) // the first time will always fail
 }
 
 module.exports = {
