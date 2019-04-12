@@ -1,9 +1,10 @@
 const moment = require('moment')
 const { getConfigEnv } = require('../lib/common')
-const { logPromise } = require('../lib/logging')
 
 ;(async () => {
-  await logPromise(getConfigEnv(), 'Getting current config to run Mintable')
+  await getConfigEnv()
+
+  // Both of these require parameters from config, so we need to lazily load them
   const { updateSheets } = require('../providers/sheets')
   const { getTransactions } = require('../providers/plaid')
 

@@ -1,7 +1,7 @@
 const fs = require('fs')
 const _ = require('lodash')
 const path = require('path')
-const { logPromise } = require('./logging')
+const { wrapPromise } = require('./logging')
 
 const CONFIG_FILE = path.join(__dirname, '../..', process.argv[2] || 'mintable.config.json')
 
@@ -23,51 +23,6 @@ const DEFAULT_CONFIG = {
   CATEGORY_OVERRIDES: [],
   SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback',
   PLAID_ENVIRONMENT: 'development'
-}
-
-const getConfigEnv = () =>
-  new Promise((resolve, reject) => {
-    // Fallback for CI
-    let config = process.env.MINTABLE_CONFIG || fs.readFileSync(CONFIG_FILE, 'utf8')
-
-    // CI has inconsistent behavior and sometimes parses this as a object, other times as a string
-    config = typeof config === 'string' ? JSON.parse(config) : config
-
-    process.env = { ...process.env, ...config }
-    resolve(config)
-  })
-
-const writeConfig = async newConfig =>
-  new Promise(async (resolve, reject) => {
-    fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2))
-    const config = await logPromise(getConfigEnv(), 'Updating cached config after writing')
-    resolve(config)
-  })
-
-const updateConfig = async updates => {
-  const currentConfig = await logPromise(getConfigEnv(), `Getting current config to update`)
-  const newConfig = await {
-    ...currentConfig,
-    ...updates
-  }
-
-  await logPromise(writeConfig(newConfig), `Writing updated config`)
-}
-
-const deleteConfigProperty = async propertyId => {
-  const newConfig = _.omit(
-    await logPromise(getConfigEnv(), `Getting current config to delete property ${propertyId}`),
-    [propertyId]
-  )
-
-  await logPromise(writeConfig(newConfig), `Writing updated config without property ${propertyId}`)
-}
-
-const maybeWriteDefaultConfig = async () => {
-  const currentConfig = (await logPromise(getConfigEnv(), 'Validating current config', { quiet: true })) || {}
-  if (!_.every(_.keys(DEFAULT_CONFIG), _.partial(_.has, currentConfig))) {
-    await logPromise(writeConfig({ ...DEFAULT_CONFIG, ...(currentConfig || {}) }), 'Updating config defaults')
-  }
 }
 
 const checkEnv = propertyIds => {
@@ -105,6 +60,47 @@ const sheetsSetupCompleted = () => {
     default:
       return false
   }
+}
+
+const getConfigEnv = async () =>
+  wrapPromise(
+    new Promise((resolve, reject) => {
+      let config = process.env.MINTABLE_CONFIG || fs.readFileSync(CONFIG_FILE, 'utf8')
+
+      if (typeof config === 'string') {
+        config = JSON.parse(config)
+      }
+
+      process.env = { ...process.env, ...config }
+      resolve(config)
+    }),
+    'Getting current Config'
+  )
+
+const writeConfig = async newConfig =>
+  wrapPromise(
+    new Promise(async (resolve, reject) => {
+      fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2))
+      await getConfigEnv()
+      resolve()
+    }),
+    'Writing new config'
+  )
+
+const updateConfig = async updates => {
+  const currentConfig = await getConfigEnv()
+  const newConfig = { ...currentConfig, ...updates }
+  return wrapPromise(writeConfig(newConfig), 'Updating config')
+}
+
+const deleteConfigProperty = async propertyId => {
+  const newConfig = _.omit(await getConfigEnv(), [propertyId])
+  return wrapPromise(writeConfig(newConfig), 'Deleting config')
+}
+
+const maybeWriteDefaultConfig = async () => {
+  const currentConfig = await getConfigEnv()
+  return wrapPromise(writeConfig({ ...DEFAULT_CONFIG, ...(currentConfig || {}) }), 'Writing default config')
 }
 
 module.exports = {

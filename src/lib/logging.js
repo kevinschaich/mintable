@@ -12,14 +12,12 @@ const defaultOptions = {
   quiet: false // Don't exit on failures  (default: exit on failures)
 }
 
-const logPromise = async (promise, text, options = defaultOptions) => {
+const wrapPromise = async (promise, text, options = defaultOptions) => {
   const spinner = ora({ text: text + '...', indent: 2 }).start()
 
   return new Promise(async (resolve, reject) => {
     let text = spinner.text.replace('...', '')
-    await promise
-
-      // Successful execution
+    return promise
       .then(data => {
         spinner.stopAndPersist({
           text: options.debug ? text + paddedJSON(data) : text,
@@ -27,8 +25,6 @@ const logPromise = async (promise, text, options = defaultOptions) => {
         })
         resolve(data)
       })
-
-      // Failed execution
       .catch(error => {
         text = `Error ${text}:`
         let errorJSON = { error: JSON.stringify(error) }
@@ -45,12 +41,12 @@ const logPromise = async (promise, text, options = defaultOptions) => {
         if (options.quiet === false) {
           process.exit(1)
         } else {
-          resolve()
+          reject(errorJSON)
         }
       })
   })
 }
 
 module.exports = {
-  logPromise
+  wrapPromise
 }
