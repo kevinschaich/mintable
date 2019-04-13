@@ -7,7 +7,7 @@ export const fetch = (url, options) => {
     .then(response => {
       if (response.error) {
         console.error(`Error fetching ${url}:`)
-        console.error(error)
+        console.error(response.error)
       } else {
         if (process.browser) {
           console.log(`Successfully fetched ${url}:`)

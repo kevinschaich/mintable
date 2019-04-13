@@ -37,15 +37,15 @@ maybeWriteDefaultConfig().then(() => {
         .catch(error => res.json(error))
     })
 
-    server.put('/config', (req, res) => {
+    server.post('/config', (req, res) => {
       return updateConfig(req.body.updates)
-        .then(response => res.json({ data: {} }))
+        .then(config => res.json({ data: config }))
         .catch(error => res.json(error))
     })
 
     server.delete('/config', (req, res) => {
       return deleteConfigProperty(req.body.id)
-        .then(response => res.json({ data: {} }))
+        .then(config => res.json({ data: config }))
         .catch(error => res.json(error))
     })
 
@@ -66,7 +66,7 @@ maybeWriteDefaultConfig().then(() => {
         case 'plaid':
           return require('../lib/plaid')
             .saveAccessToken(req.body.public_token, req.body.accountNickname)
-            .then(balances => res.json({ data: balances }))
+            .then(res.redirect(`http://localhost:3000/settings`))
             .catch(error => res.json(error))
         default:
           return res.json({ data: {} })
@@ -77,7 +77,7 @@ maybeWriteDefaultConfig().then(() => {
       switch (process.env.ACCOUNT_PROVIDER) {
         case 'plaid':
           return require('../lib/plaid')
-            .createPublicToken(process.env[`PLAID_TOKEN_${nickname}`], req.body.accountNickname)
+            .createPublicToken(process.env[`PLAID_TOKEN_${req.body.accountNickname}`], req.body.accountNickname)
             .then(token => res.json({ data: token }))
             .catch(error => res.json(error))
         default:
@@ -86,22 +86,29 @@ maybeWriteDefaultConfig().then(() => {
     })
 
     server.get('/google-sheets-url', (req, res) => {
-      return require('../lib/google/sheets')
+      return require('../lib/google')
         .getAuthURL()
         .then(url => res.json({ data: url }))
         .catch(error => res.json(error))
     })
 
     server.get('/google-sheets-oauth2callback', (req, res) => {
-      return require('../lib/google/sheets')
+      return require('../lib/google')
         .getToken(req.query.code)
         .then(token => res.redirect('http://localhost:3000/sheets'))
         .catch(error => res.json(error))
     })
 
     server.get('/', (req, res) => {
-      const page = accountsSetupCompleted() && sheetsSetupCompleted() ? 'settings' : 'welcome'
-      return res.redirect(`http://localhost:3000/${page}`)
+      if (!accountsSetupCompleted() && !sheetsSetupCompleted()) {
+        return res.redirect(`http://localhost:3000/welcome`)
+      } else if (!accountsSetupCompleted()) {
+        return res.redirect(`http://localhost:3000/accounts`)
+      } else if (!sheetsSetupCompleted()) {
+        return res.redirect(`http://localhost:3000/sheets`)
+      } else {
+        return res.redirect(`http://localhost:3000/settings`)
+      }
     })
 
     server.get('*', (req, res) => {

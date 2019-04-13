@@ -14,7 +14,7 @@ const Settings = props => {
       <div className='container'>
         <Accounts config={props.config} />
         <h1>Settings</h1>
-        <span>Any settings changed below will automatically update.</span>
+        <span>Any settings changed below will automatically update your config file. Some settings may require a server restart to take effect.</span>
         <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />
       </div>
     </div>

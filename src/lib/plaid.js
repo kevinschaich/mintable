@@ -47,7 +47,7 @@ const getPlaidAccountTokens = () => {
   return Object.keys(process.env)
     .filter(key => key.startsWith(`PLAID_TOKEN`))
     .map(key => ({
-      account: key.replace(/^PLAID_TOKEN_/, ''),
+      nickname: key.replace(/^PLAID_TOKEN_/, ''),
       token: process.env[key]
     }))
 }
@@ -55,16 +55,16 @@ const getPlaidAccountTokens = () => {
 const fetchTransactions = () => {
   const accounts = getPlaidAccountTokens()
 
-  const fetchTransactionsForAccount = data => {
+  const fetchTransactionsForAccount = account => {
     return wrapPromise(
-      PLAID_CLIENT.getTransactions(data.token, ...TRANSACTION_OPTIONS),
-      `Fetching transactions for account ${data.account}`
+      PLAID_CLIENT.getTransactions(account.token, ...TRANSACTION_OPTIONS),
+      `Fetching transactions for account ${account.nickname}`
     ).then(data => ({
-      account: data.account,
+      account: account.nickname,
       transactions: data.transactions.map(transaction => ({
         ...transaction,
         amount: -transaction.amount,
-        account: data.account
+        account: account.nickname
       }))
     }))
   }
@@ -75,16 +75,15 @@ const fetchTransactions = () => {
 const fetchBalances = () => {
   const accounts = getPlaidAccountTokens()
 
-  if (!accounts) {
-    return []
-  }
-
-  const fetchBalanceForAccount = data => {
-    return wrapPromise(PLAID_CLIENT.getBalance(data.token), `Fetching balance for account ${data.account}`).then(
-      data => ({
-        ...data,
-        nickname: data.account
-      })
+  const fetchBalanceForAccount = account => {
+    return wrapPromise(
+      PLAID_CLIENT.getBalance(account.token).then(data => {
+        return {
+          ...data,
+          nickname: account.nickname
+        }
+      }),
+      `Fetching balance for account ${account.nickname}`
     )
   }
 
@@ -97,7 +96,7 @@ const saveAccessToken = (public_token, accountNickname) => {
     PLAID_CLIENT.exchangePublicToken(public_token).then(tokenResponse =>
       updateConfig({ [`PLAID_TOKEN_${accountNickname.toUpperCase()}`]: tokenResponse.access_token })
     ),
-    `Saving access token for account ${account}`
+    `Saving access token for account ${accountNickname}`
   )
 }
 

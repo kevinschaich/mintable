@@ -5,7 +5,8 @@ const { wrapPromise } = require('./logging')
 
 const CONFIG_FILE = path.join(__dirname, '../..', process.argv[2] || 'mintable.config.json')
 
-console.log(`\nUsing config ${CONFIG_FILE}...\n`)
+console.log(`\nUsing config ${CONFIG_FILE}.`)
+console.log(`Note: The messages displayed below are automated and may contain duplicates.\n`)
 
 const DEFAULT_CONFIG = {
   TRANSACTION_COLUMNS: [
@@ -82,8 +83,7 @@ const writeConfig = async newConfig =>
   wrapPromise(
     new Promise(async (resolve, reject) => {
       fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2))
-      await getConfigEnv()
-      resolve()
+      resolve(getConfigEnv())
     }),
     'Writing config'
   )

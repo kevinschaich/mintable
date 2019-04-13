@@ -12,7 +12,7 @@ class ConfigPropertyInputGroup extends React.Component {
 
   handleInputChange = e => {
     const { id, value } = e.currentTarget
-    const body = { [id]: value }
+    const body = { updates: { [id]: value } }
 
     this.setState(
       {
@@ -20,7 +20,7 @@ class ConfigPropertyInputGroup extends React.Component {
       },
       () =>
         fetch('http://localhost:3000/config', {
-          method: 'PUT',
+          method: 'POST',
           body: JSON.stringify(body),
           headers: {
             'Content-Type': 'application/json'

@@ -2,6 +2,7 @@ import '../styles/style.scss'
 import PlaidLink from 'react-plaid-link'
 import React from 'react'
 import Account from './account'
+import { fetch } from './helpers'
 
 class Accounts extends React.Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class Accounts extends React.Component {
       key: this.props.config.PLAID_PUBLIC_KEY,
       onExit: this.handleOnExit,
       onSuccess: this.handleOnSuccess,
-      token: data.public_token[0]
+      token: data
     }).open()
   }
 

@@ -5,8 +5,8 @@ const { getConfigEnv } = require('../lib/common')
   await getConfigEnv()
 
   // Both of these require parameters from config, so we need to lazily load them
-  const { updateSheets } = require('../providers/sheets')
-  const { getTransactions } = require('../providers/plaid')
+  const { updateSheets } = require('../lib/google')
+  const { getTransactions } = require('../lib/plaid')
 
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
   const firstTransactionColumn = alphabet[0]

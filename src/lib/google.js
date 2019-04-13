@@ -1,8 +1,7 @@
 const { google } = require('googleapis')
 const _ = require('lodash')
-const { wrapPromise } = require('../logging')
-const { updateConfig } = require('../common')
-const { google } = require('googleapis')
+const { wrapPromise } = require('./logging')
+const { updateConfig } = require('./common')
 
 const OAUTH2_CLIENT = new google.auth.OAuth2(
   process.env.SHEETS_CLIENT_ID,
