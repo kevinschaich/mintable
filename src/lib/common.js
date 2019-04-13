@@ -95,6 +95,7 @@ const updateConfig = async updates => {
 }
 
 const deleteConfigProperty = async propertyId => {
+  process.env[propertyId] = undefined
   const newConfig = _.omit(await getConfigEnv(), [propertyId])
   return wrapPromise(writeConfig(newConfig), `Deleting config property ${propertyId}`)
 }
