@@ -12,7 +12,7 @@ class ConfigPropertyInputGroup extends React.Component {
 
   handleInputChange = e => {
     const { id, value } = e.currentTarget
-    const body = { id, value }
+    const body = { [id]: value }
 
     this.setState(
       {

@@ -104,9 +104,8 @@ const maybeWriteDefaultConfig = async () => {
     getConfigEnv({ quiet: true })
       .then(currentConfig => writeConfig({ ...DEFAULT_CONFIG, ...currentConfig }))
       .catch(writeConfig({ ...DEFAULT_CONFIG })),
-    'Writing default config',
-    { quiet: true }
-  ).catch(e => e) // the first time will always fail
+    'Writing default config'
+  )
 }
 
 module.exports = {

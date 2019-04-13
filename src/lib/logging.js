@@ -9,7 +9,7 @@ const paddedJSON = data => {
 
 const defaultOptions = {
   debug: false, // Print success output    (default: only error output printed)
-  quiet: false // Don't exit on failures  (default: exit on failures)
+  quiet: false // Resolve even on failures  (default: reject on failures)
 }
 
 const wrapPromise = async (promise, text, options = defaultOptions) => {
@@ -38,8 +38,8 @@ const wrapPromise = async (promise, text, options = defaultOptions) => {
           text: text + paddedJSON(errorJSON)
         })
 
-        if (options.quiet === false) {
-          process.exit(1)
+        if (options.quiet === true) {
+          resolve()
         } else {
           reject(errorJSON)
         }
