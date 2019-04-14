@@ -95,7 +95,7 @@ maybeWriteDefaultConfig().then(() => {
     server.get('/google-sheets-oauth2callback', (req, res) => {
       return require('../lib/google')
         .getToken(req.query.code)
-        .then(token => res.redirect('http://localhost:3000/sheets'))
+        .then(token => res.redirect('http://localhost:3000/sheet-provider-setup'))
         .catch(error => res.json(error))
     })
 
@@ -103,9 +103,9 @@ maybeWriteDefaultConfig().then(() => {
       if (!accountsSetupCompleted() && !sheetsSetupCompleted()) {
         return res.redirect(`http://localhost:3000/welcome`)
       } else if (!accountsSetupCompleted()) {
-        return res.redirect(`http://localhost:3000/accounts`)
+        return res.redirect(`http://localhost:3000/account-provider-setup`)
       } else if (!sheetsSetupCompleted()) {
-        return res.redirect(`http://localhost:3000/sheets`)
+        return res.redirect(`http://localhost:3000/sheet-provider-setup`)
       } else {
         return res.redirect(`http://localhost:3000/settings`)
       }

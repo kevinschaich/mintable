@@ -12,9 +12,13 @@ const Settings = props => {
   return (
     <div className='wrapper'>
       <div className='container'>
+        <h1>Accounts</h1>
         <Accounts config={props.config} />
         <h1>Settings</h1>
-        <span>Any settings changed below will automatically update your config file. Some settings may require a server restart to take effect.</span>
+        <span>
+          Any settings changed below will automatically update your config file. Some settings may require a server
+          restart to take effect.
+        </span>
         <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />
       </div>
     </div>

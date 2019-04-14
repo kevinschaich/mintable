@@ -4,7 +4,7 @@ import { fetch } from '../components/helpers'
 import ConfigPropertyInputGroup from '../components/configPropertyInputGroup'
 import Link from 'next/link'
 
-const Sheets = props => {
+const SheetProviderSetup = props => {
   const handleOnClickAuth = async e => {
     const URL = (await fetch('http://localhost:3000/google-sheets-url'))
     console.log(URL)
@@ -20,7 +20,7 @@ const Sheets = props => {
 
   return (
     <div className='wrapper'>
-      <ProgressSidebar tab='sheets' config={props.config} />
+      <ProgressSidebar tab='sheet-provider-setup' config={props.config} />
       <div className='container container-vc'>
         <div className='inner-container'>
           <h2>Google Sheets Setup</h2>
@@ -63,8 +63,8 @@ const Sheets = props => {
   )
 }
 
-Sheets.getInitialProps = async function() {
+SheetProviderSetup.getInitialProps = async function() {
   return { config: await fetch('http://localhost:3000/config') }
 }
 
-export default Sheets
+export default SheetProviderSetup

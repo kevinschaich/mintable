@@ -11,7 +11,9 @@ class Accounts extends React.Component {
   }
 
   componentDidMount = async () => {
-    this.setState({ accounts: await fetch('http://localhost:3000/balances') })
+    if (this.props.config.PLAID_ENVIRONMENT && this.props.config.PLAID_PUBLIC_KEY) {
+      this.setState({ accounts: await fetch('http://localhost:3000/balances') })
+    }
   }
 
   handleOnNewAccountNameChange = e => {
@@ -66,7 +68,6 @@ class Accounts extends React.Component {
 
     return (
       <div className='accounts'>
-        <h1>Accounts</h1>
         <span>
           <strong>Note</strong>: In the Plaid Development environment, removing an item will not decrement your live
           credential count.
@@ -80,19 +81,21 @@ class Accounts extends React.Component {
             placeholder='New Account Nickname'
             onChange={this.handleOnNewAccountNameChange}
           />
-          <PlaidLink
-            clientName='Mintable'
-            env={this.props.config.PLAID_ENVIRONMENT}
-            product={['auth', 'transactions']}
-            publicKey={this.props.config.PLAID_PUBLIC_KEY}
-            onSuccess={this.handleOnSuccess}
-            style={{
-              background: '#137cbd',
-              display: this.state.newAccountNickname ? 'flex' : 'none'
-            }}
-          >
-            Add New Account
-          </PlaidLink>
+          {this.props.config.PLAID_ENVIRONMENT && this.props.config.PLAID_PUBLIC_KEY && (
+            <PlaidLink
+              clientName='Mintable'
+              env={this.props.config.PLAID_ENVIRONMENT}
+              product={['auth', 'transactions']}
+              publicKey={this.props.config.PLAID_PUBLIC_KEY}
+              onSuccess={this.handleOnSuccess}
+              style={{
+                background: '#137cbd',
+                display: this.state.newAccountNickname ? 'flex' : 'none'
+              }}
+            >
+              Add New Account
+            </PlaidLink>
+          )}
         </div>
       </div>
     )

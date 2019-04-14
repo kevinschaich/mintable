@@ -10,7 +10,7 @@ const Welcome = props => {
       <div className='container container-vc'>
         <img style={{ width: '120px' }} src='/static/icon.png' />
         <h1>Welcome to Mintable</h1>
-        <Link href='/accounts'>
+        <Link href='/account-provider-setup'>
           <button>Get Started</button>
         </Link>
       </div>

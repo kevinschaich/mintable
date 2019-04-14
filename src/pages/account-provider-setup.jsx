@@ -4,17 +4,18 @@ import { fetch } from '../components/helpers'
 import ConfigPropertyInputGroup from '../components/configPropertyInputGroup'
 import Link from 'next/link'
 
-const Accounts = props => {
+const AccountProviderSetup = props => {
   const configProperties = [
     {
       displayName: 'environment',
       propertyId: 'PLAID_ENVIRONMENT',
-      tooltip: 'Sandbox allows unlimited testing with sample accounts, development is limited to 100 free linked accounts.'
+      tooltip:
+        'Sandbox allows unlimited testing with sample accounts, development is limited to 100 free linked accounts.'
     },
     { displayName: 'client_id', propertyId: 'PLAID_CLIENT_ID' },
     { displayName: 'public_key', propertyId: 'PLAID_PUBLIC_KEY' },
     {
-      displayName: 'secret',
+      displayName: `${props.config.PLAID_ENVIRONMENT ? props.config.PLAID_ENVIRONMENT + '_' : ''}secret`,
       propertyId: 'PLAID_SECRET',
       tooltip: 'Use the same secret as the environment above, i.e. either your Development Secret or Sandbox Secret.'
     }
@@ -22,7 +23,7 @@ const Accounts = props => {
 
   return (
     <div className='wrapper'>
-      <ProgressSidebar tab='accounts' config={props.config} />
+      <ProgressSidebar tab='account-provider-setup' config={props.config} />
       <div className='container container-vc'>
         <div className='inner-container'>
           <h2>Plaid Setup</h2>
@@ -47,7 +48,7 @@ const Accounts = props => {
               and copy them over.
               <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />
             </li>
-            <Link href='/sheets'>
+            <Link href='/account-setup'>
               <button>Next</button>
             </Link>
           </ol>
@@ -57,8 +58,8 @@ const Accounts = props => {
   )
 }
 
-Accounts.getInitialProps = async function() {
+AccountProviderSetup.getInitialProps = async function() {
   return { config: await fetch('http://localhost:3000/config') }
 }
 
-export default Accounts
+export default AccountProviderSetup
