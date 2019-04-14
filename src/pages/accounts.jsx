@@ -6,9 +6,18 @@ import Link from 'next/link'
 
 const Accounts = props => {
   const configProperties = [
+    {
+      displayName: 'environment',
+      propertyId: 'PLAID_ENVIRONMENT',
+      tooltip: 'Sandbox allows unlimited testing with sample accounts, development is limited to 100 free linked accounts.'
+    },
     { displayName: 'client_id', propertyId: 'PLAID_CLIENT_ID' },
     { displayName: 'public_key', propertyId: 'PLAID_PUBLIC_KEY' },
-    { displayName: 'development_secret', propertyId: 'PLAID_SECRET' }
+    {
+      displayName: 'secret',
+      propertyId: 'PLAID_SECRET',
+      tooltip: 'Use the same secret as the environment above, i.e. either your Development Secret or Sandbox Secret.'
+    }
   ]
 
   return (
@@ -31,11 +40,11 @@ const Accounts = props => {
               for the free, 100-account development plan (takes 1-2 days).
             </li>
             <li>
-              Once approved, visit the{' '}
-              <a target='_blank' href='https://dashboard.plaid.com/overview/development'>
-                Development Overview
+              Once approved,{' '}
+              <a target='_blank' href='https://dashboard.plaid.com/account/keys'>
+                find your API keys
               </a>{' '}
-              and copy over the following values:
+              and copy them over.
               <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />
             </li>
             <Link href='/sheets'>

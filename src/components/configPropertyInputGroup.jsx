@@ -36,6 +36,7 @@ class ConfigPropertyInputGroup extends React.Component {
           config={this.props.config}
           displayName={property.displayName}
           propertyId={property.propertyId}
+          tooltip={property.tooltip}
           onChange={this.handleInputChange}
           key={property.propertyId}
           modified={this.state.modifiedProperties.has(property.propertyId)}
