@@ -154,21 +154,24 @@ const getPlaidTransactions = async (transactionColumns, categoryOverrides, curre
 
   const accounts = await fetchBalances()
   const clean_accounts = _.keyBy(_.flatten(_.map(accounts, item => item.accounts)), 'account_id')
-  const transactions = await fetchTransactions()
+  const transactions =_.flatten(_.map(await fetchTransactions(), 'transactions'))
   const sorted = _.sortBy(transactions, 'date')
   const sanitized = _.map(sorted, transaction => sanitizeTransaction(transaction, clean_accounts))
-
   const partitioned = _.partition(
     sanitized,
     transaction =>
       moment(transaction.date)
         .startOf('month')
-        .format('YYYY.MM') === currentMonthSheetTitle
+        .format('YYYY.MM') ===
+      moment()
+        .startOf('month')
+        .format('YYYY.MM')
   )
-  const currentMonthTransactions = _.map(_.get(partitioned, '[0][0]transactions', []), transaction =>
+  console.log(partitioned[0]);
+  const currentMonthTransactions = _.map(partitioned[0], transaction =>
     _.at(transaction, transactionColumns)
   )
-  const lastMonthTransactions = _.map(_.get(partitioned, '[1][0]transactions', []), transaction =>
+  const lastMonthTransactions = _.map(partitioned[1], transaction =>
     _.at(transaction, transactionColumns)
   )
   return {
