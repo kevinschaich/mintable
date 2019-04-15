@@ -154,7 +154,7 @@ input {
   margin: 20px;
   border: 1px solid #ffffff30;
   border-radius: 5px;
-  min-width: 600px;
+  min-width: 700px;
 
   .config-property-input {
     display: flex;
@@ -162,9 +162,11 @@ input {
     align-content: center;
     align-items: center;
 
-    code,
+    code {
+      width: 60%;
+    }
     input {
-      width: 50%;
+      width: 40%;
     }
   }
 }
@@ -175,17 +177,15 @@ input {
   flex-direction: column;
 
   .accounts-list {
-    min-width: 800px;
     display: flex;
-    width: 100%;
     flex-direction: column;
     border: 1px solid #ffffff30;
     border-radius: 5px;
-    padding: 20px 40px;
     margin: 20px;
     align-items: center;
 
     .account-details {
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       width: 100%;
