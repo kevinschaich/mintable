@@ -85,14 +85,14 @@ const renameSheet = (sheetId, title) =>
     `Renaming sheet ${title}`
   )
 
-const clearSheet = range => {
+const clearRanges = ranges => {
   return wrapPromise(
-    promisify(sheets.spreadsheets.values.clear, { spreadsheetId: process.env.SHEETS_SHEET_ID, range: range }),
-    `Clearing range ${range}`
+    promisify(sheets.spreadsheets.values.batchClear, { spreadsheetId: process.env.SHEETS_SHEET_ID, ranges }),
+    `Clearing ranges ${ranges.join(', ')}`
   )
 }
 
-const updateSheet = updatedRanges =>
+const updateRanges = updatedRanges =>
   wrapPromise(
     promisify(sheets.spreadsheets.values.batchUpdate, {
       spreadsheetId: process.env.SHEETS_SHEET_ID,
@@ -101,7 +101,7 @@ const updateSheet = updatedRanges =>
         data: updatedRanges
       }
     }),
-    `Updating cell ranges ${_.map(updatedRanges, d => d.range).join(", ")}`
+    `Updating cell ranges ${_.map(updatedRanges, d => d.range).join(', ')}`
   )
 
 const formatHeaderRow = sheetId =>
@@ -177,9 +177,7 @@ const updateSheets = async (updates, options) => {
   })
 
   // Clear automated sheet ranges
-  await pEachSeries(requiredSheetTitles, async title => {
-    await clearSheet(`${title}!${firstTransactionColumn}:${lastReferenceColumn}`)
-  })
+  await clearRanges(_.map(requiredSheetTitles, title => `${title}!${firstTransactionColumn}:${lastReferenceColumn}`))
 
   let updatedRanges = []
 
@@ -203,16 +201,13 @@ const updateSheets = async (updates, options) => {
     })
   })
 
-  await updateSheet(updatedRanges)
+  await updateRanges(updatedRanges)
 
   // Format header rows & resize columns
   sheets = await getSheets(process.env.SHEETS_SHEET_ID)
 
   await pEachSeries(requiredSheetTitles, async title => {
-    const sheet = _.find(
-      await getSheets(process.env.SHEETS_SHEET_ID),
-      sheet => sheet.properties.title === title
-    )
+    const sheet = _.find(await getSheets(process.env.SHEETS_SHEET_ID), sheet => sheet.properties.title === title)
     await formatHeaderRow(sheet.properties.sheetId)
     await resizeColumns(sheet.properties.sheetId, numAutomatedColumns)
   })
@@ -227,8 +222,8 @@ module.exports = {
   duplicateSheet,
   addSheet,
   renameSheet,
-  clearSheet,
-  updateSheet,
+  clearRanges,
+  updateRanges,
   formatHeaderRow,
   resizeColumns,
   updateSheets
