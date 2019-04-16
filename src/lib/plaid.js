@@ -167,7 +167,6 @@ const getPlaidTransactions = async (transactionColumns, categoryOverrides, curre
         .startOf('month')
         .format('YYYY.MM')
   )
-  console.log(partitioned[0]);
   const currentMonthTransactions = _.map(partitioned[0], transaction =>
     _.at(transaction, transactionColumns)
   )

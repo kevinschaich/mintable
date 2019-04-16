@@ -100,7 +100,7 @@ const updateSheet = updates =>
         data: _.map(updates, p => ({ range: p.range, values: p.values }))
       }
     }),
-    `Updating ranges ${_.map(updates, p => p.range).join(', ')}`
+    `Updating cell ranges`
   )
 
 const formatHeaderRow = sheetId =>
