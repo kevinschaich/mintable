@@ -31,7 +31,27 @@ const checkEnv = propertyIds => {
   return values.length === propertyIds.length && _.every(values, v => v.length)
 }
 
-const accountsSetupCompleted = () => {
+const getAccountTokens = () => {
+  if (!process.env) {
+    return []
+  }
+
+  switch (process.env.ACCOUNT_PROVIDER) {
+    case 'plaid':
+      return Object.keys(process.env)
+        .filter(key => key.startsWith(`PLAID_TOKEN`))
+        .map(key => ({
+          nickname: key.replace(/^PLAID_TOKEN_/, ''),
+          token: process.env[key]
+        }))
+    default:
+      return []
+  }
+}
+
+const accountSetupComplete = () => getAccountTokens().length > 0
+
+const accountProviderSetupComplete = () => {
   if (!process.env) {
     return false
   }
@@ -44,7 +64,7 @@ const accountsSetupCompleted = () => {
   }
 }
 
-const sheetsSetupCompleted = () => {
+const sheetProviderSetupComplete = () => {
   if (!process.env) {
     return false
   }
@@ -95,7 +115,7 @@ const updateConfig = async updates => {
 }
 
 const deleteConfigProperty = async propertyId => {
-  process.env[propertyId] = undefined
+  delete process.env[propertyId]
   const newConfig = _.omit(await getConfigEnv(), [propertyId])
   return wrapPromise(writeConfig(newConfig), `Deleting config property ${propertyId}`)
 }
@@ -115,6 +135,8 @@ module.exports = {
   deleteConfigProperty,
   writeConfig,
   maybeWriteDefaultConfig,
-  accountsSetupCompleted,
-  sheetsSetupCompleted
+  getAccountTokens,
+  accountSetupComplete,
+  accountProviderSetupComplete,
+  sheetProviderSetupComplete
 }

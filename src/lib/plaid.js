@@ -1,5 +1,5 @@
 const moment = require('moment')
-const { updateConfig } = require('./common')
+const { updateConfig, getAccountTokens } = require('./common')
 const { wrapPromise } = require('./logging')
 const pMapSeries = require('p-map-series')
 const plaid = require('plaid')
@@ -43,17 +43,8 @@ const TRANSACTION_OPTIONS = [
   }
 ]
 
-const getPlaidAccountTokens = () => {
-  return Object.keys(process.env)
-    .filter(key => key.startsWith(`PLAID_TOKEN`))
-    .map(key => ({
-      nickname: key.replace(/^PLAID_TOKEN_/, ''),
-      token: process.env[key]
-    }))
-}
-
 const fetchTransactions = () => {
-  const accounts = getPlaidAccountTokens()
+  const accounts = getAccountTokens()
 
   const fetchTransactionsForAccount = account => {
     return wrapPromise(
@@ -73,7 +64,7 @@ const fetchTransactions = () => {
 }
 
 const fetchBalances = () => {
-  const accounts = getPlaidAccountTokens()
+  const accounts = getAccountTokens()
 
   const fetchBalanceForAccount = account => {
     return wrapPromise(

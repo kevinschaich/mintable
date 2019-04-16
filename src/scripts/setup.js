@@ -7,8 +7,9 @@ const {
   updateConfig,
   deleteConfigProperty,
   maybeWriteDefaultConfig,
-  accountsSetupCompleted,
-  sheetsSetupCompleted
+  accountProviderSetupComplete,
+  sheetProviderSetupComplete,
+  accountSetupComplete
 } = require('../lib/common')
 const _ = require('lodash')
 
@@ -29,8 +30,9 @@ maybeWriteDefaultConfig().then(() => {
           res.json({
             data: {
               ...config,
-              accountsSetupCompleted: accountsSetupCompleted(),
-              sheetsSetupCompleted: sheetsSetupCompleted()
+              accountProviderSetupComplete: accountProviderSetupComplete(),
+              sheetProviderSetupComplete: sheetProviderSetupComplete(),
+              accountSetupComplete: accountSetupComplete()
             }
           })
         )
@@ -100,11 +102,13 @@ maybeWriteDefaultConfig().then(() => {
     })
 
     server.get('/', (req, res) => {
-      if (!accountsSetupCompleted() && !sheetsSetupCompleted()) {
+      if (!accountProviderSetupComplete() && !accountSetupComplete() && !sheetProviderSetupComplete()) {
         return res.redirect(`http://localhost:3000/welcome`)
-      } else if (!accountsSetupCompleted()) {
+      } else if (!accountProviderSetupComplete()) {
         return res.redirect(`http://localhost:3000/account-provider-setup`)
-      } else if (!sheetsSetupCompleted()) {
+      } else if (!accountSetupComplete()) {
+        return res.redirect(`http://localhost:3000/account-setup`)
+      } else if (!sheetProviderSetupComplete()) {
         return res.redirect(`http://localhost:3000/sheet-provider-setup`)
       } else {
         return res.redirect(`http://localhost:3000/settings`)
