@@ -6,9 +6,7 @@ All configurations below can be made using the web configuration framework or by
 
 > **Pro Tip:** You can use Dropbox or another trusted service to sync `mintable.config.json` across your machines. Run `ln -s <path_to_cloud_folder>/mintable.config.json .` from the repo root to symlink Mintable to the cloud version.
 
-## General Configuration
-
-#### Automate Updates with a CI Provider
+### Automate Updates with a CI Provider
 
 This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run builds automatically.
 
@@ -24,9 +22,15 @@ Run this command and paste the result into an environment variable called `MINTA
 
 > **Warning:** If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
 
-#### Start Date
+### Start Date
 
 `START_DATE` specifies the lower bound for fetching transactions in `YYYY.MM.DD` format.
+
+**Default:**
+
+```javascript
+undefined // If end date is not specified, Mintable will fetch the last 2 months of transactions
+```
 
 For example, if you only want to fetch transactions which occur after or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
 
@@ -34,9 +38,15 @@ For example, if you only want to fetch transactions which occur after or on Dece
 "START_DATE": "2018.12.01"
 ```
 
-#### End Date
+### End Date
 
 `END_DATE` specifies the upper bound for fetching transactions in `YYYY.MM.DD` format.
+
+**Default:**
+
+```javascript
+undefined // If end date is not specified, Mintable will fetch up until the current date
+```
 
 For example, if you only want to fetch transactions which occur before or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
 
@@ -44,9 +54,15 @@ For example, if you only want to fetch transactions which occur before or on Dec
 "END_DATE": "2018.12.01"
 ```
 
-#### Transaction Columns
+### Transaction Columns
 
 `TRANSACTION_COLUMNS` specifies a list of transaction properties (using [`_.get()` syntax](https://lodash.com/docs/4.17.11#get)) to automatically update in your spreadsheet. All the contents of these columns will be cleared and overwritten each time you run Mintable.
+
+**Default:** 
+
+```javascript
+TRANSACTION_COLUMNS: [ 'date', 'amount', 'name', 'account_details.official_name', 'category.0', 'category.1', 'pending' ]
+```
 
 For example, if you only want to auto-populate the name and amount for each transaction, you could add the following line to your `mintable.config.json` file:
 
@@ -54,9 +70,15 @@ For example, if you only want to auto-populate the name and amount for each tran
 "TRANSACTION_COLUMNS": ["name", "amount"]
 ```
 
-#### Reference Columns
+### Reference Columns
 
 `REFERENCE_COLUMNS` specifies a list of additional, non-automated columns for your reference/bookkeeping purposes. Each time you run Mintable, the contents of these columns will be preserved.
+
+**Default:** 
+
+```javascript
+REFERENCE_COLUMNS: ['notes', 'work', 'joint']
+```
 
 For example, if you want to add one column to track work expenses, and another to track joint expenses shared with a partner, you could add the following line to your `mintable.config.json` file:
 
@@ -66,23 +88,39 @@ For example, if you want to add one column to track work expenses, and another t
 
 > **Warning:** Since reference columns are not automated by Mintable, they have the potential to get out of sync with transaction data (for example, if your bank deletes a transaction, causing a row to get removed in `TRANSACTION_COLUMNS`)
 
-#### Transaction Provider
+### Transaction Provider
 
-`ACCOUNT_PROVIDER` specifies which service to use to fetch transactions. At this time, the only possible value is `"plaid"`, but we plan to add other providers in the future.
+`ACCOUNT_PROVIDER` specifies which service to use to fetch transactions.
 
-#### Spreadsheet Provider
+**Default:** 
 
-`SHEET_PROVIDER` specifies which service to use to automate spreadsheet updates. At this time, the only possible value is `"sheets"`, but we plan to add other providers in the future.
+```javascript
+"SHEET_PROVIDER": "sheets" // "sheets" = Google Sheets
+```
 
-## Provider-Specific Configuration
+### Spreadsheet Provider
 
-### Plaid
+`SHEET_PROVIDER` specifies which service to use to automate spreadsheet updates.
 
-#### Category Overrides
+**Default:** 
+
+```javascript
+"SHEET_PROVIDER": "plaid"
+```
+
+# Provider-Specific Configuration
+
+## Plaid
+
+### Category Overrides
 
 `CATEGORY_OVERRIDES` specifies a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers.
 
-**Default:** `"CATEGORY_OVERRIDES": []`
+**Default:** 
+
+```javascript
+"CATEGORY_OVERRIDES": []
+```
 
 Overrides take the following format:
 
@@ -104,11 +142,21 @@ For example, if you want anything matching `autopay` or `e-payment` to get categ
 ]
 ```
 
-### Google Sheets
+## Google Sheets
 
-#### Template Sheet
+### Template Sheet
 
-`TEMPLATE_SHEET` specifies the template spreadsheet to use when creating new sheets. This defaults to the public template.
+`TEMPLATE_SHEET` specifies the template spreadsheet to use when creating a _new_ sheet for a month.
+
+**Default:** 
+
+```javascript
+"TEMPLATE_SHEET": {
+     // Public template: https://docs.google.com/spreadsheets/d/10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw
+    "SHEET_ID": "10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw",
+    "SHEET_TITLE": "Template"
+}
+```
 
 * `SHEET_ID`: Google Sheets spreadsheet ID (from the URL: `docs.google.com/spreadsheets/d/`**`sheet_id`**`/edit`)
 * `SHEET_TITLE`: Title of the sheet (along the bottom row of the document)
