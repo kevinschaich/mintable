@@ -16,7 +16,7 @@
 
   // Start date to fetch transactions, or by default the beginning of last month
   let startDate = process.env.START_DATE
-    ? startOfMonth(parse(process.env.START_DATE))
+    ? parse(process.env.START_DATE)
     : startOfMonth(subMonths(new Date(), 1))
 
   // Max historical fetch is 24 months back

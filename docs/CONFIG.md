@@ -28,10 +28,20 @@ Run this command and paste the result into an environment variable called `MINTA
 
 `START_DATE` specifies the lower bound for fetching transactions in `YYYY.MM.DD` format.
 
-For example, if you only want to fetch transactions which occur after December 1, 2018, you could add the following line to your `mintable.config.json` file:
+For example, if you only want to fetch transactions which occur after or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
 
 ```javascript
 "START_DATE": "2018.12.01"
+```
+
+#### End Date
+
+`END_DATE` specifies the upper bound for fetching transactions in `YYYY.MM.DD` format.
+
+For example, if you only want to fetch transactions which occur before or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
+
+```javascript
+"END_DATE": "2018.12.01"
 ```
 
 #### Transaction Columns
@@ -70,7 +80,11 @@ For example, if you want to add one column to track work expenses, and another t
 
 #### Category Overrides
 
-`CATEGORY_OVERRIDES` specifies a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers. Overrides take the following format:
+`CATEGORY_OVERRIDES` specifies a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers.
+
+**Default:** `"CATEGORY_OVERRIDES": []`
+
+Overrides take the following format:
 
 * `pattern`: [JavaScript Regular Expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Syntax) to test transaction names against
 * `flags`: [JavaScript Regular Expression flags](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Syntax) (i.e. `i` for case insensitive)
@@ -88,4 +102,22 @@ For example, if you want anything matching `autopay` or `e-payment` to get categ
         "category.1": "Credit Card Payments"
     }
 ]
+```
+
+### Google Sheets
+
+#### Template Sheet
+
+`TEMPLATE_SHEET` specifies the template spreadsheet to use when creating new sheets. This defaults to the public template.
+
+* `SHEET_ID`: Google Sheets spreadsheet ID (from the URL: `docs.google.com/spreadsheets/d/`**`sheet_id`**`/edit`)
+* `SHEET_TITLE`: Title of the sheet (along the bottom row of the document)
+
+For example, you could add the following lines to your `mintable.config.json` file:
+
+```javascript
+"TEMPLATE_SHEET": {
+    "SHEET_ID": "10fYhPJzABd8KasbqiyFN-L_SebTvM8SaAK_wHk-Fw",
+    "SHEET_TITLE": "My Template Sheet"
+}
 ```
