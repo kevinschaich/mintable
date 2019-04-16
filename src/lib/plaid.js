@@ -147,7 +147,8 @@ const fetchAllCleanTransactions = async (startDate, endDate, pageSize = 250, off
         official_name: account.official_name,
         name: account.name,
         nickname: transaction.accountNickname
-      }
+      },
+      account: account.official_name || account.name || transaction.accountNickname
     }
   })
 
