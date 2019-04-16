@@ -110,6 +110,8 @@ For example, if you want to add one column to track work expenses, and another t
 
 # Provider-Specific Configuration
 
+You can see the API definitions for account & spreadsheet providers in the **[provider docs](./docs/PROVIDERS.md)**.
+
 ## Plaid
 
 ### Category Overrides
