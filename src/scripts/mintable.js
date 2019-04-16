@@ -15,9 +15,7 @@
   const DATE_FORMAT_MONTHS = 'YYYY.MM'
 
   // Start date to fetch transactions, or by default the beginning of last month
-  let startDate = process.env.START_DATE
-    ? parse(process.env.START_DATE)
-    : startOfMonth(subMonths(new Date(), 1))
+  let startDate = process.env.START_DATE ? parse(process.env.START_DATE) : startOfMonth(subMonths(new Date(), 1))
 
   // Max historical fetch is 24 months back
   startDate = differenceInMonths(startDate, new Date()) >= 24 ? subMonths(new Date(), 24) : startDate
@@ -27,22 +25,7 @@
 
   let transactions
 
-  /*
-   * Transactions API:
-   *
-   * Account providers should provide an exported function which takes in a startDate and endDate,
-   * and returns a raw list of transaction objects.
-   *
-   * At minimum, we expect `name`, `date`, and `amount` to be defined.
-   *
-   * For example, the following would an acceptable response:
-   *
-   *     [
-   *         { "name": "Amazon.com", "date": "2019-04-16T07:00:00.000Z", "amount": -40.22 },
-   *         { "name": "United Airlines", "date": "2019-04-06T07:00:00.000Z", "amount": -500 },
-   *         { "name": "Uber", "date": "2019-04-04T07:00:00.000Z", "amount": -6.33 }
-   *     ]
-   */
+  // https://github.com/kevinschaich/mintable/blob/master/docs/PROVIDERS.md
   switch (process.env.ACCOUNT_PROVIDER) {
     case 'plaid':
       transactions = await require('../lib/plaid').fetchAllCleanTransactions(startDate, endDate)
@@ -100,7 +83,7 @@
     sheets.push(current)
     current = subMonths(current, 1)
   }
-  
+
   let partitionedTransactions = _.groupBy(cleanedTransactions, transaction => {
     return format(startOfMonth(transaction.date), DATE_FORMAT_MONTHS)
   })
@@ -139,25 +122,7 @@
     numAutomatedColumns: process.env.TRANSACTION_COLUMNS.length + process.env.REFERENCE_COLUMNS.length
   }
 
-  /*
-   * Spreadsheets API:
-   *
-   * Spreadsheet providers should provide an exported function which takes in
-   * a map of sheet name to a list of transactions for that sheet,
-   * and do all the necessary operations to update that sheet.
-   *
-   * For example, the following would an acceptable request:
-   *
-   *     {
-   *         "2019.04": [
-   *             { "name": "Amazon.com", "date": "2019.04.16", "amount": -40.22 },
-   *             { "name": "United Airlines", "date": "2019.04.26", "amount": -500 }
-   *         ],
-   *         "2019.05": [
-   *             { "name": "Uber", "date": "2019.05.11", "amount": -6.33 }
-   *         ]
-   *     }
-   */
+  // https://github.com/kevinschaich/mintable/blob/master/docs/PROVIDERS.md
   switch (process.env.SHEET_PROVIDER) {
     case 'sheets':
       await require('../lib/google').updateSheets(partitionedTransactions, options)
