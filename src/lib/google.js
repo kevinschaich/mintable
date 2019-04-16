@@ -2,6 +2,7 @@ const { google } = require('googleapis')
 const _ = require('lodash')
 const { wrapPromise } = require('./logging')
 const { updateConfig } = require('./common')
+const pEachSeries = require('p-each-series')
 
 const OAUTH2_CLIENT = new google.auth.OAuth2(
   process.env.SHEETS_CLIENT_ID,
@@ -84,139 +85,123 @@ const renameSheet = (sheetId, title) =>
     `Renaming sheet ${title}`
   )
 
-const clearSheet = range => {
+const clearRanges = ranges => {
   return wrapPromise(
-    promisify(sheets.spreadsheets.values.clear, { spreadsheetId: process.env.SHEETS_SHEET_ID, range: range }),
-    `Clearing range ${range}`
+    promisify(sheets.spreadsheets.values.batchClear, { spreadsheetId: process.env.SHEETS_SHEET_ID, ranges }),
+    `Clearing ranges ${ranges.join(', ')}`
   )
 }
 
-const updateSheet = updates =>
+const updateRanges = updatedRanges =>
   wrapPromise(
     promisify(sheets.spreadsheets.values.batchUpdate, {
       spreadsheetId: process.env.SHEETS_SHEET_ID,
       resource: {
         valueInputOption: `USER_ENTERED`,
-        data: _.map(updates, p => ({ range: p.range, values: p.values }))
+        data: updatedRanges
       }
     }),
-    `Updating cell ranges`
+    `Updating cell ranges ${_.map(updatedRanges, d => d.range).join(', ')}`
   )
 
-const formatHeaderRow = sheetId =>
+const formatSheets = (sheetIds, numColumnsToResize) =>
   wrapPromise(
     promisify(sheets.spreadsheets.batchUpdate, {
       spreadsheetId: process.env.SHEETS_SHEET_ID,
       resource: {
-        requests: [
-          {
-            repeatCell: {
-              range: { sheetId: sheetId, startRowIndex: 0, endRowIndex: 1 },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: { red: 0.3, green: 0.3, blue: 0.3 },
-                  horizontalAlignment: 'CENTER',
-                  textFormat: { foregroundColor: { red: 1.0, green: 1.0, blue: 1.0 }, fontSize: 12, bold: true }
-                }
-              },
-              fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)'
+        requests: _.flatten(
+          _.map(sheetIds, sheetId => [
+            {
+              repeatCell: {
+                range: { sheetId: sheetId, startRowIndex: 0, endRowIndex: 1 },
+                cell: {
+                  userEnteredFormat: {
+                    backgroundColor: { red: 0.3, green: 0.3, blue: 0.3 },
+                    horizontalAlignment: 'CENTER',
+                    textFormat: { foregroundColor: { red: 1.0, green: 1.0, blue: 1.0 }, fontSize: 12, bold: true }
+                  }
+                },
+                fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)'
+              }
+            },
+            {
+              updateSheetProperties: {
+                properties: { sheetId: sheetId, gridProperties: { frozenRowCount: 1 } },
+                fields: 'gridProperties.frozenRowCount'
+              }
+            },
+            {
+              autoResizeDimensions: {
+                dimensions: { sheetId: sheetId, dimension: 'COLUMNS', startIndex: 0, endIndex: numColumnsToResize }
+              }
             }
-          },
-          {
-            updateSheetProperties: {
-              properties: { sheetId: sheetId, gridProperties: { frozenRowCount: 1 } },
-              fields: 'gridProperties.frozenRowCount'
-            }
-          }
-        ]
+          ])
+        )
       }
     }),
-    `Formatting sheet ${sheetId}`
+    `Formatting sheets ${sheetIds.join(', ')}`
   )
 
-const resizeColumns = (sheetId, numColumns) =>
-  wrapPromise(
-    promisify(sheets.spreadsheets.batchUpdate, {
-      spreadsheetId: process.env.SHEETS_SHEET_ID,
-      resource: {
-        requests: [
-          {
-            autoResizeDimensions: {
-              dimensions: { sheetId: sheetId, dimension: 'COLUMNS', startIndex: 0, endIndex: numColumns }
-            }
-          }
-        ]
-      }
-    }),
-    `Resizing columns for sheet ${sheetId}`
+const updateSheets = async (updates, options) => {
+  const {
+    firstTransactionColumn,
+    lastTransactionColumn,
+    firstReferenceColumn,
+    lastReferenceColumn,
+    numAutomatedColumns
+  } = options
+
+  let sheets = await getSheets(process.env.SHEETS_SHEET_ID)
+  const templateSheet = _.find(
+    await getSheets(process.env.TEMPLATE_SHEET.SHEET_ID),
+    sheet => sheet.properties.title === process.env.TEMPLATE_SHEET.SHEET_TITLE
   )
 
-const updateSheets = async (
-  currentMonthTransactions,
-  lastMonthTransactions,
-  transactionColumns,
-  referenceColumns,
-  currentMonthSheetTitle,
-  lastMonthSheetTitle,
-  firstTransactionColumn,
-  lastTransactionColumn,
-  firstReferenceColumn,
-  lastReferenceColumn,
-  numAutomatedColumns
-) => {
-  const publicTemplateSheetId = '10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw'
+  const currentSheetTitles = _.map(sheets, sheet => sheet.properties.title)
+  const requiredSheetTitles = _.keys(updates)
 
-  const sheets = await getSheets(process.env.SHEETS_SHEET_ID)
-  let currentMonthSheet = _.find(sheets, sheet => sheet.properties.title === currentMonthSheetTitle)
-  let lastMonthSheet = _.find(sheets, sheet => sheet.properties.title === lastMonthSheetTitle)
+  // Create, rename, and clear required sheets
+  await pEachSeries(_.difference(requiredSheetTitles, currentSheetTitles), async title => {
+    const newSheet = await duplicateSheet(process.env.TEMPLATE_SHEET.SHEET_ID, templateSheet.properties.sheetId)
+    await renameSheet(newSheet.properties.sheetId, title)
+  })
 
-  if (!lastMonthSheet) {
-    const publicTemplateSheets = await getSheets(publicTemplateSheetId)
-    lastMonthSheet = await duplicateSheet(publicTemplateSheetId, publicTemplateSheets[0].properties.sheetId)
-    await renameSheet(lastMonthSheet.properties.sheetId, lastMonthSheetTitle)
-    await clearSheet(`${lastMonthSheetTitle}!${firstTransactionColumn}:${lastReferenceColumn}`)
-  }
+  // Clear automated sheet ranges
+  await clearRanges(_.map(requiredSheetTitles, title => `${title}!${firstTransactionColumn}:${lastReferenceColumn}`))
 
-  if (!currentMonthSheet) {
-    currentMonthSheet = await duplicateSheet(process.env.SHEETS_SHEET_ID, lastMonthSheet.properties.sheetId)
-    await renameSheet(currentMonthSheet.properties.sheetId, currentMonthSheetTitle)
-    await clearSheet(`${currentMonthSheetTitle}!${firstTransactionColumn}:${lastReferenceColumn}`)
-  }
+  let updatedRanges = []
 
-  await clearSheet(`${currentMonthSheetTitle}!${firstTransactionColumn}:${lastTransactionColumn}`)
-  await clearSheet(`${lastMonthSheetTitle}!${firstTransactionColumn}:${lastTransactionColumn}`)
-
-  const transformTransactionsToUpdates = (sheetTitle, transactions) => {
-    // Transaction data (rows 2 onwards)
-    const updates = _.map(transactions, (transaction, i) => {
-      const range = `${sheetTitle}!${firstTransactionColumn}${i + 2}:${lastTransactionColumn}${i + 2}`
-      const values = [transaction]
-      return { range, values }
+  _.forIn(updates, (transactions, sheetTitle) => {
+    // Map transactions to ranges & values
+    updatedRanges.push({
+      range: `${sheetTitle}!${firstTransactionColumn}${2}:${lastTransactionColumn}${transactions.length + 1}`,
+      values: _.map(transactions, transaction => _.at(transaction, process.env.TRANSACTION_COLUMNS))
     })
 
     // Column headers for transaction data
-    updates.push({
+    updatedRanges.push({
       range: `${sheetTitle}!${firstTransactionColumn}1:${lastTransactionColumn}1`,
-      values: [transactionColumns]
+      values: [process.env.TRANSACTION_COLUMNS]
     })
 
     // Additional user-defined reference column headers (specify in .env)
-    updates.push({
+    updatedRanges.push({
       range: `${sheetTitle}!${firstReferenceColumn}1:${lastReferenceColumn}1`,
-      values: [referenceColumns]
+      values: [process.env.REFERENCE_COLUMNS]
     })
+  })
 
-    return updates
-  }
+  await updateRanges(updatedRanges)
 
-  await updateSheet(transformTransactionsToUpdates(currentMonthSheetTitle, currentMonthTransactions))
-  await updateSheet(transformTransactionsToUpdates(lastMonthSheetTitle, lastMonthTransactions))
+  // Format header rows & resize columns
+  const sheetIds = _.map(
+    _.pickBy(await getSheets(process.env.SHEETS_SHEET_ID), sheet =>
+      _.includes(requiredSheetTitles, sheet.properties.title)
+    ),
+    sheet => sheet.properties.sheetId
+  )
 
-  await formatHeaderRow(currentMonthSheet.properties.sheetId)
-  await formatHeaderRow(lastMonthSheet.properties.sheetId)
-
-  await resizeColumns(currentMonthSheet.properties.sheetId, numAutomatedColumns)
-  await resizeColumns(lastMonthSheet.properties.sheetId, numAutomatedColumns)
+  await formatSheets(sheetIds, numAutomatedColumns)
 
   console.log(`\nView your spreadsheet at https://docs.google.com/spreadsheets/d/${process.env.SHEETS_SHEET_ID}\n`)
 }
@@ -228,9 +213,7 @@ module.exports = {
   duplicateSheet,
   addSheet,
   renameSheet,
-  clearSheet,
-  updateSheet,
-  formatHeaderRow,
-  resizeColumns,
+  clearRanges,
+  updateRanges,
   updateSheets
 }

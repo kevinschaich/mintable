@@ -19,11 +19,17 @@ const DEFAULT_CONFIG = {
     'pending'
   ],
   REFERENCE_COLUMNS: ['notes', 'work', 'joint'],
-  SHEET_PROVIDER: 'sheets',
+
   ACCOUNT_PROVIDER: 'plaid',
+  PLAID_ENVIRONMENT: 'development',
   CATEGORY_OVERRIDES: [],
+
+  SHEET_PROVIDER: 'sheets',
   SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback',
-  PLAID_ENVIRONMENT: 'development'
+  TEMPLATE_SHEET: {
+    SHEET_ID: '10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw',
+    SHEET_TITLE: 'Template'
+  }
 }
 
 const checkEnv = propertyIds => {
@@ -31,7 +37,27 @@ const checkEnv = propertyIds => {
   return values.length === propertyIds.length && _.every(values, v => v.length)
 }
 
-const accountsSetupCompleted = () => {
+const getAccountTokens = () => {
+  if (!process.env) {
+    return []
+  }
+
+  switch (process.env.ACCOUNT_PROVIDER) {
+    case 'plaid':
+      return Object.keys(process.env)
+        .filter(key => key.startsWith(`PLAID_TOKEN`))
+        .map(key => ({
+          nickname: key.replace(/^PLAID_TOKEN_/, ''),
+          token: process.env[key]
+        }))
+    default:
+      return []
+  }
+}
+
+const accountSetupComplete = () => getAccountTokens().length > 0
+
+const accountProviderSetupComplete = () => {
   if (!process.env) {
     return false
   }
@@ -44,7 +70,7 @@ const accountsSetupCompleted = () => {
   }
 }
 
-const sheetsSetupCompleted = () => {
+const sheetProviderSetupComplete = () => {
   if (!process.env) {
     return false
   }
@@ -95,7 +121,7 @@ const updateConfig = async updates => {
 }
 
 const deleteConfigProperty = async propertyId => {
-  process.env[propertyId] = undefined
+  delete process.env[propertyId]
   const newConfig = _.omit(await getConfigEnv(), [propertyId])
   return wrapPromise(writeConfig(newConfig), `Deleting config property ${propertyId}`)
 }
@@ -115,6 +141,8 @@ module.exports = {
   deleteConfigProperty,
   writeConfig,
   maybeWriteDefaultConfig,
-  accountsSetupCompleted,
-  sheetsSetupCompleted
+  getAccountTokens,
+  accountSetupComplete,
+  accountProviderSetupComplete,
+  sheetProviderSetupComplete
 }
