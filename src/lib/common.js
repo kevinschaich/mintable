@@ -19,11 +19,17 @@ const DEFAULT_CONFIG = {
     'pending'
   ],
   REFERENCE_COLUMNS: ['notes', 'work', 'joint'],
-  SHEET_PROVIDER: 'sheets',
+
   ACCOUNT_PROVIDER: 'plaid',
+  PLAID_ENVIRONMENT: 'development',
   CATEGORY_OVERRIDES: [],
+
+  SHEET_PROVIDER: 'sheets',
   SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback',
-  PLAID_ENVIRONMENT: 'development'
+  TEMPLATE_SHEET: {
+    SHEET_ID: '10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw',
+    SHEET_TITLE: 'Template'
+  }
 }
 
 const checkEnv = propertyIds => {

@@ -27,7 +27,7 @@ const wrapPromise = async (promise, text, options = defaultOptions) => {
       })
       .catch(error => {
         text = `Error ${text.toLowerCase()}:`
-        let errorJSON = { error: JSON.stringify(error) }
+        let errorJSON = { error: error }
 
         if (error.message) {
           errorJSON = { error: error.toString() }

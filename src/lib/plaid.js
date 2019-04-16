@@ -1,4 +1,4 @@
-const moment = require('moment')
+const { parse, format } = require('date-fns')
 const { updateConfig, getAccountTokens } = require('./common')
 const { wrapPromise } = require('./logging')
 const pMapSeries = require('p-map-series')
@@ -26,36 +26,28 @@ const PLAID_CLIENT = new plaid.Client(
   }
 )
 
-// Starting from beginning of last month ensures we fully update pending or revised transactions
-const START_DATE = moment()
-  .subtract(1, 'month')
-  .startOf('month')
-  .format('YYYY-MM-DD')
-// Ending now keeps the current month up-to-date
-const END_DATE = moment().format('YYYY-MM-DD')
-
-const TRANSACTION_OPTIONS = [
-  START_DATE,
-  END_DATE,
-  {
-    count: 500,
-    offset: 0
-  }
-]
-
-const fetchTransactions = () => {
+const fetchTransactions = (startDate, endDate, pageSize, offset) => {
   const accounts = getAccountTokens()
+
+  const options = [
+    format(startDate, 'YYYY-MM-DD'),
+    format(endDate, 'YYYY-MM-DD'),
+    {
+      count: pageSize,
+      offset: offset
+    }
+  ]
 
   const fetchTransactionsForAccount = account => {
     return wrapPromise(
-      PLAID_CLIENT.getTransactions(account.token, ...TRANSACTION_OPTIONS),
+      PLAID_CLIENT.getTransactions(account.token, ...options),
       `Fetching transactions for account ${account.nickname}`
     ).then(data => ({
       account: account.nickname,
       transactions: data.transactions.map(transaction => ({
         ...transaction,
         amount: -transaction.amount,
-        account: account.nickname
+        accountNickname: account.nickname
       }))
     }))
   }
@@ -101,73 +93,65 @@ const createPublicToken = (access_token, accountNickname) => {
   )
 }
 
-const getPlaidTransactions = async (transactionColumns, categoryOverrides, currentMonthSheetTitle) => {
-  const sanitizeTransaction = (transaction, accounts) => {
-    let sanitized = transaction
+const fetchAllCleanTransactions = async (startDate, endDate, pageSize = 250, offset = 0) => {
+  let transactions = []
+  let count = pageSize
+  let pageNumber = 0
 
-    sanitized['account_details'] = _.get(accounts, transaction.account_id, {})
+  // If we receive a full page of transactions from Plaid, that means there is more data to fetch
+  while (count === pageSize) {
+    const result = await fetchTransactions(startDate, endDate, pageSize, pageNumber * pageSize)
+    const clean = _.flatten(_.map(result, account => account.transactions))
 
-    /*
-     * Explode out Plaid's object hierarchy.
-     *
-     * For example, the Category hierarchy comes as a list,
-     * and the first two are usually the only interesting ones.
-     *
-     * Using defaultTransactionColumns above and _.get():
-     *
-     *    { "category": ["Food and Drink", "Restaurants"] }
-     *
-     * would get expanded to:
-     *
-     *    { "category.0": "Food and Drink", "category.1": "Restaurants" }
-     */
-    _.forEach(transactionColumns, column => {
-      sanitized[column] = _.get(sanitized, column)
-    })
+    transactions = transactions.concat(clean)
 
-    // Map TRUE to 'y' and FALSE to nothing (used for Pending column)
-    sanitized.pending = sanitized.pending === true ? 'y' : sanitized.pending
-    sanitized.pending = sanitized.pending === false ? '' : sanitized.pending
+    count = clean.length
+    pageNumber++
+  }
 
+  // Parse transaction date string into a Date object and clean up Pending column
+  transactions = _.map(transactions, transaction => ({
+    ...transaction,
+    date: parse(transaction.date),
+    pending: transaction.pending === true ? 'y' : ''
+  }))
+
+  // Handle category overrides defined in config
+  if (process.env.CATEGORY_OVERRIDES) {
     // Handle corner case where this was set before v1.0.0 & scripts/migrate.js double escapes it
-    categoryOverrides = typeof categoryOverrides === 'string' ? JSON.parse(categoryOverrides) : categoryOverrides
+    categoryOverrides =
+      typeof process.env.CATEGORY_OVERRIDES === 'string'
+        ? JSON.parse(process.env.CATEGORY_OVERRIDES)
+        : process.env.CATEGORY_OVERRIDES
 
-    // Handle category overrides defined in .env
-    _.forEach(categoryOverrides, override => {
-      if (new RegExp(override.pattern, _.get(override, 'flags', '')).test(sanitized.name)) {
-        sanitized['category.0'] = _.get(override, 'category.0', '')
-        sanitized['category.1'] = _.get(override, 'category.1', '')
-      }
+    transactions = _.map(transactions, transaction => {
+      _.forEach(categoryOverrides, override => {
+        if (new RegExp(override.pattern, _.get(override, 'flags', '')).test(transaction.name)) {
+          transaction['category.0'] = _.get(override, 'category.0', '')
+          transaction['category.1'] = _.get(override, 'category.1', '')
+        }
+      })
+      return transaction
     })
-
-    return sanitized
   }
 
-  const accounts = await fetchBalances()
-  const clean_accounts = _.keyBy(_.flatten(_.map(accounts, item => item.accounts)), 'account_id')
-  const transactions =_.flatten(_.map(await fetchTransactions(), 'transactions'))
-  const sorted = _.sortBy(transactions, 'date')
-  const sanitized = _.map(sorted, transaction => sanitizeTransaction(transaction, clean_accounts))
-  const partitioned = _.partition(
-    sanitized,
-    transaction =>
-      moment(transaction.date)
-        .startOf('month')
-        .format('YYYY.MM') ===
-      moment()
-        .startOf('month')
-        .format('YYYY.MM')
-  )
-  const currentMonthTransactions = _.map(partitioned[0], transaction =>
-    _.at(transaction, transactionColumns)
-  )
-  const lastMonthTransactions = _.map(partitioned[1], transaction =>
-    _.at(transaction, transactionColumns)
-  )
-  return {
-    currentMonthTransactions,
-    lastMonthTransactions
-  }
+  // Fetch accounts & names
+  const accounts = _.keyBy(_.flatten(_.map(await fetchBalances(), item => item.accounts)), 'account_id')
+
+  // Join in account details to transactions
+  transactions = _.map(transactions, transaction => {
+    const account = accounts[transaction.account_id]
+    return {
+      ..._.omit(transaction, ['accountNickname']),
+      account_details: {
+        official_name: account.official_name,
+        name: account.name,
+        nickname: transaction.accountNickname
+      }
+    }
+  })
+
+  return transactions
 }
 
 module.exports = {
@@ -175,5 +159,5 @@ module.exports = {
   fetchTransactions,
   saveAccessToken,
   createPublicToken,
-  getPlaidTransactions
+  fetchAllCleanTransactions
 }

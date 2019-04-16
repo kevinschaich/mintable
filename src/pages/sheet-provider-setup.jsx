@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 const SheetProviderSetup = props => {
   const handleOnClickAuth = async e => {
-    const URL = (await fetch('http://localhost:3000/google-sheets-url'))
+    const URL = await fetch('http://localhost:3000/google-sheets-url')
     console.log(URL)
     var win = window.open(URL, '_blank')
     win.focus()
