@@ -11,6 +11,11 @@
 
 ## Quickstart
 
+> **Prerequisites:** `node`, `yarn`
+
+1. If you plan on using Plaid to fetch account data, [sign up](https://dashboard.plaid.com/signup) for an account and [apply for the development plan](https://plaid.com/pricing/). It usually takes them 1-2 business days to approve this request.
+2. Link your accounts and a spreadsheet to Mintable. Run these commands to walk through the setup:
+
 ```bash
 git clone https://github.com/kevinschaich/mintable.git
 cd mintable
@@ -18,13 +23,11 @@ yarn
 yarn setup
 ```
 
-`yarn setup` will start a local server & open a page in your web browser to walk you through the set-up. After you have your accounts connected, run:
+3. After completing the setup, run the following at any time to populate updated data into your spreadsheet: 
 
 ```
 yarn mintable
 ```
-
-to populate your spreadsheet!
 
 > **Note**: If you started using Mintable before `v1.0.0`, you can run `yarn migrate` to migrate to the new web-based configuration framework.
 

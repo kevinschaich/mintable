@@ -1,5 +1,5 @@
 import '../styles/style.scss'
-import fetch from 'isomorphic-unfetch'
+import { fetch } from '../components/helpers'
 const _ = require('lodash')
 import ConfigPropertyInputGroup from '../components/configPropertyInputGroup'
 import Accounts from '../components/accounts'
@@ -12,9 +12,13 @@ const Settings = props => {
   return (
     <div className='wrapper'>
       <div className='container'>
+        <h1>Accounts</h1>
         <Accounts config={props.config} />
         <h1>Settings</h1>
-        <span>Any settings changed below will automatically update.</span>
+        <span>
+          Any settings changed below will automatically update your config file. Some settings may require a server
+          restart to take effect.
+        </span>
         <ConfigPropertyInputGroup configProperties={configProperties} config={props.config} />
       </div>
     </div>
@@ -22,9 +26,7 @@ const Settings = props => {
 }
 
 Settings.getInitialProps = async function() {
-  const config = await fetch('http://localhost:3000/config')
-
-  return { config: await config.json() }
+  return { config: await fetch('http://localhost:3000/config') }
 }
 
 export default Settings

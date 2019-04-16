@@ -1,7 +1,7 @@
 import '../styles/style.scss'
 import Link from 'next/link'
 import ProgressSidebar from '../components/progressSidebar'
-import fetch from 'isomorphic-unfetch'
+import { fetch } from '../components/helpers'
 
 const Done = props => (
   <div className='wrapper'>
@@ -16,9 +16,7 @@ const Done = props => (
 )
 
 Done.getInitialProps = async function() {
-  const res = await fetch('http://localhost:3000/config')
-
-  return { config: await res.json() }
+  return { config: await fetch('http://localhost:3000/config') }
 }
 
 export default Done

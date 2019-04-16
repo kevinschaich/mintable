@@ -2,9 +2,11 @@ const moment = require('moment')
 const { getConfigEnv } = require('../lib/common')
 
 ;(async () => {
-  getConfigEnv()
-  const { updateSheets } = require('../providers/sheets')
-  const { getTransactions } = require('../providers/plaid')
+  await getConfigEnv()
+
+  // Both of these require parameters from config, so we need to lazily load them
+  const { updateSheets } = require('../lib/google')
+  const { getPlaidTransactions } = require('../lib/plaid')
 
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
   const firstTransactionColumn = alphabet[0]
@@ -26,7 +28,7 @@ const { getConfigEnv } = require('../lib/common')
 
   switch (process.env.ACCOUNT_PROVIDER) {
     case 'plaid':
-      ;({ currentMonthTransactions, lastMonthTransactions } = await getTransactions(
+      ;({ currentMonthTransactions, lastMonthTransactions } = await getPlaidTransactions(
         process.env.TRANSACTION_COLUMNS,
         process.env.CATEGORY_OVERRIDES,
         currentMonthSheetTitle
@@ -36,7 +38,6 @@ const { getConfigEnv } = require('../lib/common')
     default:
       break
   }
-
   switch (process.env.SHEET_PROVIDER) {
     case 'sheets':
       await updateSheets(

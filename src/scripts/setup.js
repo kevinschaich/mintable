@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const opn = require('opn')
 const {
   getConfigEnv,
-  writeConfigProperty,
+  updateConfig,
   deleteConfigProperty,
   maybeWriteDefaultConfig,
   accountsSetupCompleted,
@@ -12,142 +12,103 @@ const {
 } = require('../lib/common')
 const _ = require('lodash')
 
-try {
+maybeWriteDefaultConfig().then(() => {
   const port = parseInt(process.env.PORT, 10) || 3000
   const dev = process.env.NODE_ENV !== 'production'
   const app = next({ dev })
   const handle = app.getRequestHandler()
 
   app.prepare().then(() => {
-    maybeWriteDefaultConfig()
-    getConfigEnv()
-
     const server = express()
     server.use(bodyParser.urlencoded({ extended: false }))
     server.use(bodyParser.json())
 
     server.get('/config', (req, res) => {
-      const readResult = getConfigEnv()
-      if (readResult === false) {
-        res.status(400).send('Error: Could not read config file.')
-      } else {
-        res.json({
-          ...readResult,
-          accountsSetupCompleted: accountsSetupCompleted(),
-          sheetsSetupCompleted: sheetsSetupCompleted()
-        })
+      return getConfigEnv()
+        .then(config =>
+          res.json({
+            data: {
+              ...config,
+              accountsSetupCompleted: accountsSetupCompleted(),
+              sheetsSetupCompleted: sheetsSetupCompleted()
+            }
+          })
+        )
+        .catch(error => res.json(error))
+    })
+
+    server.post('/config', (req, res) => {
+      return updateConfig(req.body.updates)
+        .then(config => res.json({ data: config }))
+        .catch(error => res.json(error))
+    })
+
+    server.delete('/config', (req, res) => {
+      return deleteConfigProperty(req.body.id)
+        .then(config => res.json({ data: config }))
+        .catch(error => res.json(error))
+    })
+
+    server.get('/balances', (req, res) => {
+      switch (process.env.ACCOUNT_PROVIDER) {
+        case 'plaid':
+          return require('../lib/plaid')
+            .fetchBalances()
+            .then(balances => res.json({ data: balances }))
+            .catch(error => res.json(error))
+        default:
+          return res.json({ data: {} })
       }
     })
 
-    server.put('/config', async (req, res) => {
-      const writeStatus = writeConfigProperty(req.body.id, req.body.value)
-      if (writeStatus === false) {
-        res.status(400).send('Error: Could not write config file.')
-      } else {
-        res.status(201).send('Successfully wrote config file.')
+    server.post('/token', (req, res) => {
+      switch (process.env.ACCOUNT_PROVIDER) {
+        case 'plaid':
+          return require('../lib/plaid')
+            .saveAccessToken(req.body.public_token, req.body.accountNickname)
+            .then(res.redirect(`http://localhost:3000/settings`))
+            .catch(error => res.json(error))
+        default:
+          return res.json({ data: {} })
       }
     })
 
-    server.delete('/config', async (req, res) => {
-      const writeStatus = deleteConfigProperty(req.body.id)
-      if (writeStatus === false) {
-        res.status(400).send('Error: Could not write config file.')
-      } else {
-        res.status(201).send('Successfully wrote config file.')
-      }
-    })
-
-    server.get('/balances', async (req, res, next) => {
-      try {
-        let balances
-
-        switch (process.env.ACCOUNT_PROVIDER) {
-          case 'plaid':
-            const plaid = require('../lib/plaid/plaid')
-            balances = await plaid.fetchBalances({ quiet: true })
-            break
-          default:
-            break
-        }
-
-        res.json(balances || {})
-      } catch (error) {
-        console.log(error)
-        res.status(400).send('Error: Could not get balances.' + JSON.stringify(error))
-      }
-    })
-
-    server.post('/token', async (req, res, next) => {
-      try {
-        switch (process.env.ACCOUNT_PROVIDER) {
-          case 'plaid':
-            const plaid = require('../lib/plaid/plaid')
-            resp = await plaid.saveAccessToken(req.body.public_token, req.body.accountNickname, { quiet: true })
-            error = await resp[0]
-            break
-          default:
-            break
-        }
-
-        if (error != false) {
-          res.status(400).send('Error: Could not get access token.' + JSON.stringify(error))
-        } else {
-          res.status(201).send('Saved access token.')
-        }
-      } catch (error) {
-        res.status(400).send('Error: Could not get access token.' + JSON.stringify(error))
-      }
-    })
-
-    server.post('/update', async (req, res, next) => {
-      try {
-        switch (process.env.ACCOUNT_PROVIDER) {
-          case 'plaid':
-            const plaid = require('../lib/plaid/plaid')
-            const nickname = req.body.accountNickname
-            const access_token = process.env[`PLAID_TOKEN_${nickname}`]
-            const public_token = await plaid.createPublicToken(access_token, nickname, { quiet: true })
-            return res.json({ public_token })
-          default:
-            break
-        }
-      } catch (error) {
-        console.log(error)
-        res.status(400).send('Error: Could not get access token.' + JSON.stringify(error))
+    server.post('/update', (req, res) => {
+      switch (process.env.ACCOUNT_PROVIDER) {
+        case 'plaid':
+          return require('../lib/plaid')
+            .createPublicToken(process.env[`PLAID_TOKEN_${req.body.accountNickname}`], req.body.accountNickname)
+            .then(token => res.json({ data: token }))
+            .catch(error => res.json(error))
+        default:
+          return res.json({ data: {} })
       }
     })
 
     server.get('/google-sheets-url', (req, res) => {
-      const oAuth2Client = require('../lib/google/googleClient')
-
-      res.json({
-        url: oAuth2Client.generateAuthUrl({
-          access_type: 'offline',
-          scope: ['https://www.googleapis.com/auth/spreadsheets']
-        })
-      })
+      return require('../lib/google')
+        .getAuthURL()
+        .then(url => res.json({ data: url }))
+        .catch(error => res.json(error))
     })
 
     server.get('/google-sheets-oauth2callback', (req, res) => {
-      const oAuth2Client = require('../lib/google/googleClient')
-
-      const code = req.query.code
-      oAuth2Client.getToken(code, (error, token) => {
-        if (error) {
-          res.status(400).send('Error while trying to retrieve access token' + JSON.stringify(error))
-        } else {
-          Object.keys(token).forEach(key => {
-            writeConfigProperty(`SHEETS_${key.toUpperCase()}`, token[key])
-          })
-          console.log(`Token stored in .env.`)
-          return res.redirect('http://localhost:3000/sheets')
-        }
-      })
+      return require('../lib/google')
+        .getToken(req.query.code)
+        .then(token => res.redirect('http://localhost:3000/sheet-provider-setup'))
+        .catch(error => res.json(error))
     })
 
     server.get('/', (req, res) => {
-      const page = accountsSetupCompleted() && sheetsSetupCompleted() ? 'settings' : 'welcome'
-      return res.redirect(`http://localhost:3000/${page}`)
+      if (!accountsSetupCompleted() && !sheetsSetupCompleted()) {
+        return res.redirect(`http://localhost:3000/welcome`)
+      } else if (!accountsSetupCompleted()) {
+        return res.redirect(`http://localhost:3000/account-provider-setup`)
+      } else if (!sheetsSetupCompleted()) {
+        return res.redirect(`http://localhost:3000/sheet-provider-setup`)
+      } else {
+        return res.redirect(`http://localhost:3000/settings`)
+      }
     })
 
     server.get('*', (req, res) => {
@@ -157,10 +118,7 @@ try {
     server.listen(port, error => {
       if (error) throw error
       console.log(`> Ready on http://localhost:${port}`)
-
       opn(`http://localhost:${port}`)
     })
   })
-} catch (error) {
-  console.log(error)
-}
+})

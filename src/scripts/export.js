@@ -1,11 +1,13 @@
 const { getConfigEnv } = require('../lib/common')
 const clipboard = require('clipboardy')
+const { wrapPromise } = require('../lib/logging')
 
-const config = getConfigEnv()
+;(async () => {
+  const config = await getConfigEnv()
 
-clipboard.writeSync(JSON.stringify(config))
+  await wrapPromise(clipboard.write(JSON.stringify(config)), 'Copying config to clipboard')
 
-console.log('Copied mintable.config.json string to clipboard.')
-console.log(
-  'To use with CI (like Circle/Travis), create an environment variable called MINTABLE_CONFIG and paste the result.'
-)
+  console.log(
+    '\nTo use with CI (like Circle/Travis), create an environment variable called MINTABLE_CONFIG and paste the above result as the value.\n'
+  )
+})()

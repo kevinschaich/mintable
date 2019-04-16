@@ -1,4 +1,5 @@
 import { FiRefreshCw, FiTrash2, FiXCircle, FiCheckCircle } from 'react-icons/fi'
+import { fetch } from './helpers'
 
 const Account = props => {
   let status = <FiCheckCircle className='icon' />
@@ -24,10 +25,6 @@ const Account = props => {
           'Content-Type': 'application/json'
         }
       })
-        .then(async resp => {
-          console.log(`Deleted account ${props.details.nickname}.`)
-        })
-        .catch(error => console.log(error))
     }
   }
 
@@ -42,12 +39,9 @@ const Account = props => {
       headers: {
         'Content-Type': 'application/json'
       }
+    }).then(data => {
+      props.handleOnUpdateAccountResponse(data)
     })
-      .then(async resp => {
-        const data = await resp.json()
-        props.handleOnUpdateAccountResponse(data)
-      })
-      .catch(error => console.log(error))
   }
 
   return (

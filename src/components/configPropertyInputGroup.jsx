@@ -1,6 +1,6 @@
 import '../styles/style.scss'
 import * as _ from 'lodash'
-import fetch from 'isomorphic-unfetch'
+import { fetch } from './helpers'
 import ConfigPropertyInput from './configPropertyInput'
 import React from 'react'
 
@@ -12,21 +12,21 @@ class ConfigPropertyInputGroup extends React.Component {
 
   handleInputChange = e => {
     const { id, value } = e.currentTarget
-    const body = { id, value }
+    const body = { updates: { [id]: value } }
 
-    fetch('http://localhost:3000/config', {
-      method: 'PUT',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(resp => {
-      if (resp.status === 201) {
-        this.setState({
-          modifiedProperties: this.state.modifiedProperties.add(id)
+    this.setState(
+      {
+        modifiedProperties: this.state.modifiedProperties.add(id)
+      },
+      () =>
+        fetch('http://localhost:3000/config', {
+          method: 'POST',
+          body: JSON.stringify(body),
+          headers: {
+            'Content-Type': 'application/json'
+          }
         })
-      }
-    })
+    )
   }
 
   render() {
@@ -36,6 +36,7 @@ class ConfigPropertyInputGroup extends React.Component {
           config={this.props.config}
           displayName={property.displayName}
           propertyId={property.propertyId}
+          tooltip={property.tooltip}
           onChange={this.handleInputChange}
           key={property.propertyId}
           modified={this.state.modifiedProperties.has(property.propertyId)}
