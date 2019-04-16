@@ -29,7 +29,7 @@ Run this command and paste the result into an environment variable called `MINTA
 **Default:**
 
 ```javascript
-undefined // If end date is not specified, Mintable will fetch the last 2 months of transactions
+"START_DATE": undefined // If end date is not specified, Mintable will fetch the last 2 months of transactions
 ```
 
 For example, if you only want to fetch transactions which occur after or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
@@ -45,7 +45,7 @@ For example, if you only want to fetch transactions which occur after or on Dece
 **Default:**
 
 ```javascript
-undefined // If end date is not specified, Mintable will fetch up until the current date
+"END_DATE": undefined // If end date is not specified, Mintable will fetch up until the current date
 ```
 
 For example, if you only want to fetch transactions which occur before or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
@@ -61,7 +61,7 @@ For example, if you only want to fetch transactions which occur before or on Dec
 **Default:** 
 
 ```javascript
-TRANSACTION_COLUMNS: [ 'date', 'amount', 'name', 'account_details.official_name', 'category.0', 'category.1', 'pending' ]
+"TRANSACTION_COLUMNS": [ 'date', 'amount', 'name', 'account_details.official_name', 'category.0', 'category.1', 'pending' ]
 ```
 
 For example, if you only want to auto-populate the name and amount for each transaction, you could add the following line to your `mintable.config.json` file:
@@ -77,7 +77,7 @@ For example, if you only want to auto-populate the name and amount for each tran
 **Default:** 
 
 ```javascript
-REFERENCE_COLUMNS: ['notes', 'work', 'joint']
+"REFERENCE_COLUMNS": ['notes', 'work', 'joint']
 ```
 
 For example, if you want to add one column to track work expenses, and another to track joint expenses shared with a partner, you could add the following line to your `mintable.config.json` file:
@@ -88,14 +88,14 @@ For example, if you want to add one column to track work expenses, and another t
 
 > **Warning:** Since reference columns are not automated by Mintable, they have the potential to get out of sync with transaction data (for example, if your bank deletes a transaction, causing a row to get removed in `TRANSACTION_COLUMNS`)
 
-### Transaction Provider
+### Account Provider
 
 `ACCOUNT_PROVIDER` specifies which service to use to fetch transactions.
 
 **Default:** 
 
 ```javascript
-"SHEET_PROVIDER": "sheets" // "sheets" = Google Sheets
+"ACCOUNT_PROVIDER": "plaid"
 ```
 
 ### Spreadsheet Provider
@@ -105,7 +105,7 @@ For example, if you want to add one column to track work expenses, and another t
 **Default:** 
 
 ```javascript
-"SHEET_PROVIDER": "plaid"
+"SHEET_PROVIDER": "sheets" // "sheets" = Google Sheets
 ```
 
 # Provider-Specific Configuration
