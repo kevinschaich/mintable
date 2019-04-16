@@ -104,52 +104,42 @@ const updateRanges = updatedRanges =>
     `Updating cell ranges ${_.map(updatedRanges, d => d.range).join(', ')}`
   )
 
-const formatHeaderRow = sheetId =>
+const formatSheets = (sheetIds, numColumnsToResize) =>
   wrapPromise(
     promisify(sheets.spreadsheets.batchUpdate, {
       spreadsheetId: process.env.SHEETS_SHEET_ID,
       resource: {
-        requests: [
-          {
-            repeatCell: {
-              range: { sheetId: sheetId, startRowIndex: 0, endRowIndex: 1 },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: { red: 0.3, green: 0.3, blue: 0.3 },
-                  horizontalAlignment: 'CENTER',
-                  textFormat: { foregroundColor: { red: 1.0, green: 1.0, blue: 1.0 }, fontSize: 12, bold: true }
-                }
-              },
-              fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)'
+        requests: _.flatten(
+          _.map(sheetIds, sheetId => [
+            {
+              repeatCell: {
+                range: { sheetId: sheetId, startRowIndex: 0, endRowIndex: 1 },
+                cell: {
+                  userEnteredFormat: {
+                    backgroundColor: { red: 0.3, green: 0.3, blue: 0.3 },
+                    horizontalAlignment: 'CENTER',
+                    textFormat: { foregroundColor: { red: 1.0, green: 1.0, blue: 1.0 }, fontSize: 12, bold: true }
+                  }
+                },
+                fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)'
+              }
+            },
+            {
+              updateSheetProperties: {
+                properties: { sheetId: sheetId, gridProperties: { frozenRowCount: 1 } },
+                fields: 'gridProperties.frozenRowCount'
+              }
+            },
+            {
+              autoResizeDimensions: {
+                dimensions: { sheetId: sheetId, dimension: 'COLUMNS', startIndex: 0, endIndex: numColumnsToResize }
+              }
             }
-          },
-          {
-            updateSheetProperties: {
-              properties: { sheetId: sheetId, gridProperties: { frozenRowCount: 1 } },
-              fields: 'gridProperties.frozenRowCount'
-            }
-          }
-        ]
+          ])
+        )
       }
     }),
-    `Formatting sheet ${sheetId}`
-  )
-
-const resizeColumns = (sheetId, numColumns) =>
-  wrapPromise(
-    promisify(sheets.spreadsheets.batchUpdate, {
-      spreadsheetId: process.env.SHEETS_SHEET_ID,
-      resource: {
-        requests: [
-          {
-            autoResizeDimensions: {
-              dimensions: { sheetId: sheetId, dimension: 'COLUMNS', startIndex: 0, endIndex: numColumns }
-            }
-          }
-        ]
-      }
-    }),
-    `Resizing columns for sheet ${sheetId}`
+    `Formatting sheets ${sheetIds.join(', ')}`
   )
 
 const updateSheets = async (updates, options) => {
@@ -204,13 +194,14 @@ const updateSheets = async (updates, options) => {
   await updateRanges(updatedRanges)
 
   // Format header rows & resize columns
-  sheets = await getSheets(process.env.SHEETS_SHEET_ID)
+  const sheetIds = _.map(
+    _.pickBy(await getSheets(process.env.SHEETS_SHEET_ID), sheet =>
+      _.includes(requiredSheetTitles, sheet.properties.title)
+    ),
+    sheet => sheet.properties.sheetId
+  )
 
-  await pEachSeries(requiredSheetTitles, async title => {
-    const sheet = _.find(await getSheets(process.env.SHEETS_SHEET_ID), sheet => sheet.properties.title === title)
-    await formatHeaderRow(sheet.properties.sheetId)
-    await resizeColumns(sheet.properties.sheetId, numAutomatedColumns)
-  })
+  await formatSheets(sheetIds, numAutomatedColumns)
 
   console.log(`\nView your spreadsheet at https://docs.google.com/spreadsheets/d/${process.env.SHEETS_SHEET_ID}\n`)
 }
@@ -224,7 +215,5 @@ module.exports = {
   renameSheet,
   clearRanges,
   updateRanges,
-  formatHeaderRow,
-  resizeColumns,
   updateSheets
 }
