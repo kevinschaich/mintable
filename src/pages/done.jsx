@@ -16,7 +16,7 @@ const Done = props => (
 )
 
 Done.getInitialProps = async function() {
-  return { config: await fetch('http://localhost:3000/config') }
+  return { config: await fetch(`http://${process.env.HOST}:${process.env.PORT}/config`) }
 }
 
 export default Done

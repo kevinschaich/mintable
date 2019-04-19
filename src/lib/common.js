@@ -9,15 +9,10 @@ console.log(`\nUsing config ${CONFIG_FILE}.`)
 console.log(`Note: The messages displayed below are automated and may contain duplicates.\n`)
 
 const DEFAULT_CONFIG = {
-  TRANSACTION_COLUMNS: [
-    'date',
-    'amount',
-    'name',
-    'account',
-    'category.0',
-    'category.1',
-    'pending'
-  ],
+  HOST: 'localhost',
+  PORT: 3000,
+
+  TRANSACTION_COLUMNS: ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'],
   REFERENCE_COLUMNS: ['notes', 'work', 'joint'],
 
   ACCOUNT_PROVIDER: 'plaid',
@@ -25,7 +20,7 @@ const DEFAULT_CONFIG = {
   CATEGORY_OVERRIDES: [],
 
   SHEET_PROVIDER: 'sheets',
-  SHEETS_REDIRECT_URI: 'http://localhost:3000/google-sheets-oauth2callback',
+  SHEETS_REDIRECT_URI: `http://localhost:3000/google-sheets-oauth2callback`,
   TEMPLATE_SHEET: {
     SHEET_ID: '10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw',
     SHEET_TITLE: 'Template'

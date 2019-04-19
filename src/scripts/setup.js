@@ -14,7 +14,8 @@ const {
 const _ = require('lodash')
 
 maybeWriteDefaultConfig().then(() => {
-  const port = parseInt(process.env.PORT, 10) || 3000
+  const host = process.env.HOST
+  const port = process.env.PORT
   const dev = process.env.NODE_ENV !== 'production'
   const app = next({ dev })
   const handle = app.getRequestHandler()
@@ -68,7 +69,7 @@ maybeWriteDefaultConfig().then(() => {
         case 'plaid':
           return require('../lib/plaid')
             .saveAccessToken(req.body.public_token, req.body.accountNickname)
-            .then(res.redirect(`http://localhost:3000/settings`))
+            .then(res.redirect(`http://${process.env.HOST}:${process.env.PORT}/settings`))
             .catch(error => res.json(error))
         default:
           return res.json({ data: {} })
@@ -97,21 +98,21 @@ maybeWriteDefaultConfig().then(() => {
     server.get('/google-sheets-oauth2callback', (req, res) => {
       return require('../lib/google')
         .getToken(req.query.code)
-        .then(token => res.redirect('http://localhost:3000/sheet-provider-setup'))
+        .then(token => res.redirect(`http://${process.env.HOST}:${process.env.PORT}/sheet-provider-setup`))
         .catch(error => res.json(error))
     })
 
     server.get('/', (req, res) => {
       if (!accountProviderSetupComplete() && !accountSetupComplete() && !sheetProviderSetupComplete()) {
-        return res.redirect(`http://localhost:3000/welcome`)
+        return res.redirect(`http://${process.env.HOST}:${process.env.PORT}/welcome`)
       } else if (!accountProviderSetupComplete()) {
-        return res.redirect(`http://localhost:3000/account-provider-setup`)
+        return res.redirect(`http://${process.env.HOST}:${process.env.PORT}/account-provider-setup`)
       } else if (!accountSetupComplete()) {
-        return res.redirect(`http://localhost:3000/account-setup`)
+        return res.redirect(`http://${process.env.HOST}:${process.env.PORT}/account-setup`)
       } else if (!sheetProviderSetupComplete()) {
-        return res.redirect(`http://localhost:3000/sheet-provider-setup`)
+        return res.redirect(`http://${process.env.HOST}:${process.env.PORT}/sheet-provider-setup`)
       } else {
-        return res.redirect(`http://localhost:3000/settings`)
+        return res.redirect(`http://${process.env.HOST}:${process.env.PORT}/settings`)
       }
     })
 
@@ -121,8 +122,8 @@ maybeWriteDefaultConfig().then(() => {
 
     server.listen(port, error => {
       if (error) throw error
-      console.log(`> Ready on http://localhost:${port}`)
-      opn(`http://localhost:${port}`)
+      console.log(`> Ready on http://${process.env.HOST}:${process.env.PORT}`)
+      opn(`http://${process.env.HOST}:${process.env.PORT}`)
     })
   })
 })

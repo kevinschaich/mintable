@@ -19,7 +19,7 @@ class ConfigPropertyInputGroup extends React.Component {
         modifiedProperties: this.state.modifiedProperties.add(id)
       },
       () =>
-        fetch('http://localhost:3000/config', {
+        fetch(`http://${process.env.HOST}:${process.env.PORT}/config`, {
           method: 'POST',
           body: JSON.stringify(body),
           headers: {

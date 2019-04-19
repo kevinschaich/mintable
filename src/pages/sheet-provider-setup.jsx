@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 const SheetProviderSetup = props => {
   const handleOnClickAuth = async e => {
-    const URL = await fetch('http://localhost:3000/google-sheets-url')
+    const URL = await fetch(`http://${process.env.HOST}:${process.env.PORT}/google-sheets-url`)
     console.log(URL)
     var win = window.open(URL, '_blank')
     win.focus()
@@ -64,7 +64,7 @@ const SheetProviderSetup = props => {
 }
 
 SheetProviderSetup.getInitialProps = async function() {
-  return { config: await fetch('http://localhost:3000/config') }
+  return { config: await fetch(`http://${process.env.HOST}:${process.env.PORT}/config`) }
 }
 
 export default SheetProviderSetup
