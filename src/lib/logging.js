@@ -42,6 +42,7 @@ const wrapPromise = async (promise, text, options = defaultOptions) => {
           resolve()
         } else {
           reject(errorJSON)
+          process.exit(1)
         }
       })
   })

@@ -13,7 +13,7 @@ class Accounts extends React.Component {
 
   componentDidMount = async () => {
     if (this.props.config.PLAID_ENVIRONMENT && this.props.config.PLAID_PUBLIC_KEY) {
-      this.setState({ accounts: await fetch('http://localhost:3000/balances') })
+      this.setState({ accounts: await fetch(`http://${process.env.HOST}:${process.env.PORT}/balances`) })
     }
   }
 
@@ -29,7 +29,7 @@ class Accounts extends React.Component {
       public_token,
       accountNickname: this.state.newAccountNickname
     }
-    fetch('http://localhost:3000/token', {
+    fetch(`http://${process.env.HOST}:${process.env.PORT}/token`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {

@@ -54,6 +54,38 @@ For example, if you only want to fetch transactions which occur before or on Dec
 "END_DATE": "2018.12.01"
 ```
 
+### Host
+
+`HOST` specifies the host for Mintable's setup server.
+
+**Default:** 
+
+```javascript
+"HOST": "localhost"
+```
+
+For example, if you want to run Mintable on a custom server and listen on `0.0.0.0`, you could add the following line to your `mintable.config.json` file:
+
+```javascript
+"HOST": "0.0.0.0"
+```
+
+### Port
+
+`PORT` specifies the port for Mintable's setup server.
+
+**Default:** 
+
+```javascript
+"PORT": 3000
+```
+
+For example, if you already have an application running on port `3000` and instead want to use port `8080`, you could add the following line to your `mintable.config.json` file:
+
+```javascript
+"PORT": "8080"
+```
+
 ### Transaction Columns
 
 `TRANSACTION_COLUMNS` specifies a list of transaction properties (using [`_.get()` syntax](https://lodash.com/docs/4.17.11#get)) to automatically update in your spreadsheet. All the contents of these columns will be cleared and overwritten each time you run Mintable.

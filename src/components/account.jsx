@@ -18,7 +18,7 @@ const Account = props => {
         id: `PLAID_TOKEN_${props.details.nickname}`
       }
 
-      fetch('http://localhost:3000/config', {
+      fetch(`http://${process.env.HOST}:${process.env.PORT}/config`, {
         method: 'DELETE',
         body: JSON.stringify(body),
         headers: {
@@ -33,7 +33,7 @@ const Account = props => {
       accountNickname: props.details.nickname
     }
 
-    fetch('http://localhost:3000/update', {
+    fetch(`http://${process.env.HOST}:${process.env.PORT}/update`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
