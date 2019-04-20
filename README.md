@@ -3,11 +3,11 @@
 [![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)](https://travis-ci.com/kevinschaich/mintable)
 [![](https://img.shields.io/github/release/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/releases)
 [![](https://img.shields.io/github/license/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/blob/master/LICENSE)
-[![](https://img.shields.io/librariesio/github/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/network/dependencies)
 [![](https://img.shields.io/github/contributors/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/graphs/contributors)
-[![](https://img.shields.io/github/last-commit/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/commits/master)
 [![](https://img.shields.io/github/issues/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/issues)
 [![](https://img.shields.io/github/issues-pr/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/pulls)
+
+[**Join our Reddit Community**](https://www.reddit.com/r/Mintable)
 
 ## Quickstart
 
@@ -52,6 +52,10 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 You can see a full list of options in the **[Config Docs](./docs/CONFIG.md)**.
 
 ## FAQs
+
+**It's not working / I'm having trouble / I need help**
+
+[File an issue](https://github.com/kevinschaich/mintable/issues) or reach out on our [Reddit community](https://www.reddit.com/r/Mintable/).
 
 **How is this different from [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)?**
 
