@@ -19,8 +19,8 @@ workflows:
   hourly:
     triggers:
       - schedule:
-          # Hourly cron tab at 12:00, 1:00, etc.
-          cron: "0 * * * *"
+          # 10AM UTC = 6AM EST daily
+          cron: "0 10 * * *"
           filters:
             branches:
               only:
