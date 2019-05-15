@@ -8,7 +8,7 @@ import Link from 'next/link'
 class Accounts extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { newAccountNickname: '', accounts: false }
+    this.state = { currentAccountNickname: '', accounts: false }
   }
 
   componentDidMount = async () => {
@@ -18,7 +18,7 @@ class Accounts extends React.Component {
   }
 
   handleOnNewAccountNameChange = e => {
-    this.setState({ newAccountNickname: e.currentTarget.value })
+    this.setState({ currentAccountNickname: e.currentTarget.value })
   }
 
   handleOnSuccess = (public_token, metadata) => {
@@ -27,7 +27,7 @@ class Accounts extends React.Component {
     }
     const body = {
       public_token,
-      accountNickname: this.state.newAccountNickname
+      accountNickname: this.state.currentAccountNickname
     }
     fetch(`http://${process.env.HOST}:${process.env.PORT}/token`, {
       method: 'POST',
@@ -38,16 +38,18 @@ class Accounts extends React.Component {
     })
   }
 
-  handleOnUpdateAccountResponse = data => {
-    window.Plaid.create({
-      clientName: 'Mintable',
-      env: this.props.config.PLAID_ENVIRONMENT,
-      product: ['auth', 'transactions'],
-      key: this.props.config.PLAID_PUBLIC_KEY,
-      onExit: this.handleOnExit,
-      onSuccess: this.handleOnSuccess,
-      token: data
-    }).open()
+  handleOnUpdateAccountResponse = (data, nickname) => {
+    this.setState({ currentAccountNickname: nickname }, () =>
+      window.Plaid.create({
+        clientName: 'Mintable',
+        env: this.props.config.PLAID_ENVIRONMENT,
+        product: ['auth', 'transactions'],
+        key: this.props.config.PLAID_PUBLIC_KEY,
+        onExit: this.handleOnExit,
+        onSuccess: this.handleOnSuccess,
+        token: data
+      }).open()
+    )
   }
 
   render = () => {
@@ -102,7 +104,7 @@ class Accounts extends React.Component {
               onSuccess={this.handleOnSuccess}
               style={{
                 background: '#137cbd',
-                display: this.state.newAccountNickname ? 'flex' : 'none'
+                display: this.state.currentAccountNickname ? 'flex' : 'none'
               }}
             >
               Add New Account

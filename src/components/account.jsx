@@ -40,7 +40,7 @@ const Account = props => {
         'Content-Type': 'application/json'
       }
     }).then(data => {
-      props.handleOnUpdateAccountResponse(data)
+      props.handleOnUpdateAccountResponse(data, props.details.nickname)
     })
   }
 
