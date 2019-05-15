@@ -55,7 +55,7 @@ const fetchTransactions = (startDate, endDate, pageSize, offset) => {
   return wrapPromise(pMapSeries(accounts, fetchTransactionsForAccount), 'Fetching transactions for accounts')
 }
 
-const fetchBalances = () => {
+const fetchBalances = options => {
   const accounts = getAccountTokens()
 
   const fetchBalanceForAccount = account => {
@@ -65,12 +65,15 @@ const fetchBalances = () => {
           ...data,
           nickname: account.nickname
         }
+      }).catch(error => {
+        return { nickname: account.nickname, error: JSON.stringify(error, null, 2) }
       }),
-      `Fetching balance for account ${account.nickname}`
+      `Fetching balance for account ${account.nickname}`,
+      options
     )
   }
 
-  return wrapPromise(pMapSeries(accounts, fetchBalanceForAccount), 'Fetching balances for accounts')
+  return wrapPromise(pMapSeries(accounts, fetchBalanceForAccount), 'Fetching balances for accounts', options)
 }
 
 // Exchange token flow - exchange a Link public_token for an API access_token
