@@ -4,7 +4,7 @@
   "main": "mintable.js",
   "author": "Kevin Schaich",
   "license": "MIT",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "scripts": {
     "circleci:dry-run": "circleci local execute -e MINTABLE_CONFIG=$MINTABLE_CONFIG",
     "export": "node ./src/scripts/export.js",
