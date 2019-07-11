@@ -167,7 +167,7 @@ const updateSheets = async (updates, options) => {
   })
 
   // Clear automated sheet ranges
-  await clearRanges(_.map(requiredSheetTitles, title => `${title}!${firstTransactionColumn}:${lastReferenceColumn}`))
+  await clearRanges(_.map(requiredSheetTitles, title => `${title}!${firstTransactionColumn}:${lastTransactionColumn}`))
 
   let updatedRanges = []
 
