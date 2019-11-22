@@ -20,7 +20,7 @@ const wrapPromise = async (promise, text, options = defaultOptions) => {
     return promise
       .then(data => {
         spinner.stopAndPersist({
-          text: options.debug ? text + paddedJSON(data) : text,
+          text: options.debug || process.env.DEBUG ? text + paddedJSON(data) : text,
           symbol: logSymbols.success
         })
         resolve(data)
