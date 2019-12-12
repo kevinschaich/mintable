@@ -19,11 +19,10 @@
 ```bash
 git clone https://github.com/kevinschaich/mintable.git
 cd mintable
-yarn
 yarn setup
 ```
 
-3. After completing the setup, run the following at any time to populate updated data into your spreadsheet: 
+3. After completing the setup, run the following at any time to populate updated data into your spreadsheet:
 
 ```
 yarn mintable

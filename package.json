@@ -11,6 +11,7 @@
     "format": "yarn prettier",
     "migrate": "node ./src/scripts/migrate.js",
     "mintable": "node ./src/scripts/mintable.js",
+    "presetup": "yarn install",
     "setup": "cd src && node ./scripts/setup.js",
     "prettier": "prettier --write ./src/**/*.{css,scss,less,js,jsx,ts,tsx,json} --ignore-path ./.gitignore"
   },
