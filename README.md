@@ -55,7 +55,7 @@ You can see a full list of options in the **[Config Docs](./docs/CONFIG.md)**.
 
 **It's not working / I'm having trouble / I need help**
 
-[File an issue](https://github.com/kevinschaich/mintable/issues) or reach out on our [Reddit community](https://www.reddit.com/r/Mintable/).
+- [File an issue](https://github.com/kevinschaich/mintable/issues) or reach out on our [Reddit community](https://www.reddit.com/r/Mintable/).
 
 **How is this different from [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)?**
 
