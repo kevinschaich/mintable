@@ -23,8 +23,12 @@ const sheets = google.sheets({
   auth: OAUTH2_CLIENT
 })
 
-const promisify = (f, args) =>
-  new Promise((resolve, reject) => f(args, (error, data) => (error ? reject(error) : resolve(data))))
+const promisify = (f, args) => {
+  if (process.env.DEBUG) {
+    console.log(JSON.stringify(args, null, 2))
+  }
+  return new Promise((resolve, reject) => f(args, (error, data) => (error ? reject(error) : resolve(data))))
+}
 
 const getAuthURL = () =>
   wrapPromise(
@@ -142,6 +146,29 @@ const formatSheets = (sheetIds, numColumnsToResize) =>
     `Formatting sheets ${sheetIds.join(', ')}`
   )
 
+const sortSheets = order =>
+  wrapPromise(
+    promisify(
+      sheets.spreadsheets.batchUpdate,
+      {
+        spreadsheetId: process.env.SHEETS_SHEET_ID,
+        resource: {
+          requests: _.flatten(
+            _.map(order, sheetId => [
+              {
+                updateSheetProperties: {
+                  properties: { sheetId: sheetId[0], index: sheetId[1] },
+                  fields: 'index'
+                }
+              }
+            ])
+          )
+        }
+      },
+      `Sorting sheets`
+    )
+  )
+
 const updateSheets = async (updates, options) => {
   const {
     firstTransactionColumn,
@@ -202,6 +229,12 @@ const updateSheets = async (updates, options) => {
   )
 
   await formatSheets(sheetIds, numAutomatedColumns)
+
+  const sorted = _.map(
+    _.reverse(_.sortBy(await getSheets(process.env.SHEETS_SHEET_ID), sheet => sheet.properties.title)),
+    (sheet, i) => [sheet.properties.sheetId, i]
+  )
+  await sortSheets(sorted)
 
   console.log(`\nView your spreadsheet at https://docs.google.com/spreadsheets/d/${process.env.SHEETS_SHEET_ID}\n`)
 }
