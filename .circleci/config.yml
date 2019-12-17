@@ -16,7 +16,7 @@ jobs:
 
 workflows:
   version: 2
-  hourly:
+  daily:
     triggers:
       - schedule:
           # 10AM UTC = 6AM EST daily
