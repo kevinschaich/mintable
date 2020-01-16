@@ -40,7 +40,14 @@
           )
         }
 
-        const cleanedBalances = _.map(_.values(balances), account => _.at(account, process.env.BALANCE_COLUMNS))
+        const cleanedBalances = _.map(_.values(balances), account => {
+          if (account.error) {
+            return _.zipObject(process.env.BALANCE_COLUMNS, Array(process.env.BALANCE_COLUMNS.length).fill("Error"))
+          }
+          else {
+            return _.at(account, process.env.BALANCE_COLUMNS)
+          }
+        })
 
         await require('../lib/google').updateRanges({
           range: `Balances!A1:${alphabet[process.env.BALANCE_COLUMNS.length - 1]}${_.keys(balances).length + 1}`,
