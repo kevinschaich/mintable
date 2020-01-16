@@ -56,7 +56,7 @@ maybeWriteDefaultConfig().then(() => {
       switch (process.env.ACCOUNT_PROVIDER) {
         case 'plaid':
           return require('../lib/plaid')
-            .fetchBalances({quiet: true})
+            .fetchBalances({ quiet: true })
             .then(balances => res.json({ data: balances }))
             .catch(error => res.json(error))
         default:

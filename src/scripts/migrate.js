@@ -25,6 +25,7 @@ const dotenv = require('dotenv')
     'CATEGORY_OVERRIDES',
     'TRANSACTION_PROVIDER',
     'SPREADSHEET_PROVIDER',
+    'BALANCE_COLUMNS',
     'TRANSACTION_COLUMNS',
     'REFERENCE_COLUMNS'
   ]

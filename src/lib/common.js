@@ -12,6 +12,7 @@ const DEFAULT_CONFIG = {
   HOST: 'localhost',
   PORT: 3000,
 
+  BALANCE_COLUMNS: ['name', 'official_name', 'type', 'balances.available', 'balances.current', 'balances.limit'],
   TRANSACTION_COLUMNS: ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'],
   REFERENCE_COLUMNS: ['notes', 'work', 'joint'],
 

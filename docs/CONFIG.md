@@ -6,55 +6,33 @@ All configurations below can be made using the web configuration framework or by
 
 > **Pro Tip:** You can use Dropbox or another trusted service to sync `mintable.config.json` across your machines. Run `ln -s <path_to_cloud_folder>/mintable.config.json .` from the repo root to symlink Mintable to the cloud version.
 
-### Automate Updates with a CI Provider
+#### Table of Contents
 
-This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run builds automatically.
+- [General configuration](#general-configuration)
+- [Fetching Balances](#fetching-balances)
+- [Fetching Transactions](#fetching-transactions)
+- [Plaid](#plaid)
+- [Google Sheets](#google-sheets)
 
-Most CI providers allow you to set **environment variables** to configure sensitive information (like the stuff in `mintable.config.json`). We've included a handy script to get that set up:
+## General configuration
 
-```
-yarn export
-```
+#### Debug Mode
 
-Run this command and paste the result into an environment variable called `MINTABLE_CONFIG` in your CI provider of choice. Mintable will handle the rest.
-
-> **Note:** Some CI providers (like Travis) require you to wrap this variable in single quotes, i.e. `'{ "ACCOUNT_PROVIDER": "plaid", ...}'`. If you get an error similar to `Unable to parse JSON...` when you run your CI build, give this a try.
-
-> **Warning:** If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
-
-### Start Date
-
-`START_DATE` specifies the lower bound for fetching transactions in `YYYY.MM.DD` format.
+`DEBUG` mode logs the output of each API call and function to the console.
 
 **Default:**
 
 ```javascript
-"START_DATE": undefined // If end date is not specified, Mintable will fetch the last 2 months of transactions
+"DEBUG": undefined // If unspecified, defaults to false
 ```
 
-For example, if you only want to fetch transactions which occur after or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
+If you want to enable debug mode, you can add the following line to your `mintable.config.json` file:
 
 ```javascript
-"START_DATE": "2018.12.01"
+"DEBUG": true
 ```
 
-### End Date
-
-`END_DATE` specifies the upper bound for fetching transactions in `YYYY.MM.DD` format.
-
-**Default:**
-
-```javascript
-"END_DATE": undefined // If end date is not specified, Mintable will fetch up until the current date
-```
-
-For example, if you only want to fetch transactions which occur before or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
-
-```javascript
-"END_DATE": "2018.12.01"
-```
-
-### Host
+#### Host
 
 `HOST` specifies the host for Mintable's setup server.
 
@@ -70,7 +48,7 @@ For example, if you want to run Mintable on a custom server and listen on `0.0.0
 "HOST": "0.0.0.0"
 ```
 
-### Port
+#### Port
 
 `PORT` specifies the port for Mintable's setup server.
 
@@ -86,7 +64,111 @@ For example, if you already have an application running on port `3000` and inste
 "PORT": "8080"
 ```
 
-### Transaction Columns
+#### Account Provider
+
+`ACCOUNT_PROVIDER` specifies which service to use to fetch transactions.
+
+**Default:** 
+
+```javascript
+"ACCOUNT_PROVIDER": "plaid"
+```
+
+#### Spreadsheet Provider
+
+`SHEET_PROVIDER` specifies which service to use to automate spreadsheet updates.
+
+**Default:** 
+
+```javascript
+"SHEET_PROVIDER": "sheets" // "sheets" = Google Sheets
+```
+
+#### Automate Updates with a CI Provider
+
+This repo includes config files for both [CircleCI](https://circleci.com/) and [Travis CI](https://travis-ci.com) to run builds automatically.
+
+Most CI providers allow you to set **environment variables** to configure sensitive information (like the stuff in `mintable.config.json`). We've included a handy script to get that set up:
+
+```
+yarn export
+```
+
+Run this command and paste the result into an environment variable called `MINTABLE_CONFIG` in your CI provider of choice. Mintable will handle the rest.
+
+> **Note:** Some CI providers (like Travis) require you to wrap this variable in single quotes, i.e. `'{ "ACCOUNT_PROVIDER": "plaid", ...}'`. If you get an error similar to `Unable to parse JSON...` when you run your CI build, give this a try.
+
+> **Warning:** If you choose to use CircleCI, you should turn off **Pass secrets to builds from forked pull requests** under **Build Settings** > **Advanced Settings**.
+
+## Fetching Balances
+
+#### Create Balances Sheet
+
+`CREATE_BALANCES_SHEET` optionally fetches the balances of all your connected accounts and places them in a sheet called `Balances`.
+
+**Default:**
+
+```javascript
+"CREATE_BALANCES_SHEET": undefined // If unspecified, defaults to false
+```
+
+If you want to enable this, you can add the following line to your `mintable.config.json` file:
+
+```javascript
+"CREATE_BALANCES_SHEET": true
+```
+
+#### Balance Columns
+
+`BALANCE_COLUMNS` specifies a list of account properties (using [`_.get()` syntax](https://lodash.com/docs/4.17.11#get)) to automatically update in your `Balances` spreadsheet. All the contents of these columns will be cleared and overwritten each time you run Mintable.
+
+**Default:** 
+
+```javascript
+"BALANCE_COLUMNS": ['name', 'official_name', 'type', 'balances.available', 'balances.current', 'balances.limit']
+```
+
+For example, if you only want to auto-populate the name and amount for each account, you could add the following line to your `mintable.config.json` file:
+
+```javascript
+"TRANSACTION_COLUMNS": ["name", "balances.current"]
+```
+
+## Fetching Transactions
+
+#### Start Date
+
+`START_DATE` specifies the lower bound for fetching transactions in `YYYY.MM.DD` format.
+
+**Default:**
+
+```javascript
+"START_DATE": undefined // If end date is not specified, Mintable will fetch the last 2 months of transactions
+```
+
+For example, if you only want to fetch transactions which occur after or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
+
+```javascript
+"START_DATE": "2018.12.01"
+```
+
+#### End Date
+
+`END_DATE` specifies the upper bound for fetching transactions in `YYYY.MM.DD` format.
+
+**Default:**
+
+```javascript
+"END_DATE": undefined // If end date is not specified, Mintable will fetch up until the current date
+```
+
+For example, if you only want to fetch transactions which occur before or on December 1, 2018, you could add the following line to your `mintable.config.json` file:
+
+```javascript
+"END_DATE": "2018.12.01"
+```
+
+#### Transaction Columns
 
 `TRANSACTION_COLUMNS` specifies a list of transaction properties (using [`_.get()` syntax](https://lodash.com/docs/4.17.11#get)) to automatically update in your spreadsheet. All the contents of these columns will be cleared and overwritten each time you run Mintable.
 
@@ -102,7 +184,7 @@ For example, if you only want to auto-populate the name and amount for each tran
 "TRANSACTION_COLUMNS": ["name", "amount"]
 ```
 
-### Reference Columns
+#### Reference Columns
 
 `REFERENCE_COLUMNS` specifies a list of additional, non-automated columns for your reference/bookkeeping purposes. Each time you run Mintable, the contents of these columns will be preserved.
 
@@ -120,33 +202,13 @@ For example, if you want to add one column to track work expenses, and another t
 
 > **Warning:** Since reference columns are not automated by Mintable, they have the potential to get out of sync with transaction data (for example, if your bank deletes a transaction, causing a row to get removed in `TRANSACTION_COLUMNS`)
 
-### Account Provider
-
-`ACCOUNT_PROVIDER` specifies which service to use to fetch transactions.
-
-**Default:** 
-
-```javascript
-"ACCOUNT_PROVIDER": "plaid"
-```
-
-### Spreadsheet Provider
-
-`SHEET_PROVIDER` specifies which service to use to automate spreadsheet updates.
-
-**Default:** 
-
-```javascript
-"SHEET_PROVIDER": "sheets" // "sheets" = Google Sheets
-```
-
 # Provider-Specific Configuration
 
 You can see the API definitions for account & spreadsheet providers in the **[provider docs](./docs/PROVIDERS.md)**.
 
 ## Plaid
 
-### Category Overrides
+#### Category Overrides
 
 `CATEGORY_OVERRIDES` specifies a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers.
 
@@ -178,7 +240,7 @@ For example, if you want anything matching `autopay` or `e-payment` to get categ
 
 ## Google Sheets
 
-### Template Sheet
+#### Template Sheet
 
 `TEMPLATE_SHEET` specifies the template spreadsheet to use when creating a _new_ sheet for a month.
 

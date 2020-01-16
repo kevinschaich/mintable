@@ -60,14 +60,16 @@ const fetchBalances = options => {
 
   const fetchBalanceForAccount = account => {
     return wrapPromise(
-      PLAID_CLIENT.getBalance(account.token).then(data => {
-        return {
-          ...data,
-          nickname: account.nickname
-        }
-      }).catch(error => {
-        return { nickname: account.nickname, error: JSON.stringify(error, null, 2) }
-      }),
+      PLAID_CLIENT.getBalance(account.token)
+        .then(data => {
+          return {
+            ...data,
+            nickname: account.nickname
+          }
+        })
+        .catch(error => {
+          return { nickname: account.nickname, error: JSON.stringify(error, null, 2) }
+        }),
       `Fetching balance for account ${account.nickname}`,
       options
     )

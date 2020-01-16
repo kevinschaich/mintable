@@ -43,7 +43,7 @@ class Accounts extends React.Component {
       window.Plaid.create({
         clientName: 'Mintable',
         env: this.props.config.PLAID_ENVIRONMENT,
-        product: ['auth', 'transactions'],
+        product: ['transactions'],
         key: this.props.config.PLAID_PUBLIC_KEY,
         onExit: this.handleOnExit,
         onSuccess: this.handleOnSuccess,
@@ -99,7 +99,7 @@ class Accounts extends React.Component {
             <PlaidLink
               clientName='Mintable'
               env={this.props.config.PLAID_ENVIRONMENT}
-              product={['auth', 'transactions']}
+              product={['transactions']}
               publicKey={this.props.config.PLAID_PUBLIC_KEY}
               onSuccess={this.handleOnSuccess}
               style={{

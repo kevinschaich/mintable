@@ -148,25 +148,22 @@ const formatSheets = (sheetIds, numColumnsToResize) =>
 
 const sortSheets = order =>
   wrapPromise(
-    promisify(
-      sheets.spreadsheets.batchUpdate,
-      {
-        spreadsheetId: process.env.SHEETS_SHEET_ID,
-        resource: {
-          requests: _.flatten(
-            _.map(order, sheetId => [
-              {
-                updateSheetProperties: {
-                  properties: { sheetId: sheetId[0], index: sheetId[1] },
-                  fields: 'index'
-                }
+    promisify(sheets.spreadsheets.batchUpdate, {
+      spreadsheetId: process.env.SHEETS_SHEET_ID,
+      resource: {
+        requests: _.flatten(
+          _.map(order, sheetId => [
+            {
+              updateSheetProperties: {
+                properties: { sheetId: sheetId[0], index: sheetId[1] },
+                fields: 'index'
               }
-            ])
-          )
-        }
-      },
-      `Sorting sheets`
-    )
+            }
+          ])
+        )
+      }
+    }),
+    `Sorting sheets`
   )
 
 const updateSheets = async (updates, options) => {
@@ -248,5 +245,6 @@ module.exports = {
   renameSheet,
   clearRanges,
   updateRanges,
-  updateSheets
+  updateSheets,
+  formatSheets
 }

@@ -2,10 +2,60 @@
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // IMPORTS
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+  await require('../lib/common').maybeWriteDefaultConfig()
   await require('../lib/common').getConfigEnv()
   const { parse, differenceInMonths, subMonths, startOfMonth, addMonths, format } = require('date-fns')
   const _ = require('lodash')
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // FETCH BALANCES
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  if (process.env.CREATE_BALANCES_SHEET) {
+    let balances
+
+    switch (process.env.ACCOUNT_PROVIDER) {
+      case 'plaid':
+        balances = _.keyBy(
+          _.flatten(_.map(await require('../lib/plaid').fetchBalances(), item => item.accounts)),
+          'account_id'
+        )
+        break
+      default:
+        break
+    }
+
+    switch (process.env.SHEET_PROVIDER) {
+      case 'sheets':
+        let balanceSheet = _.find(
+          await require('../lib/google').getSheets(process.env.SHEETS_SHEET_ID),
+          sheet => sheet.properties.title === 'Balances'
+        )
+        if (!balanceSheet) {
+          await require('../lib/google').addSheet('Balances')
+          balanceSheet = _.find(
+            await require('../lib/google').getSheets(process.env.SHEETS_SHEET_ID),
+            sheet => sheet.properties.title === 'Balances'
+          )
+        }
+
+        const cleanedBalances = _.map(_.values(balances), account => _.at(account, process.env.BALANCE_COLUMNS))
+
+        await require('../lib/google').updateRanges({
+          range: `Balances!A1:${alphabet[process.env.BALANCE_COLUMNS.length - 1]}${_.keys(balances).length + 1}`,
+          values: [process.env.BALANCE_COLUMNS].concat(cleanedBalances)
+        })
+
+        await require('../lib/google').formatSheets(
+          [balanceSheet.properties.sheetId],
+          process.env.BALANCE_COLUMNS.length
+        )
+        break
+      default:
+        break
+    }
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // FETCH TRANSACTIONS
@@ -104,7 +154,6 @@
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // Column headers in spreadsheets are defined by letters A-Z, this list gets us indexes for each letter
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
   const options = {
     // First automated column Mintable populates from transaction data
     firstTransactionColumn: alphabet[0],
