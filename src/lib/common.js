@@ -107,8 +107,10 @@ const sanitizeConfig = config => {
     return _.reduce(chunk, (result, v, k) => {
       if (_.isObject(v) || _.isArray(v)) {
         result[k] = sanitize(v);
-      } else {
+      } else if (_.isString()) {
         result[k] = _.trim(v);
+      } else {
+        result[k] = v;
       }
 
       return result;
