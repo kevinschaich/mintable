@@ -101,10 +101,27 @@ const getConfigEnv = async options =>
     options
   )
 
+const sanitizeConfig = config => {
+  // recurse configuration objects and arrays to remove whitespace
+  const sanitize = (chunk) => {
+    return _.reduce(chunk, (result, v, k) => {
+      if (_.isObject(v) || _.isArray(v)) {
+        result[k] = sanitize(v);
+      } else {
+        result[k] = _.trim(v);
+      }
+
+      return result;
+    }, _.isArray(chunk) ? [] : {})
+  }
+
+  return sanitize(config);
+}
+
 const writeConfig = async newConfig =>
   wrapPromise(
     new Promise(async (resolve, reject) => {
-      fs.writeFileSync(CONFIG_FILE, JSON.stringify(newConfig, null, 2))
+      fs.writeFileSync(CONFIG_FILE, JSON.stringify(sanitizeConfig(newConfig), null, 2))
       resolve(getConfigEnv())
     }),
     'Writing config'
