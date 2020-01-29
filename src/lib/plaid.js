@@ -149,6 +149,7 @@ const fetchAllCleanTransactions = async (startDate, endDate, pageSize = 250, off
     return {
       ..._.omit(transaction, ['accountNickname']),
       account_details: {
+        ...account,
         official_name: account.official_name,
         name: account.name,
         nickname: transaction.accountNickname
