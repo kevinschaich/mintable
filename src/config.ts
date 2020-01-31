@@ -1,7 +1,10 @@
+// Integrations
+
 enum IntegrationType {
   Import = 'import',
   Export = 'export'
 }
+
 enum IntegrationId {
   Plaid = 'plaid',
   Google = 'google'
@@ -17,6 +20,7 @@ enum PlaidEnvironmentType {
   Development = 'development',
   Sandbox = 'sandbox'
 }
+
 interface PlaidConfig extends BaseIntegrationConfig {
   id: IntegrationId.Plaid
   type: IntegrationType.Import
@@ -32,6 +36,7 @@ interface GoogleTemplateSheetSettings {
   documentId: string
   sheetId: string
 }
+
 interface GoogleConfig extends BaseIntegrationConfig {
   id: IntegrationId.Google
   type: IntegrationType.Export
@@ -49,6 +54,21 @@ interface GoogleConfig extends BaseIntegrationConfig {
 }
 
 type IntegrationConfig = PlaidConfig | GoogleConfig
+
+// Accounts
+
+interface BaseAccountConfig {
+  name: string
+  integration: IntegrationId
+}
+
+interface PlaidAccountConfig extends BaseAccountConfig {
+  token: string
+}
+
+type AccountConfig = PlaidAccountConfig
+
+// Properties
 
 enum PropertyType {
   Automated = 'automated',
@@ -74,26 +94,21 @@ interface TransactionProperty extends Property {
   overrides: TransactionPropertyOverride // override default values
 }
 
-interface BaseAccountConfig {
-  name: string
-  integration: IntegrationId
-}
-
-interface PlaidAccountConfig extends BaseAccountConfig {
-  token: string
-}
-
-type AccountConfig = PlaidAccountConfig
+// Balances
 
 interface BalanceConfig {
   enabled: boolean
   properties: PropertyType[]
 }
 
+// Transactions
+
 interface TransactionConfig {
   enabled: boolean
   properties: PropertyType[]
 }
+
+// Wrapping it all together:
 
 interface Config {
   integrations: IntegrationConfig[]
