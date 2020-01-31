@@ -8,25 +8,7 @@ const CONFIG_FILE = path.join(__dirname, '../..', process.argv[2] || 'mintable.c
 console.log(`\nUsing config ${CONFIG_FILE}.`)
 console.log(`Note: The messages displayed below are automated and may contain duplicates.\n`)
 
-const DEFAULT_CONFIG = {
-  HOST: 'localhost',
-  PORT: 3000,
 
-  BALANCE_COLUMNS: ['name', 'official_name', 'type', 'balances.available', 'balances.current', 'balances.limit'],
-  TRANSACTION_COLUMNS: ['date', 'amount', 'name', 'account', 'category.0', 'category.1', 'pending'],
-  REFERENCE_COLUMNS: ['notes', 'work', 'joint'],
-
-  ACCOUNT_PROVIDER: 'plaid',
-  PLAID_ENVIRONMENT: 'development',
-  CATEGORY_OVERRIDES: [],
-
-  SHEET_PROVIDER: 'sheets',
-  SHEETS_REDIRECT_URI: `http://localhost:3000/google-sheets-oauth2callback`,
-  TEMPLATE_SHEET: {
-    SHEET_ID: '10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw',
-    SHEET_TITLE: 'Template'
-  }
-}
 
 const checkEnv = propertyIds => {
   const values = _.values(_.pick(process.env, propertyIds))
@@ -51,55 +33,17 @@ const getAccountTokens = () => {
   }
 }
 
-const accountSetupComplete = () => getAccountTokens().length > 0
 
-const accountProviderSetupComplete = () => {
-  if (!process.env) {
-    return false
-  }
-
-  switch (process.env.ACCOUNT_PROVIDER) {
-    case 'plaid':
-      return checkEnv(['PLAID_CLIENT_ID', 'PLAID_PUBLIC_KEY', 'PLAID_SECRET'])
-    default:
-      return false
-  }
-}
-
-const sheetProviderSetupComplete = () => {
-  if (!process.env) {
-    return false
-  }
-
-  switch (process.env.SHEET_PROVIDER) {
-    case 'sheets':
-      return checkEnv([
-        'SHEETS_SHEET_ID',
-        'SHEETS_CLIENT_ID',
-        'SHEETS_CLIENT_SECRET',
-        'SHEETS_REDIRECT_URI',
-        'SHEETS_ACCESS_TOKEN'
-      ])
-    default:
-      return false
-  }
-}
-
-const getConfigEnv = async options =>
-  wrapPromise(
-    new Promise((resolve, reject) => {
+const getConfigEnv = async options => {
       let config = process.env.MINTABLE_CONFIG || fs.readFileSync(CONFIG_FILE, 'utf8')
 
+      // passed in as environment variable
       if (typeof config === 'string') {
         config = JSON.parse(config)
       }
 
       process.env = { ...process.env, ...config }
-      resolve(config)
-    }),
-    'Fetching current config',
-    options
-  )
+    }
 
 const sanitizeConfig = config => {
   // recurse configuration objects and arrays to remove whitespace

@@ -1,6 +1,5 @@
 const ora = require('ora')
 const logSymbols = require('log-symbols')
-const indentString = require('indent-string')
 const { inspect } = require('util')
 
 const paddedJSON = data => {
