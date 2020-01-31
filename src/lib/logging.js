@@ -7,47 +7,20 @@ const paddedJSON = data => {
   return indentString(`\n\n${inspect(data)}\n`, 4)
 }
 
-const defaultOptions = {
-  debug: false, // Print success output    (default: only error output printed)
-  quiet: false // Resolve even on failures  (default: reject on failures)
-}
+// spinner.stopAndPersist({
+//   text: options.debug || process.env.DEBUG ? text + paddedJSON(data) : text,
+//   symbol: logSymbols.success
+// })
 
-const wrapPromise = async (promise, text, options = defaultOptions) => {
-  const spinner = ora({ text: text + '...', indent: 2 }).start()
-
-  return new Promise(async (resolve, reject) => {
-    let text = spinner.text.replace('...', '')
-    return promise
-      .then(data => {
-        spinner.stopAndPersist({
-          text: options.debug || process.env.DEBUG ? text + paddedJSON(data) : text,
-          symbol: logSymbols.success
-        })
-        resolve(data)
-      })
-      .catch(error => {
-        text = `Error ${text.toLowerCase()}:`
-        let errorJSON = { error: error }
-
-        if (error.message) {
-          errorJSON = { error: error.toString() }
-        }
-
-        spinner.stopAndPersist({
-          symbol: logSymbols.error,
-          text: text + paddedJSON(errorJSON)
-        })
-
-        if (options.quiet === true) {
-          resolve()
-        } else {
-          reject(errorJSON)
-          process.exit(1)
-        }
-      })
-  })
+const info = (text) => {
+  if (_.isObject(v) || _.isArray(v)) {
+    return ora({ text, indent: 2 }).start()
+  } else {
+    return ora({ text: paddedJSON(text), indent: 2 }).start()
+  }
 }
 
 module.exports = {
-  wrapPromise
+  info,
+   debug
 }
