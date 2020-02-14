@@ -5,45 +5,17 @@ const { wrapPromise } = require('./logging')
 
 const CONFIG_FILE = path.join(__dirname, '../..', process.argv[2] || 'mintable.config.json')
 
-console.log(`\nUsing config ${CONFIG_FILE}.`)
-console.log(`Note: The messages displayed below are automated and may contain duplicates.\n`)
 
+export const config = async options => {
+  let config = process.env.MINTABLE_CONFIG || fs.readFileSync(CONFIG_FILE, 'utf8')
 
-
-const checkEnv = propertyIds => {
-  const values = _.values(_.pick(process.env, propertyIds))
-  return values.length === propertyIds.length && _.every(values, v => v.length)
-}
-
-const getAccountTokens = () => {
-  if (!process.env) {
-    return []
+  // passed in as environment variable
+  if (typeof config === 'string') {
+    config = JSON.parse(config)
   }
 
-  switch (process.env.ACCOUNT_PROVIDER) {
-    case 'plaid':
-      return Object.keys(process.env)
-        .filter(key => key.startsWith(`PLAID_TOKEN`))
-        .map(key => ({
-          nickname: key.replace(/^PLAID_TOKEN_/, ''),
-          token: process.env[key]
-        }))
-    default:
-      return []
-  }
+  process.env = { ...process.env, ...config }
 }
-
-
-const getConfigEnv = async options => {
-      let config = process.env.MINTABLE_CONFIG || fs.readFileSync(CONFIG_FILE, 'utf8')
-
-      // passed in as environment variable
-      if (typeof config === 'string') {
-        config = JSON.parse(config)
-      }
-
-      process.env = { ...process.env, ...config }
-    }
 
 const sanitizeConfig = config => {
   // recurse configuration objects and arrays to remove whitespace
