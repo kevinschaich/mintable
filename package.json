@@ -10,22 +10,25 @@
     "export": "node ./src/scripts/export.js",
     "format": "yarn prettier",
     "migrate": "node ./src/scripts/migrate.js",
-    "mintable": "node ./src/scripts/mintable.js",
+    "mintable": "ts-node ./src/scripts/mintable.ts",
     "setup": "cd src && node ./scripts/setup.js",
     "prettier": "prettier --write ./src/**/*.{css,scss,less,js,jsx,ts,tsx,json} --ignore-path ./.gitignore"
   },
   "dependencies": {
-    "clipboardy": "^1.2.3",
-    "date-fns": "^1.30.1",
-    "googleapis": "27",
+    "ajv": "^6.12.0",
+    "chalk": "^3.0.0",
+    "clipboardy": "^2.2.0",
+    "date-fns": "^2.10.0",
+    "googleapis": "47.0.0",
+    "io-ts": "^2.1.2",
     "lodash": "^4.17.11",
-    "opn": "^6.0.0",
     "p-each-series": "^2.1.0",
     "p-map-series": "^2.1.0",
-    "plaid": "^2.10.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-plaid-link": "^1.2.0"
+    "plaid": "^4.7.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3",
+    "typescript-json-schema": "^0.42.0",
+    "yargs": "^15.1.0"
   },
   "devDependencies": {
     "prettier": "^1.16.4"

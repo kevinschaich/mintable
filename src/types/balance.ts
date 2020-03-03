@@ -1,4 +1,4 @@
-import {BaseProperty} from './common'
+import { BaseProperty } from './common'
 
 export interface BalanceProperty extends BaseProperty {}
 
