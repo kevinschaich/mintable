@@ -4,15 +4,17 @@
   "main": "mintable.js",
   "author": "Kevin Schaich",
   "license": "MIT",
-  "version": "1.2.5",
+  "version": "2.0.0",
   "scripts": {
     "circleci:dry-run": "circleci local execute -e MINTABLE_CONFIG=$MINTABLE_CONFIG",
     "export": "node ./src/scripts/export.js",
     "format": "yarn prettier",
     "migrate": "node ./src/scripts/migrate.js",
-    "mintable": "ts-node ./src/scripts/mintable.ts",
-    "setup": "cd src && node ./scripts/setup.js",
-    "prettier": "prettier --write ./src/**/*.{css,scss,less,js,jsx,ts,tsx,json} --ignore-path ./.gitignore"
+    "fetch": "ts-node ./src/scripts/mintable.ts",
+    "prettier": "prettier --write ./src/**/*.{css,scss,less,js,jsx,ts,tsx,json} --ignore-path ./.gitignore",
+    "setup": "ts-node ./src/scripts/setup.ts",
+    "setup-plaid": "ts-node ./src/integrations/plaid/setup.ts",
+    "setup-google": "ts-node ./src/integrations/google/setup.ts"
   },
   "dependencies": {
     "ajv": "^6.12.0",
@@ -25,12 +27,14 @@
     "p-each-series": "^2.1.0",
     "p-map-series": "^2.1.0",
     "plaid": "^4.7.0",
+    "prompts": "^2.3.1",
     "ts-node": "^8.6.2",
     "typescript": "^3.8.3",
     "typescript-json-schema": "^0.42.0",
     "yargs": "^15.1.0"
   },
   "devDependencies": {
+    "@types/prompts": "^2.0.3",
     "prettier": "^1.16.4"
   }
 }

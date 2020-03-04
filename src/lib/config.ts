@@ -10,6 +10,8 @@ import { resolve } from 'path'
 import * as TJS from 'typescript-json-schema'
 import Ajv = require('ajv')
 
+const DEFAULT_CONFIG_FILE = '~/mintable.jsonc'
+
 export interface FileConfig {
   type: 'file'
   path: string
@@ -42,10 +44,11 @@ export const getConfigSource = (): ConfigSource => {
     return { type: 'environment', variable: argv['config-variable'] }
   }
 
-  logError(
-    `Could not find a source to retrieve configuration.`,
-    `Please supply either the --config-file or --config-variable argument.`
-  )
+  // Default to DEFAULT_CONFIG_FILE
+  const path = DEFAULT_CONFIG_FILE.replace(/^~(?=$|\/|\\)/, os.homedir())
+  logInfo(`Using default configuration file \`${path}.\``)
+  logInfo(`You can supply either --config-file or --config-variable to specify a different configuration.`)
+  return { type: 'file', path: path }
 }
 
 export const readConfig = (source: ConfigSource): string => {
@@ -56,6 +59,7 @@ export const readConfig = (source: ConfigSource): string => {
       return config
     } catch (e) {
       logError('Unable to open configuration file.', e)
+      logInfo("You may want to run `yarn setup` if you haven't already.")
     }
   }
   if (source.type === 'environment') {
@@ -84,7 +88,7 @@ export const parseConfig = (configString: string): Object => {
   }
 }
 
-export const validateConfig = (parsedConfig: Object): Config => {
+export const getConfigSchema = (): TJS.Definition => {
   // Generate JSON schema at runtime for Config interface above
   const settings: TJS.PartialArgs = {
     required: true,
@@ -93,6 +97,12 @@ export const validateConfig = (parsedConfig: Object): Config => {
   }
   const program = TJS.getProgramFromFiles([resolve(__filename)])
   const configSchema = TJS.generateSchema(program, 'Config', settings)
+
+  return configSchema
+}
+
+export const validateConfig = (parsedConfig: Object): Config => {
+  const configSchema = getConfigSchema()
 
   // Validate parsed configuration object against generated JSON schema
   const validator = new Ajv()
@@ -112,5 +122,33 @@ export const getConfig = (): Config => {
   const configString = readConfig(configSource)
   const parsedConfig = parseConfig(configString)
   const validatedConfig = validateConfig(parsedConfig)
+  return validatedConfig
+}
+
+export const writeConfig = (source: ConfigSource, config: Config): void => {
+  if (source.type === 'file') {
+    try {
+      fs.writeFileSync(source.path, JSON.stringify(config, null, 2))
+      logInfo('Successfully wrote configuration file.')
+    } catch (e) {
+      logError('Unable to write configuration file.', e)
+    }
+  }
+  if (source.type === 'environment') {
+    logError(
+      'Node does not have permissions to modify global environment variables. Please use file-based configuration to make changes.'
+    )
+  }
+}
+
+type ConfigTransformer = (oldConfig: Config) => Config
+
+export const updateConfig = (configTransformer: ConfigTransformer): Config => {
+  const configSource = getConfigSource()
+  const configString = readConfig(configSource)
+  const oldConfig = parseConfig(configString) as Config
+  const newConfig = configTransformer(oldConfig)
+  const validatedConfig = validateConfig(newConfig)
+  writeConfig(configSource, validatedConfig)
   return validatedConfig
 }

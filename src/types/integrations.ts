@@ -8,7 +8,8 @@ export enum IntegrationType {
 
 export enum IntegrationId {
   Plaid = 'plaid',
-  Google = 'google'
+  Google = 'google',
+  CSV = 'csv'
 }
 
 export interface BaseIntegrationConfig {

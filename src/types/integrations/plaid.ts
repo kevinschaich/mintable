@@ -1,6 +1,6 @@
 import { BaseIntegrationConfig, IntegrationId, IntegrationType } from '../integrations'
 
-enum PlaidEnvironmentType {
+export enum PlaidEnvironmentType {
   Development = 'development',
   Sandbox = 'sandbox'
 }
@@ -18,4 +18,18 @@ export interface PlaidConfig extends BaseIntegrationConfig {
   environment: PlaidEnvironmentType
 
   credentials: PlaidCredentials
+}
+
+export const defaultPlaidConfig: PlaidConfig = {
+  name: '',
+  id: IntegrationId.Plaid,
+  type: IntegrationType.Import,
+
+  environment: PlaidEnvironmentType.Sandbox,
+
+  credentials: {
+    clientId: '',
+    secret: '',
+    publicKey: ''
+  }
 }

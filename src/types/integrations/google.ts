@@ -6,7 +6,7 @@ export interface GoogleTemplateSheetSettings {
 }
 
 export interface GoogleCredentials {
-  oauthUrl: string
+  // oauthUrl: string
   clientId: string
   clientSecret: string
 
@@ -20,7 +20,21 @@ export interface GoogleConfig extends BaseIntegrationConfig {
   id: IntegrationId.Google
   type: IntegrationType.Export
 
-  template?: GoogleTemplateSheetSettings
-
   credentials: GoogleCredentials
+  documentId: string
+  
+  template?: GoogleTemplateSheetSettings
+}
+
+export const defaultGoogleConfig: GoogleConfig = {
+  name: '',
+  id: IntegrationId.Google,
+  type: IntegrationType.Export,
+
+  credentials: {
+    // oauthUrl: '',
+    clientId: '',
+    clientSecret: ''
+  },
+  documentId: ''
 }

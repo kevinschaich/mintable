@@ -35,15 +35,6 @@
 //   return sanitize(config);
 // }
 
-// const writeConfig = async newConfig =>
-//   wrapPromise(
-//     new Promise(async (resolve, reject) => {
-//       fs.writeFileSync(CONFIG_FILE, JSON.stringify(sanitizeConfig(newConfig), null, 2))
-//       resolve(getConfigEnv())
-//     }),
-//     'Writing config'
-//   )
-
 // const updateConfig = async updates => {
 //   const currentConfig = await getConfigEnv()
 //   const newConfig = { ...currentConfig, ...updates }
