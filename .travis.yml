@@ -2,4 +2,5 @@ language: node_js
 node_js:
  - "node"
 script:
-  - "yarn mintable"
+  - "yarn test"
+  # - "yarn mintable"
