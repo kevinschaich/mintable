@@ -29,7 +29,6 @@ export interface Config {
     accounts: AccountConfig[]
     balances: BalanceConfig[]
     transactions: TransactionConfig[]
-    debugMode?: boolean
 }
 
 export const getConfigSource = (): ConfigSource => {

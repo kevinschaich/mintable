@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import { argv } from 'yargs'
 
 export enum LogLevel {
     Info = 'info',
@@ -28,9 +29,9 @@ export const log = (request: LogRequest) => {
             console.info(text)
     }
 
-    // if (config.debugMode) {
-    //   console.log(request.data)
-    // }
+    if (argv['debug']) {
+        console.info('\n', JSON.stringify(request.data, null, 2), '\n')
+    }
 }
 
 export const logError = (message: string, data?: any) => {
