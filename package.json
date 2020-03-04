@@ -24,6 +24,7 @@
     "googleapis": "47.0.0",
     "io-ts": "^2.1.2",
     "lodash": "^4.17.11",
+    "open": "^7.0.2",
     "p-each-series": "^2.1.0",
     "p-map-series": "^2.1.0",
     "plaid": "^4.7.0",

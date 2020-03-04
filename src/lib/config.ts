@@ -25,7 +25,7 @@ export interface EnvironmentConfig {
 export type ConfigSource = FileConfig | EnvironmentConfig
 
 export interface Config {
-  integrations: IntegrationConfig[]
+  integrations: { [id: string]: IntegrationConfig }
   accounts: AccountConfig[]
   balances: BalanceConfig[]
   transactions: TransactionConfig[]
