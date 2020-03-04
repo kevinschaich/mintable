@@ -53,9 +53,18 @@ const questions: Array<PromptObject<any>> = [
     documentId: response.documentId
   }
 
-
   updateConfig(config => {
     config.integrations.push(googleConfig)
     return config
   })
+
+  // return require('../lib/google')
+  // .getAuthURL()
+  // .then(url => res.json({ data: url }))
+  // .catch(error => res.json(error))
+
+  // return require('../lib/google')
+  // .getToken(req.query.code)
+  // .then(token => res.redirect(`http://${process.env.HOST}:${process.env.PORT}/sheet-provider-setup`))
+  // .catch(error => res.json(error))
 })()

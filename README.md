@@ -1,4 +1,4 @@
-<h4 align="center"><img width="200" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Roll your own ad-free Mint clone for managing personal finances using publicly available APIs.</h4><br></h4>
+<h4 align="center"><img width="200" src="./docs/logo.png" alt="Mintable"><h4 align="center">Roll your own ad-free Mint clone for managing personal finances using publicly available APIs.</h4><br></h4>
 
 [![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)](https://travis-ci.com/kevinschaich/mintable)
 [![](https://img.shields.io/github/release/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/releases)
@@ -33,7 +33,7 @@ yarn mintable
 
 ## Overview
 
-![Mintable](./src/static/mintable.png)
+![Mintable](./docs/mintable.png)
 
 Mintable simplifies managing your finances, for free, without ads, and without tracking your information. Here's how it works:
 
@@ -46,8 +46,6 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 - Locally hosted, open-source, 100% free, ad-free, no personal data tracking, no data stored by Mintable on central servers
 - Integrates with your financial institutions for fully-automated spreadsheet updates
 - Web based setup wizard and configuration framework:
-
-![Setup Wizard](./src/static/setup.png)
 
 You can see a full list of options in the **[Config Docs](./docs/CONFIG.md)**.
 
