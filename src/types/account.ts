@@ -1,7 +1,7 @@
 import { IntegrationId } from './integrations'
 
 export interface BaseAccountConfig {
-    name: string
+    id: string
     integration: IntegrationId
 }
 

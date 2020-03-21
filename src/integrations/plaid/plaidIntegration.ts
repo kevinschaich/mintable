@@ -2,7 +2,7 @@
 // const pMapSeries = require('p-map-series')
 import plaid from 'plaid'
 import * as _ from 'lodash'
-import { Config } from '../../lib/config'
+import { Config, updateConfig } from '../../lib/config'
 import { PlaidConfig, PlaidEnvironmentType } from '../../types/integrations/plaid'
 import { IntegrationId } from '../../types/integrations'
 import express from 'express'
@@ -20,9 +20,10 @@ export class PlaidIntegration {
         this.config = config
         this.plaidConfig = this.config.integrations[IntegrationId.Plaid] as PlaidConfig
 
-        this.environment = this.plaidConfig.environment === PlaidEnvironmentType.Development
-            ? plaid.environments.development
-            : plaid.environments.sandbox
+        this.environment =
+            this.plaidConfig.environment === PlaidEnvironmentType.Development
+                ? plaid.environments.development
+                : plaid.environments.sandbox
 
         this.client = new plaid.Client(
             this.plaidConfig.credentials.clientId,
@@ -38,7 +39,6 @@ export class PlaidIntegration {
     public addAccount = (): Promise<{
         message?: string
         error?: any
-        server: http.Server
     }> => {
         return new Promise((resolve, reject) => {
             const client = this.client
@@ -54,22 +54,32 @@ export class PlaidIntegration {
                         if (error != null) {
                             reject({
                                 message: 'Encountered error exchanging Plaid public token.',
-                                error,
-                                server
+                                error
                             })
                         }
-                        resolve({ message: 'Plaid access token saved.', server })
+
+                        updateConfig(config => {
+                            config.accounts[tokenResponse.item_id] = {
+                                id: tokenResponse.item_id,
+                                integration: IntegrationId.Plaid,
+                                token: tokenResponse.access_token
+                            }
+
+                            return config
+                        })
+
+                        resolve({
+                            message: 'Plaid access token saved.'
+                        })
                         server.close()
                         return res.json({})
                     })
-                }
-                else if (body.exit !== undefined) {
-                    reject({ error: 'Plaid authentication cancelled.', server })
+                } else if (body.exit !== undefined) {
+                    reject({ error: 'Plaid authentication cancelled.' })
                     server.close()
                     return res.json({})
-                }
-                else {
-                    reject({ message: 'Encountered error during authentication.', error: body.error, server })
+                } else {
+                    reject({ message: 'Encountered error during authentication.', error: body.error })
                     server.close()
                     return res.json({})
                 }
