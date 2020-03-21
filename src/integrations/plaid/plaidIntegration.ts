@@ -1,33 +1,89 @@
 // import { parse, format } from 'date-fns'
-// import { updateConfig, getAccountTokens } from './common'
 // const pMapSeries = require('p-map-series')
 import plaid from 'plaid'
-import * as  _ from 'lodash'
-// import { PlaidEnvironmentType } from '../../integrations/plaid'
+import * as _ from 'lodash'
+import { Config } from '../../lib/config'
+import { PlaidConfig, PlaidEnvironmentType } from '../../types/integrations/plaid'
+import { IntegrationId } from '../../types/integrations'
+import express from 'express'
+import bodyParser from 'body-parser'
+import { logInfo, logError } from '../../lib/logging'
+import http from 'http'
 
-export const initialize = (): void => {
-    
+export class PlaidIntegration {
+    config: Config
+    plaidConfig: PlaidConfig
+    environment: string
+    client: plaid.Client
+
+    constructor(config: Config) {
+        this.config = config
+        this.plaidConfig = this.config.integrations[IntegrationId.Plaid] as PlaidConfig
+
+        this.environment = this.plaidConfig.environment === PlaidEnvironmentType.Development
+            ? plaid.environments.development
+            : plaid.environments.sandbox
+
+        this.client = new plaid.Client(
+            this.plaidConfig.credentials.clientId,
+            this.plaidConfig.credentials.secret,
+            this.plaidConfig.credentials.publicKey,
+            this.environment,
+            {
+                version: '2018-05-22'
+            }
+        )
+    }
+
+    public addAccount = (): Promise<{
+        message?: string
+        error?: any
+        server: http.Server
+    }> => {
+        return new Promise((resolve, reject) => {
+            const client = this.client
+            const app = express()
+            app.use(bodyParser.json())
+            app.use(bodyParser.urlencoded({ extended: true }))
+            let server: http.Server
+
+            app.post('/get_access_token', function(req, res) {
+                const body = req.body
+                if (body.public_token !== undefined) {
+                    client.exchangePublicToken(body.public_token, function(error, tokenResponse) {
+                        if (error != null) {
+                            reject({
+                                message: 'Encountered error exchanging Plaid public token.',
+                                error,
+                                server
+                            })
+                        }
+                        resolve({ message: 'Plaid access token saved.', server })
+                        server.close()
+                        return res.json({})
+                    })
+                }
+                else if (body.exit !== undefined) {
+                    reject({ error: 'Plaid authentication cancelled.', server })
+                    server.close()
+                    return res.json({})
+                }
+                else {
+                    reject({ message: 'Encountered error during authentication.', error: body.error, server })
+                    server.close()
+                    return res.json({})
+                }
+            })
+
+            app.get('/', function(req, res) {
+                res.sendFile(__dirname + '/addAccount.html')
+            })
+
+            server = require('http').createServer(app)
+            server.listen('8000')
+        })
+    }
 }
-
-const environment = () => {
-  switch (process.env.PLAID_ENVIRONMENT) {
-    case 'development':
-      return plaid.environments.development
-    case 'sandbox':
-    default:
-      return plaid.environments.sandbox
-  }
-}
-
-const PLAID_CLIENT = new plaid.Client(
-  process.env.PLAID_CLIENT_ID,
-  process.env.PLAID_SECRET,
-  process.env.PLAID_PUBLIC_KEY,
-  environment(),
-  {
-    version: '2018-05-22'
-  }
-)
 
 // const fetchTransactions = (startDate, endDate, pageSize, offset) => {
 //   const accounts = getAccountTokens()
