@@ -6,7 +6,7 @@ import { IntegrationId } from '../../types/integrations'
 import { GoogleConfig } from '../../types/integrations/google'
 import { OAuth2Client, Credentials } from 'google-auth-library'
 
-const promisify = (f, args?: any) => {
+const promisify = (f, args?: any): Promise<any> => {
   return new Promise((resolve, reject) => f(args, (error, data) => (error ? reject(error) : resolve(data))))
 }
 

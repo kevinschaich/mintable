@@ -14,7 +14,7 @@ export interface LogRequest {
     data?: any
 }
 
-export const log = (request: LogRequest) => {
+export const log = (request: LogRequest): void => {
     const date = chalk.bold(new Date().toISOString())
     const level = chalk.bold(`[${request.level.toUpperCase()}]`)
     const text = `${date} ${level} ${request.message}`
@@ -43,14 +43,14 @@ export const log = (request: LogRequest) => {
     }
 }
 
-export const logError = (message: string, data?: any) => {
+export const logError = (message: string, data?: any): void => {
     log({ level: LogLevel.Error, message, data })
 }
 
-export const logWarn = (message: string, data?: any) => {
+export const logWarn = (message: string, data?: any): void => {
     log({ level: LogLevel.Warn, message, data })
 }
 
-export const logInfo = (message: string, data?: any) => {
+export const logInfo = (message: string, data?: any): void => {
     log({ level: LogLevel.Info, message, data })
 }
