@@ -1,4 +1,4 @@
-// import { parse, format } from 'date-fns'
+import { parse, format } from 'date-fns'
 // const pMapSeries = require('p-map-series')
 import plaid from 'plaid'
 import * as _ from 'lodash'
@@ -9,6 +9,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import { logInfo, logError } from '../../lib/logging'
 import http from 'http'
+import { AccountConfig } from '../../types/account'
 
 export class PlaidIntegration {
     config: Config
@@ -64,7 +65,7 @@ export class PlaidIntegration {
                                 integration: IntegrationId.Plaid,
                                 token: tokenResponse.access_token
                             }
-
+                            this.config = config
                             return config
                         })
 
@@ -93,36 +94,25 @@ export class PlaidIntegration {
             server.listen('8000')
         })
     }
+
+    public fetchTransactions = async (account: AccountConfig, startDate: Date, endDate: Date) => {
+        const options: plaid.TransactionsRequestOptions = { count: 500, offset: 0 }
+        const start = format(startDate, 'yyyy-MM-dd')
+        const end = format(endDate, 'yyyy-MM-dd')
+
+        return this.client.getTransactions(account.token, start, end, options)
+
+        // .then(data => ({
+        //     account: account.nickname,
+        //     transactions: data.transactions.map(transaction => ({
+        //         ...transaction,
+        //         amount: -transaction.amount,
+        //         accountNickname: account.nickname
+        //     }))
+        // }))
+        // return wrapPromise(pMapSeries(accounts, fetchTransactionsForAccount), 'Fetching transactions for accounts')
+    }
 }
-
-// const fetchTransactions = (startDate, endDate, pageSize, offset) => {
-//   const accounts = getAccountTokens()
-
-//   const options = [
-//     format(startDate, 'YYYY-MM-DD'),
-//     format(endDate, 'YYYY-MM-DD'),
-//     {
-//       count: pageSize,
-//       offset: offset
-//     }
-//   ]
-
-//   const fetchTransactionsForAccount = account => {
-//     return wrapPromise(
-//       PLAID_CLIENT.getTransactions(account.token, ...options),
-//       `Fetching transactions for account ${account.nickname}`
-//     ).then(data => ({
-//       account: account.nickname,
-//       transactions: data.transactions.map(transaction => ({
-//         ...transaction,
-//         amount: -transaction.amount,
-//         accountNickname: account.nickname
-//       }))
-//     }))
-//   }
-
-//   return wrapPromise(pMapSeries(accounts, fetchTransactionsForAccount), 'Fetching transactions for accounts')
-// }
 
 // const fetchBalances = options => {
 //   const accounts = getAccountTokens()

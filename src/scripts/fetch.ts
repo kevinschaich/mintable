@@ -1,8 +1,41 @@
 import { getConfig } from '../lib/config'
+import { PlaidIntegration } from '../integrations/plaid/plaidIntegration'
+import * as _ from 'lodash'
+import { logInfo, logError } from '../lib/logging'
+import { AccountConfig } from '../types/account'
+import { IntegrationId } from '../types/integrations'
+const { parse, differenceInMonths, subMonths, startOfMonth, addMonths, format } = require('date-fns')
 
-//Declare async block after imports complete
+    // Declare async block after imports complete
 ;(async () => {
-    getConfig()
+    const config = getConfig()
+    const plaid = new PlaidIntegration(config)
+
+    interface AccountWithTransactions extends AccountConfig {
+        transactions?: any
+    }
+    let accounts: {[id: string]: AccountWithTransactions} = config.accounts
+
+    // Start date to fetch transactions, default to 2 months of history
+    let startDate = process.env.START_DATE ? parse(process.env.START_DATE) : startOfMonth(subMonths(new Date(), 2))
+
+    // End date to fetch transactions in YYYY-MM-DD format, default to current date
+    let endDate = process.env.END_DATE ? parse(process.env.END_DATE) : new Date()
+
+    for (let [id, account] of Object.entries(accounts)) {
+
+        logInfo(`Fetching transactions for account ${id}`)
+
+        let transactions
+
+        if (accounts[id].integration === IntegrationId.Plaid) {
+            transactions = await plaid.fetchTransactions(accounts[id], startDate, endDate)
+        }
+
+        accounts[id] = { ...accounts[id], transactions: transactions }
+    }
+
+    logInfo('accounts', accounts)
     //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //   // IMPORTS
     //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
