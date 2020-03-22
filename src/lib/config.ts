@@ -27,8 +27,8 @@ export type ConfigSource = FileConfig | EnvironmentConfig
 export interface Config {
     integrations: { [id: string]: IntegrationConfig }
     accounts: { [id: string]: AccountConfig}
-    balances: BalanceConfig[]
-    transactions: TransactionConfig[]
+    balances: BalanceConfig
+    transactions: TransactionConfig
 }
 
 export const getConfigSource = (): ConfigSource => {

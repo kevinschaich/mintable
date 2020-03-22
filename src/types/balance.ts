@@ -1,8 +1,8 @@
 import { BaseProperty } from './common'
 
-export interface BalanceProperty extends BaseProperty {}
+export interface BalanceProperty<T> extends BaseProperty<T> {}
 
 export interface BalanceConfig {
     enabled: boolean
-    properties: BalanceProperty[]
+    properties: BalanceProperty<any>[]
 }

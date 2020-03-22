@@ -1,10 +1,5 @@
-enum PropertyType {
-    Automated = 'automated',
-    Manual = 'manual'
-}
-
-export interface BaseProperty {
+export interface BaseProperty<T> {
     id: string
-    name: string
-    type: PropertyType
+    automated: boolean
+    value: T
 }
