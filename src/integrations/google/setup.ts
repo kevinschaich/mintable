@@ -1,5 +1,4 @@
 import { GoogleConfig, defaultGoogleConfig } from '../../types/integrations/google'
-import * as _ from 'lodash'
 import { updateConfig, getConfig } from '../../lib/config'
 import prompts from 'prompts'
 import { IntegrationId } from '../../types/integrations'

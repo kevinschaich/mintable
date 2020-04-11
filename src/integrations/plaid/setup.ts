@@ -1,5 +1,4 @@
 import { PlaidEnvironmentType, PlaidConfig, defaultPlaidConfig } from '../../types/integrations/plaid'
-import _ from 'lodash'
 import { updateConfig, getConfig } from '../../lib/config'
 import { IntegrationId } from '../../types/integrations'
 import prompts from 'prompts'
@@ -107,7 +106,7 @@ import { PlaidIntegration } from './plaidIntegration'
             if (continueAccountSetup) {
                 logInfo('Account setup in progress.')
                 open(
-                    `http://localhost:8000?name=${credentials.name}&environment=${credentials.environment}&publicKey=${credentials.credentials.publicKey}`
+                    `http://localhost:8000?name=${credentials.name}&environment=${credentials.environment}&publicKey=${credentials.publicKey}`
                 )
                 const response = await plaid.addAccount()
                 logInfo(response.message, response.error)

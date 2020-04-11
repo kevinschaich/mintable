@@ -1,7 +1,5 @@
 import { parse, format } from 'date-fns'
-// const pMapSeries = require('p-map-series')
 import plaid from 'plaid'
-import * as _ from 'lodash'
 import { Config, updateConfig } from '../../lib/config'
 import { PlaidConfig, PlaidEnvironmentType } from '../../types/integrations/plaid'
 import { IntegrationId } from '../../types/integrations'
@@ -32,7 +30,7 @@ export class PlaidIntegration {
             this.plaidConfig.credentials.publicKey,
             this.environment,
             {
-                version: '2018-05-22'
+                version: '2019-05-29'
             }
         )
     }

@@ -1,6 +1,5 @@
 import { getConfig } from '../lib/config'
 import { PlaidIntegration } from '../integrations/plaid/plaidIntegration'
-import * as _ from 'lodash'
 import { logInfo, logError } from '../lib/logging'
 import { AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
@@ -14,7 +13,7 @@ const { parse, differenceInMonths, subMonths, startOfMonth, addMonths, format } 
     interface AccountWithTransactions extends AccountConfig {
         transactions?: any
     }
-    let accounts: {[id: string]: AccountWithTransactions} = config.accounts
+    let accounts: { [id: string]: AccountWithTransactions } = config.accounts
 
     // Start date to fetch transactions, default to 2 months of history
     let startDate = process.env.START_DATE ? parse(process.env.START_DATE) : startOfMonth(subMonths(new Date(), 2))
@@ -23,7 +22,6 @@ const { parse, differenceInMonths, subMonths, startOfMonth, addMonths, format } 
     let endDate = process.env.END_DATE ? parse(process.env.END_DATE) : new Date()
 
     for (let [id, account] of Object.entries(accounts)) {
-
         logInfo(`Fetching transactions for account ${id}`)
 
         let transactions
@@ -42,7 +40,6 @@ const { parse, differenceInMonths, subMonths, startOfMonth, addMonths, format } 
     //   await require('../lib/common').maybeWriteDefaultConfig()
     //   await require('../lib/common').getConfigEnv()
     //   const { parse, differenceInMonths, subMonths, startOfMonth, addMonths, format } = require('date-fns')
-    //   import * as  _ from 'lodash'
     //   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
     //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

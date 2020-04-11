@@ -1,6 +1,5 @@
 import { IntegrationConfig } from '../types/integrations'
 import { AccountConfig } from '../types/account'
-import { BalanceConfig } from '../types/balance'
 import { TransactionConfig } from '../types/transaction'
 import { logInfo, logError } from '../lib/logging'
 import { argv } from 'yargs'
@@ -26,8 +25,7 @@ export type ConfigSource = FileConfig | EnvironmentConfig
 
 export interface Config {
     integrations: { [id: string]: IntegrationConfig }
-    accounts: { [id: string]: AccountConfig}
-    balances: BalanceConfig
+    accounts: { [id: string]: AccountConfig }
     transactions: TransactionConfig
 }
 

@@ -1,6 +1,4 @@
 import { google, sheets_v4 } from 'googleapis'
-import * as  _ from 'lodash'
-// const pEachSeries = require('p-each-series')
 import { Config, updateConfig } from '../../lib/config'
 import { IntegrationId } from '../../types/integrations'
 import { GoogleConfig } from '../../types/integrations/google'
