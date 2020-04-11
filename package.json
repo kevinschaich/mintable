@@ -25,6 +25,7 @@
         "express": "^4.17.1",
         "googleapis": "47.0.0",
         "io-ts": "^2.1.2",
+        "lodash-es": "^4.17.15",
         "open": "^7.0.2",
         "p-each-series": "^2.1.0",
         "p-map-series": "^2.1.0",

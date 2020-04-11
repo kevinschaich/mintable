@@ -108,8 +108,7 @@ import { PlaidIntegration } from './plaidIntegration'
                 open(
                     `http://localhost:8000?name=${credentials.name}&environment=${credentials.environment}&publicKey=${credentials.publicKey}`
                 )
-                const response = await plaid.addAccount()
-                logInfo(response.message, response.error)
+                await plaid.addAccount()
 
                 numAccounts += 1
             }

@@ -36,61 +36,49 @@ export class PlaidIntegration {
         )
     }
 
-    public addAccount = (): Promise<{
-        message?: string
-        error?: any
-    }> => {
+    public savePublicToken = (tokenResponse: plaid.TokenResponse): void => {
+        updateConfig(config => {
+            config.accounts[tokenResponse.item_id] = {
+                id: tokenResponse.item_id,
+                integration: IntegrationId.Plaid,
+                token: tokenResponse.access_token
+            }
+            this.config = config
+            return config
+        })
+    }
+
+    public addAccount = (): Promise<void> => {
         return new Promise((resolve, reject) => {
             const client = this.client
             const app = express()
-            app.use(bodyParser.json())
-            app.use(bodyParser.urlencoded({ extended: true }))
+                .use(bodyParser.json())
+                .use(bodyParser.urlencoded({ extended: true }))
             let server: http.Server
 
-            app.post('/get_access_token', function(req, res) {
-                const body = req.body
-                if (body.public_token !== undefined) {
-                    client.exchangePublicToken(body.public_token, function(error, tokenResponse) {
+            app.post('/get_access_token', (req, res) => {
+                if (req.body.public_token !== undefined) {
+                    client.exchangePublicToken(req.body.public_token, (error, tokenResponse) => {
                         if (error != null) {
-                            reject({
-                                message: 'Encountered error exchanging Plaid public token.',
-                                error
-                            })
+                            reject(logError('Encountered error exchanging Plaid public token.', error))
                         }
-
-                        updateConfig(config => {
-                            config.accounts[tokenResponse.item_id] = {
-                                id: tokenResponse.item_id,
-                                integration: IntegrationId.Plaid,
-                                token: tokenResponse.access_token
-                            }
-                            this.config = config
-                            return config
-                        })
-
-                        resolve({
-                            message: 'Plaid access token saved.'
-                        })
-                        server.close()
-                        return res.json({})
+                        this.savePublicToken(tokenResponse)
+                        resolve(logInfo('Plaid access token saved.'))
                     })
-                } else if (body.exit !== undefined) {
-                    reject({ error: 'Plaid authentication cancelled.' })
-                    server.close()
-                    return res.json({})
+                } else if (req.body.exit !== undefined) {
+                    reject(logError('Plaid authentication cancelled.'))
                 } else {
-                    reject({ message: 'Encountered error during authentication.', error: body.error })
-                    server.close()
-                    return res.json({})
+                    reject(logError('Encountered error during authentication.', req.body.error))
                 }
+                server.close()
+                return res.json({})
             })
 
-            app.get('/', function(req, res) {
-                res.sendFile(__dirname + '/addAccount.html')
-            })
+            app.get('/', (req, res) => res.sendFile(__dirname + '/addAccount.html'))
 
-            server = require('http').createServer(app)
-            server.listen('8000')
+            server = require('http')
+                .createServer(app)
+                .listen('8000')
         })
     }
 
@@ -123,7 +111,7 @@ export class PlaidIntegration {
 
     public fetchAccount = async (accountConfig: AccountConfig, startDate: Date, endDate: Date): Promise<Account[]> => {
         if (startDate < subMonths(new Date(), 5)) {
-            logWarn('Note: Plaid transaction history older than 6 months may not be available for some institutions.', {})
+            logWarn('Transaction history older than 6 months may not be available for some institutions.', {})
         }
 
         return this.fetchPagedTransactions(accountConfig, startDate, endDate)

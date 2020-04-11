@@ -1,9 +1,10 @@
 import { getConfig } from '../lib/config'
 import { PlaidIntegration } from '../integrations/plaid/plaidIntegration'
-import { logInfo, logError, logWarn } from '../lib/logging'
+import { logInfo } from '../lib/logging'
 import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
-const { parseISO, differenceInMonths, subMonths, startOfMonth, addMonths, format } = require('date-fns')
+import { sort } from 'lodash-es'
+const { parseISO, subMonths, startOfMonth } = require('date-fns')
 
     // Declare async block after imports complete
 ;(async () => {
@@ -18,7 +19,7 @@ const { parseISO, differenceInMonths, subMonths, startOfMonth, addMonths, format
     // End date to fetch transactions in YYYY-MM-DD format, default to current date
     let endDate = config.transactions.endDate ? parseISO(config.transactions.endDate) : new Date()
 
-    const accounts: Account[] = await Promise.all(
+    let accounts: Account[] = await Promise.all(
         Object.values(config.accounts)
             .map(async (account: AccountConfig) => {
                 logInfo(`Fetching account ${account.id} using ${account.integration}.`)
@@ -33,31 +34,13 @@ const { parseISO, differenceInMonths, subMonths, startOfMonth, addMonths, format
             .flat()
     )
 
-    //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //   // IMPORTS
-    //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //   await require('../lib/common').maybeWriteDefaultConfig()
-    //   await require('../lib/common').getConfigEnv()
-    //   const { parse, differenceInMonths, subMonths, startOfMonth, addMonths, format } = require('date-fns')
-    //   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+    // Sort transactions by date
+    accounts = accounts.map(account => ({
+        ...account,
+        transactions: sort(account.transactions, 'date')
+    }))
 
-    //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //   // FETCH BALANCES
-    //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //   if (process.env.CREATE_BALANCES_SHEET) {
-    //     let balances
-
-    //     switch (process.env.ACCOUNT_PROVIDER) {
-    //       case 'plaid':
-    //         balances = _.keyBy(
-    //           _.flatten(_.map(await require('../lib/plaid').fetchBalances(), item => item.accounts)),
-    //           'account_id'
-    //         )
-    //         break
-    //       default:
-    //         break
-    //     }
+    const columns = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
     //     switch (process.env.SHEET_PROVIDER) {
     //       case 'sheets':
@@ -83,7 +66,7 @@ const { parseISO, differenceInMonths, subMonths, startOfMonth, addMonths, format
     //         })
 
     //         await require('../lib/google').updateRanges({
-    //           range: `Balances!A1:${alphabet[process.env.BALANCE_COLUMNS.length - 1]}${_.keys(balances).length + 1}`,
+    //           range: `Balances!A1:${columns[process.env.BALANCE_COLUMNS.length - 1]}${_.keys(balances).length + 1}`,
     //           values: [process.env.BALANCE_COLUMNS].concat(cleanedBalances)
     //         })
 
@@ -196,16 +179,16 @@ const { parseISO, differenceInMonths, subMonths, startOfMonth, addMonths, format
     //   // Column headers in spreadsheets are defined by letters A-Z, this list gets us indexes for each letter
     //   const options = {
     //     // First automated column Mintable populates from transaction data
-    //     firstTransactionColumn: alphabet[0],
+    //     firstTransactionColumn: columns[0],
 
     //     // Last automated column Mintable populates from transaction data
-    //     lastTransactionColumn: alphabet[process.env.TRANSACTION_COLUMNS.length - 1],
+    //     lastTransactionColumn: columns[process.env.TRANSACTION_COLUMNS.length - 1],
 
     //     // First untouched reference column that automatically gets created in new sheets
-    //     firstReferenceColumn: alphabet[process.env.TRANSACTION_COLUMNS.length],
+    //     firstReferenceColumn: columns[process.env.TRANSACTION_COLUMNS.length],
 
     //     // Last untouched reference column that automatically gets created in new sheets
-    //     lastReferenceColumn: alphabet[process.env.TRANSACTION_COLUMNS.length + process.env.REFERENCE_COLUMNS.length - 1],
+    //     lastReferenceColumn: columns[process.env.TRANSACTION_COLUMNS.length + process.env.REFERENCE_COLUMNS.length - 1],
 
     //     // (# transaction columns + # reference columns), Mintable will only touch this range of the sheet
     //     numAutomatedColumns: process.env.TRANSACTION_COLUMNS.length + process.env.REFERENCE_COLUMNS.length
