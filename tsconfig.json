@@ -1,6 +1,9 @@
 {
     "compilerOptions": {
         "esModuleInterop": true,
-        "outDir": "build"
+        "outDir": "build",
+        "lib": [
+            "es2019.array"
+        ]
     }
 }

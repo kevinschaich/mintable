@@ -1,39 +1,38 @@
 import { getConfig } from '../lib/config'
 import { PlaidIntegration } from '../integrations/plaid/plaidIntegration'
-import { logInfo, logError } from '../lib/logging'
-import { AccountConfig } from '../types/account'
+import { logInfo, logError, logWarn } from '../lib/logging'
+import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
-const { parse, differenceInMonths, subMonths, startOfMonth, addMonths, format } = require('date-fns')
+const { parseISO, differenceInMonths, subMonths, startOfMonth, addMonths, format } = require('date-fns')
 
     // Declare async block after imports complete
 ;(async () => {
     const config = getConfig()
     const plaid = new PlaidIntegration(config)
 
-    interface AccountWithTransactions extends AccountConfig {
-        transactions?: any
-    }
-    let accounts: { [id: string]: AccountWithTransactions } = config.accounts
-
     // Start date to fetch transactions, default to 2 months of history
-    let startDate = process.env.START_DATE ? parse(process.env.START_DATE) : startOfMonth(subMonths(new Date(), 2))
+    let startDate = config.transactions.startDate
+        ? parseISO(config.transactions.startDate)
+        : startOfMonth(subMonths(new Date(), 2))
 
     // End date to fetch transactions in YYYY-MM-DD format, default to current date
-    let endDate = process.env.END_DATE ? parse(process.env.END_DATE) : new Date()
+    let endDate = config.transactions.endDate ? parseISO(config.transactions.endDate) : new Date()
 
-    for (let [id, account] of Object.entries(accounts)) {
-        logInfo(`Fetching transactions for account ${id}`)
+    const accounts: Account[] = await Promise.all(
+        Object.values(config.accounts)
+            .map(async (account: AccountConfig) => {
+                logInfo(`Fetching account ${account.id} using ${account.integration}.`)
 
-        let transactions
+                switch (account.integration) {
+                    case IntegrationId.Plaid:
+                        return await plaid.fetchAccount(account, startDate, endDate)
+                    default:
+                        return
+                }
+            })
+            .flat()
+    )
 
-        if (accounts[id].integration === IntegrationId.Plaid) {
-            transactions = await plaid.fetchTransactions(accounts[id], startDate, endDate)
-        }
-
-        accounts[id] = { ...accounts[id], transactions: transactions }
-    }
-
-    logInfo('accounts', accounts)
     //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //   // IMPORTS
     //   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

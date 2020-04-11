@@ -1,18 +1,30 @@
 import { IntegrationId } from './integrations'
+import { Transaction } from './transaction'
 
 export interface Account {
     // where this account's information came from
-    provider: IntegrationId
+    integration: IntegrationId
 
-    // a bank can have multiple accounts (e.g. Chase)
-    bank?: string
+    // unique identifier for this account
+    accountId?: string
+    // masked account number (e.g xxxx xxxx xxxx 1947)
+    mask?: string
+
+    // a institution can have multiple accounts (e.g. Chase)
+    institution?: string
     // an account has a number associated to it (e.g. Sapphire Reserve Credit Card)
-    name: string
+    account: string
 
-    // balances
-    current: number
-    available: number
-    limit: number
+    // type of account (e.g. credit card, 401k, etc.)
+    type?: string
+
+    current?: number
+    available?: number
+    limit?: number
+    currency?: string
+
+    // transaction list
+    transactions?: Transaction[]
 }
 
 export interface BaseAccountConfig {

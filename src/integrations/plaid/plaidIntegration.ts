@@ -1,13 +1,14 @@
-import { parse, format } from 'date-fns'
-import plaid from 'plaid'
+import { parseISO, format, subMonths } from 'date-fns'
+import plaid, { TransactionsResponse } from 'plaid'
 import { Config, updateConfig } from '../../lib/config'
 import { PlaidConfig, PlaidEnvironmentType } from '../../types/integrations/plaid'
 import { IntegrationId } from '../../types/integrations'
 import express from 'express'
 import bodyParser from 'body-parser'
-import { logInfo, logError } from '../../lib/logging'
+import { logInfo, logError, logWarn } from '../../lib/logging'
 import http from 'http'
-import { AccountConfig } from '../../types/account'
+import { AccountConfig, Account } from '../../types/account'
+import { Transaction } from '../../types/transaction'
 
 export class PlaidIntegration {
     config: Config
@@ -93,86 +94,102 @@ export class PlaidIntegration {
         })
     }
 
-    public fetchTransactions = async (account: AccountConfig, startDate: Date, endDate: Date) => {
-        const options: plaid.TransactionsRequestOptions = { count: 500, offset: 0 }
-        const start = format(startDate, 'yyyy-MM-dd')
-        const end = format(endDate, 'yyyy-MM-dd')
+    public fetchPagedTransactions = async (
+        accountConfig: AccountConfig,
+        startDate: Date,
+        endDate: Date
+    ): Promise<TransactionsResponse> => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const dateFormat = 'yyyy-MM-dd'
+                const start = format(startDate, dateFormat)
+                const end = format(endDate, dateFormat)
 
-        return this.client.getTransactions(account.token, start, end, options)
+                let options: plaid.TransactionsRequestOptions = { count: 500, offset: 0 }
+                let accounts = await this.client.getTransactions(accountConfig.token, start, end, options)
 
-        // .then(data => ({
-        //     account: account.nickname,
-        //     transactions: data.transactions.map(transaction => ({
-        //         ...transaction,
-        //         amount: -transaction.amount,
-        //         accountNickname: account.nickname
-        //     }))
-        // }))
-        // return wrapPromise(pMapSeries(accounts, fetchTransactionsForAccount), 'Fetching transactions for accounts')
+                while (accounts.transactions.length < accounts.total_transactions) {
+                    options.offset += options.count
+                    const next_page = await this.client.getTransactions(accountConfig.token, start, end, options)
+                    accounts.transactions = accounts.transactions.concat(next_page.transactions)
+                }
+
+                return resolve(accounts)
+            } catch (e) {
+                return reject(e)
+            }
+        })
+    }
+
+    public fetchAccount = async (accountConfig: AccountConfig, startDate: Date, endDate: Date): Promise<Account[]> => {
+        if (startDate < subMonths(new Date(), 5)) {
+            logWarn('Note: Plaid transaction history older than 6 months may not be available for some institutions.', {})
+        }
+
+        return this.fetchPagedTransactions(accountConfig, startDate, endDate)
+            .then(data => {
+                let accounts: Account[] = data.accounts.map(account => ({
+                    integration: IntegrationId.Plaid,
+                    accountId: account.account_id,
+                    mask: account.mask,
+                    institution: account.name,
+                    account: account.official_name,
+                    type: account.subtype || account.type,
+                    current: account.balances.current,
+                    available: account.balances.available,
+                    limit: account.balances.limit,
+                    currency: account.balances.iso_currency_code || account.balances.unofficial_currency_code
+                }))
+
+                const transactions: Transaction[] = data.transactions.map(transaction => ({
+                    integration: IntegrationId.Plaid,
+                    name: transaction.name,
+                    date: parseISO(transaction.date),
+                    amount: transaction.amount,
+                    currency: transaction.iso_currency_code || transaction.unofficial_currency_code,
+                    type: transaction.transaction_type,
+                    accountId: transaction.account_id,
+                    transactionId: transaction.transaction_id,
+                    category: transaction.category.join(' - '),
+                    address: transaction.location.address,
+                    city: transaction.location.city,
+                    state: transaction.location.region,
+                    postal_code: transaction.location.postal_code,
+                    country: transaction.location.country,
+                    latitude: transaction.location.lat,
+                    longitude: transaction.location.lon,
+                    pending: transaction.pending
+                }))
+
+                accounts = accounts.map(account => ({
+                    ...account,
+                    transactions: transactions
+                        .filter(transaction => transaction.accountId === account.accountId)
+                        .map(transaction => ({
+                            ...transaction,
+                            institution: account.institution,
+                            account: account.account
+                        }))
+                }))
+
+                logInfo(
+                    `Fetched ${data.accounts.length} sub-accounts and ${data.total_transactions} transactions for account ${accountConfig.id} using ${accountConfig.integration}.`,
+                    accounts
+                )
+                return accounts
+            })
+            .catch(error => {
+                logError(`Error fetching account ${accountConfig.id} using ${accountConfig.integration}.`, error)
+                return []
+            })
     }
 }
-
-// const fetchBalances = options => {
-//   const accounts = getAccountTokens()
-
-//   const fetchBalanceForAccount = account => {
-//     return wrapPromise(
-//       PLAID_CLIENT.getBalance(account.token)
-//         .then(data => {
-//           return {
-//             ...data,
-//             nickname: account.nickname
-//           }
-//         })
-//         .catch(error => {
-//           return { nickname: account.nickname, error: JSON.stringify(error, null, 2) }
-//         }),
-//       `Fetching balance for account ${account.nickname}`,
-//       options
-//     )
-//   }
-
-//   return wrapPromise(pMapSeries(accounts, fetchBalanceForAccount), 'Fetching balances for accounts', options)
-// }
-
-// // Exchange token flow - exchange a Link public_token for an API access_token
-// const saveAccessToken = (public_token, accountNickname) => {
-//   return wrapPromise(
-//     PLAID_CLIENT.exchangePublicToken(public_token).then(tokenResponse =>
-//       updateConfig({ [`PLAID_TOKEN_${accountNickname.toUpperCase()}`]: tokenResponse.access_token })
-//     ),
-//     `Saving access token for account ${accountNickname}`
-//   )
-// }
 
 // // Exchange an expired API access_token for a new Link public_token
 // const createPublicToken = (access_token, accountNickname) =>
 //   PLAID_CLIENT.createPublicToken(access_token).then(tokenResponse => {
 //     return tokenResponse.public_token
 //   })
-
-// const fetchAllCleanTransactions = async (startDate, endDate, pageSize = 250, offset = 0) => {
-//   let transactions = []
-//   let count = pageSize
-//   let pageNumber = 0
-
-//   // If we receive a full page of transactions from Plaid, that means there is more data to fetch
-//   while (count === pageSize) {
-//     const result = await fetchTransactions(startDate, endDate, pageSize, pageNumber * pageSize)
-//     const clean = _.flatten(_.map(result, account => account.transactions))
-
-//     transactions = transactions.concat(clean)
-
-//     count = clean.length
-//     pageNumber++
-//   }
-
-//   // Parse transaction date string into a Date object and clean up Pending column
-//   transactions = _.map(transactions, transaction => ({
-//     ...transaction,
-//     date: parse(transaction.date),
-//     pending: transaction.pending === true ? 'y' : ''
-//   }))
 
 //   // Handle category overrides defined in config
 //   if (process.env.CATEGORY_OVERRIDES) {
@@ -192,24 +209,3 @@ export class PlaidIntegration {
 //       return transaction
 //     })
 //   }
-
-//   // Fetch accounts & names
-//   const accounts = _.keyBy(_.flatten(_.map(await fetchBalances(), item => item.accounts)), 'account_id')
-
-//   // Join in account details to transactions
-//   transactions = _.map(transactions, transaction => {
-//     const account = accounts[transaction.account_id]
-//     return {
-//       ..._.omit(transaction, ['accountNickname']),
-//       account_details: {
-//         ...account,
-//         official_name: account.official_name,
-//         name: account.name,
-//         nickname: transaction.accountNickname
-//       },
-//       account: account.official_name || account.name || transaction.accountNickname
-//     }
-//   })
-
-//   return transactions
-// }

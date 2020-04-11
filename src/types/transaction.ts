@@ -2,7 +2,7 @@ import { IntegrationId } from './integrations'
 
 export interface Transaction {
     // where this transaction's information came from
-    provider: IntegrationId
+    integration: IntegrationId
 
     // merchant or transaction description
     name: string
@@ -10,18 +10,22 @@ export interface Transaction {
     date: Date
     // amount of transaction (purchases are positive; refunds are negative)
     amount: number
+    // currency of transaction
+    currency?: string
     // type of transaction (e.g. on-line or in-store)
     type: string
 
-    // a bank can have multiple accounts (e.g. Chase)
-    bank?: string
+    // a institution can have multiple accounts (e.g. Chase)
+    institution?: string
     // an account has a number associated to it (e.g. Sapphire Reserve Credit Card)
     account?: string
+    // unique identifier for this account
+    accountId?: string
+    // unique identifier for this transaction
+    transactionId?: string
 
     // industry or merchant category (e.g. Entertainment)
     category?: string
-    // more granular industry or merchant category (e.g. Movie Theaters)
-    subcategory?: string
 
     // street address where the transaction occurred
     address?: string
@@ -52,4 +56,6 @@ export interface TransactionOverride {
 export interface TransactionConfig {
     properties?: string[]
     overrides?: TransactionOverride[]
+    startDate?: string
+    endDate?: string
 }

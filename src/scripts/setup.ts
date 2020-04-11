@@ -37,19 +37,7 @@ import { TransactionConfig } from '../types/transaction'
     })
 
     const defaultTransactionConfig: TransactionConfig = {
-        properties: [
-            'name',
-            'date',
-            'amount',
-            'account',
-            'category',
-            'subcategory',
-            'location',
-            'pending',
-            'notes',
-            'work',
-            'joint'
-        ]
+        properties: ['name', 'date', 'amount', 'account', 'category', 'location', 'pending', 'notes', 'work', 'joint']
     }
 
     selected = await prompts([
