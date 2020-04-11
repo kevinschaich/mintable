@@ -7,11 +7,11 @@ export interface TransactionPropertyOverride {
     flags?: string // regex flags (e.g. "i" for case insensitivity)
 }
 
-export interface TransactionProperty<T> extends BaseProperty<T> {
+export interface TransactionProperty extends BaseProperty {
     overrides?: TransactionPropertyOverride[]
 }
 
 export interface TransactionConfig {
     enabled: boolean
-    properties: TransactionProperty<any>[]
+    properties?: TransactionProperty[]
 }

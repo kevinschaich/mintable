@@ -1,5 +1,4 @@
-export interface BaseProperty<T> {
+export interface BaseProperty {
     id: string
     automated: boolean
-    value: T
 }
