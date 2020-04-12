@@ -4,9 +4,17 @@ import { IntegrationId } from '../../types/integrations'
 import { GoogleConfig } from '../../types/integrations/google'
 import { OAuth2Client, Credentials } from 'google-auth-library'
 import { logInfo, logError } from '../../lib/logging'
+import { Transaction } from '../../types/transaction'
 
-const promisify = (f, args?: any): Promise<any> => {
-    return new Promise((resolve, reject) => f(args, (error, data) => (error ? reject(error) : resolve(data))))
+export interface Range {
+    sheet: string
+    start: string
+    end: string
+}
+
+export interface DataRange {
+    range: Range
+    data: any[][]
 }
 
 export class GoogleIntegration {
@@ -78,22 +86,22 @@ export class GoogleIntegration {
             })
     }
 
-    public duplicateSheet = (
-        sourceSheetId: number,
-        sourceSpreadsheetId?: string
-    ): Promise<sheets_v4.Schema$SheetProperties> => {
+    public copySheet = async (title: string, sourceDocumentId?: string): Promise<sheets_v4.Schema$SheetProperties> => {
+        const sheets = await this.getSheets()
+        const sourceSheetId = sheets.find(sheet => sheet.properties.title === title).properties.sheetId
+
         return this.sheets.sheets
             .copyTo({
-                spreadsheetId: sourceSpreadsheetId || this.googleConfig.documentId,
+                spreadsheetId: sourceDocumentId || this.googleConfig.documentId,
                 sheetId: sourceSheetId,
                 requestBody: { destinationSpreadsheetId: this.googleConfig.documentId }
             })
             .then(res => {
-                logInfo(`Duplicated sheet ${sourceSheetId}.`, res.data)
+                logInfo(`Copied sheet ${title}.`, res.data)
                 return res.data
             })
             .catch(error => {
-                logError(`Error duplicating sheet ${sourceSheetId}.`, error)
+                logError(`Error copying sheet ${title}.`, error)
                 return {}
             })
     }
@@ -114,15 +122,18 @@ export class GoogleIntegration {
             })
     }
 
-    public renameSheet = (sheetId: number, title: string): Promise<sheets_v4.Schema$Response[]> => {
+    public renameSheet = async (oldTitle: string, newTitle: string): Promise<sheets_v4.Schema$Response[]> => {
+        const sheets = await this.getSheets()
+        const sheetId = sheets.find(sheet => sheet.properties.title === oldTitle).properties.sheetId
+
         return this.sheets
             .batchUpdate({
-                spreadsheetId: process.env.SHEETS_SHEET_ID,
+                spreadsheetId: this.googleConfig.documentId,
                 requestBody: {
                     requests: [
                         {
                             updateSheetProperties: {
-                                properties: { sheetId: sheetId, title: title },
+                                properties: { sheetId: sheetId, title: newTitle },
                                 fields: 'title'
                             }
                         }
@@ -130,27 +141,89 @@ export class GoogleIntegration {
                 }
             })
             .then(res => {
-                logInfo(`Renamed sheet ${sheetId} to ${title}.`, res.data)
+                logInfo(`Renamed sheet ${oldTitle} to ${newTitle}.`, res.data)
                 return res.data.replies
             })
             .catch(error => {
-                logError(`Error renaming sheet ${sheetId} to ${title}.`, error)
+                logError(`Error renaming sheet ${oldTitle} to ${newTitle}.`, error)
                 return []
             })
     }
+
+    public translateRange = (range: Range): string =>
+        `${range.sheet}!${range.start.toUpperCase()}:${range.end.toUpperCase()}`
+
+    public translateRanges = (ranges: Range[]): string[] => ranges.map(this.translateRange)
+
+    public clearRanges = (ranges: Range[]): Promise<sheets_v4.Schema$BatchClearValuesResponse> => {
+        const translatedRanges = this.translateRanges(ranges)
+        return this.sheets.values
+            .batchClear({
+                spreadsheetId: this.googleConfig.documentId,
+                requestBody: { ranges: translatedRanges }
+            })
+            .then(res => {
+                logInfo(`Cleared ${ranges.length} ranges ${translatedRanges}.`, res.data)
+                return res.data
+            })
+            .catch(error => {
+                logError(`Error clearing ${ranges.length} ranges ${translatedRanges}.`, error)
+                return {}
+            })
+    }
+
+    public updateRanges = (dataRanges: DataRange[]): Promise<sheets_v4.Schema$BatchUpdateValuesResponse> => {
+        return this.sheets.values
+            .batchUpdate({
+                spreadsheetId: this.googleConfig.documentId,
+                requestBody: {
+                    valueInputOption: `USER_ENTERED`,
+                    data: dataRanges.map(dataRange => ({
+                        range: this.translateRange(dataRange.range),
+                        values: dataRange.data
+                    }))
+                }
+            })
+            .then(res => {
+                logInfo(`Updated ${dataRanges.length} ranges.`, res.data)
+                return res.data
+            })
+            .catch(error => {
+                logError(`Error updating ${dataRanges.length}.`, error)
+                return {}
+            })
+    }
+
+    public getRowWithDefaults = (row: { [key: string]: any }, columns, defaultValue: any = null): any[] => {
+        return columns.reduce((output, key) => {
+            row && row.hasOwnProperty(key) ? output.push(row[key]) : output.push(defaultValue)
+            return output
+        }, [])
+    }
+
+    public writeRows = async (
+        sheet: string,
+        rows: { [key: string]: any }[],
+        columns?: string[]
+    ): Promise<sheets_v4.Schema$BatchUpdateValuesResponse> => {
+        columns = columns || Object.keys(rows[0])
+
+        const columnHeaders = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+
+        const range = {
+            sheet: sheet,
+            start: `A1`,
+            end: `${columnHeaders[columns.length]}${rows.length + 1}`
+        }
+        const data = [columns].concat(rows.map(row => this.getRowWithDefaults(row, columns)))
+
+        await this.clearRanges([range])
+        return this.updateRanges([{ range, data }])
+    }
+
+    public writeTransactions = (sheet: string, transactions: Transaction[]) =>
+        this.writeRows(sheet, transactions, this.config.transactions.properties)
 }
-
-// const clearRanges = ranges =>
-//   promisify(sheets.spreadsheets.values.batchClear, { spreadsheetId: process.env.SHEETS_SHEET_ID, ranges })
-
-// const updateRanges = updatedRanges =>
-//   promisify(sheets.spreadsheets.values.batchUpdate, {
-//     spreadsheetId: process.env.SHEETS_SHEET_ID,
-//     resource: {
-//       valueInputOption: `USER_ENTERED`,
-//       data: updatedRanges
-//     }
-//   })
 
 // const formatSheets = (sheetIds, numColumnsToResize) =>
 //   promisify(sheets.spreadsheets.batchUpdate, {

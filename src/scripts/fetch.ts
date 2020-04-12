@@ -4,7 +4,7 @@ import { GoogleIntegration } from '../integrations/google/googleIntegration'
 import { logInfo } from '../lib/logging'
 import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
-import {sortBy} from 'lodash'
+import { sortBy } from 'lodash'
 const { parseISO, subMonths, startOfMonth } = require('date-fns')
 
     // Declare async block after imports complete
@@ -21,33 +21,52 @@ const { parseISO, subMonths, startOfMonth } = require('date-fns')
     // End date to fetch transactions in YYYY-MM-DD format, default to current date
     let endDate = config.transactions.endDate ? parseISO(config.transactions.endDate) : new Date()
 
-    // let accounts: Account[] = await Promise.all(
-    //     Object.values(config.accounts)
-    //         .map(async (account: AccountConfig) => {
-    //             logInfo(`Fetching account ${account.id} using ${account.integration}.`)
+    let accounts: Account[] = (await Promise.all(
+        Object.values(config.accounts)
+            .map(async (account: AccountConfig) => {
+                logInfo(`Fetching account ${account.id} using ${account.integration}.`)
 
-    //             switch (account.integration) {
-    //                 case IntegrationId.Plaid:
-    //                     return await plaid.fetchAccount(account, startDate, endDate)
-    //                 default:
-    //                     return
-    //             }
-    //         })
-    //         .flat()
-    // )
+                switch (account.integration) {
+                    case IntegrationId.Plaid:
+                        return await plaid.fetchAccount(account, startDate, endDate)
+                    default:
+                        return
+                }
+            })
+    )).flat()
 
-    // // sortBy transactions by date
-    // accounts = accounts.map(account => ({
-    //     ...account,
-    //     transactions: sortBy(account.transactions, 'date')
-    // }))
+    // sort transactions by date
+    accounts = accounts.map(account => ({
+        ...account,
+        transactions: sortBy(account.transactions, 'date')
+    }))
 
-    const columns = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+    logInfo("accounts", accounts)
+    const transactions = accounts.map(account => account.transactions).flat()
+    logInfo('transac', transactions)
+    await google.writeTransactions(
+        'sheet1',
+        transactions
+    )
 
-    const sheets = await google.getSheets()
-    const dupeSheet = await google.duplicateSheet(sheets[0].properties.sheetId)
-    const newSheet = await google.addSheet('my-new-sheet' + Math.random())
-    const renamedSheet = await google.renameSheet(0, 'my-renamed-sheet')
+    // const sheets = await google.getSheets()
+    // const dupeSheet = await google.copySheet('my-new-sheet')
+    // const newSheet = await google.addSheet('my-new-sheet' + Math.random())
+    // const renamedSheet = await google.renameSheet('my-new-sheet', 'my-renamed-sheet')
+    // const clearedRanges = await google.clearRanges([{sheet: 'my-renamed-sheet', start: 'A1', end: 'B2'}])
+    // const updatedSheet = await google.updateRanges([
+    //     {
+    //         range: { sheet: 'my-renamed-sheet', start: 'A1', end: 'B2' },
+    //         data: [
+    //             [1, 2],
+    //             [3, 4]
+    //         ]
+    //     }
+    // ])
+    // const updatedSheet = await google.writeRows('my-renamed-sheet', [
+    //     { name: 'Blue Bottle', amount: 1234 },
+    //     { name: 'Dunkin', amount: 5678 }
+    // ], ['test-blank2','amount', 'name', 'test-blank'])
 
     //     switch (process.env.SHEET_PROVIDER) {
     //       case 'sheets':

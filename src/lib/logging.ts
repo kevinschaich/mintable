@@ -22,11 +22,7 @@ export const log = (request: LogRequest): void => {
     switch (request.level) {
         case LogLevel.Error:
             console.error(chalk.red(text))
-            try {
-                console.error('\n', chalk.red(JSON.stringify(request.data, null, 2)), '\n')
-            } catch (e) {
-                console.error('\n', chalk.red(inspect(request.data)), '\n')
-            }
+            console.error('\n', chalk.red(inspect(request.data)), '\n')
             process.exit(1)
         case LogLevel.Warn:
             console.warn(chalk.yellow(text))
