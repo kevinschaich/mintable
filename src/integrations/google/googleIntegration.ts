@@ -3,88 +3,142 @@ import { Config, updateConfig } from '../../lib/config'
 import { IntegrationId } from '../../types/integrations'
 import { GoogleConfig } from '../../types/integrations/google'
 import { OAuth2Client, Credentials } from 'google-auth-library'
+import { logInfo, logError } from '../../lib/logging'
 
 const promisify = (f, args?: any): Promise<any> => {
-  return new Promise((resolve, reject) => f(args, (error, data) => (error ? reject(error) : resolve(data))))
+    return new Promise((resolve, reject) => f(args, (error, data) => (error ? reject(error) : resolve(data))))
 }
 
 export class GoogleIntegration {
-  config: Config
-  googleConfig: GoogleConfig
-  client: OAuth2Client
-  sheets: sheets_v4.Sheets
+    config: Config
+    googleConfig: GoogleConfig
+    client: OAuth2Client
+    sheets: sheets_v4.Resource$Spreadsheets
 
-  constructor(config: Config) {
-    this.config = config
-    this.googleConfig = config.integrations[IntegrationId.Google] as GoogleConfig
+    constructor(config: Config) {
+        this.config = config
+        this.googleConfig = config.integrations[IntegrationId.Google] as GoogleConfig
 
-    this.client = new google.auth.OAuth2(
-      this.googleConfig.credentials.clientId,
-      this.googleConfig.credentials.clientSecret,
-      this.googleConfig.credentials.redirectUri
-    )
+        this.client = new google.auth.OAuth2(
+            this.googleConfig.credentials.clientId,
+            this.googleConfig.credentials.clientSecret,
+            this.googleConfig.credentials.redirectUri
+        )
 
-    this.client.setCredentials({
-      access_token: this.googleConfig.credentials.accessToken,
-      refresh_token: this.googleConfig.credentials.refreshToken,
-      // scope: this.googleConfig.credentials.scope,
-      token_type: this.googleConfig.credentials.tokenType,
-      expiry_date: this.googleConfig.credentials.expiryDate
-    })
+        this.client.setCredentials({
+            access_token: this.googleConfig.credentials.accessToken,
+            refresh_token: this.googleConfig.credentials.refreshToken,
+            // scope: this.googleConfig.credentials.scope,
+            token_type: this.googleConfig.credentials.tokenType,
+            expiry_date: this.googleConfig.credentials.expiryDate
+        })
 
-    this.sheets = google.sheets({
-      version: 'v4',
-      auth: this.client
-    })
-  }
+        this.sheets = google.sheets({
+            version: 'v4',
+            auth: this.client
+        }).spreadsheets
+    }
 
-  public getAuthURL = (): string =>
-    this.client.generateAuthUrl({
-      scope: this.googleConfig.credentials.scope
-    })
+    public getAuthURL = (): string =>
+        this.client.generateAuthUrl({
+            scope: this.googleConfig.credentials.scope
+        })
 
-  public getAccessTokens = (authCode: string): Promise<Credentials> =>
-    this.client.getToken(authCode).then(response => response.tokens)
+    public getAccessTokens = (authCode: string): Promise<Credentials> =>
+        this.client.getToken(authCode).then(response => response.tokens)
 
-  public saveAccessTokens = (tokens: Credentials): void => {
-    updateConfig(config => {
-      let googleConfig = config.integrations[IntegrationId.Google] as GoogleConfig
+    public saveAccessTokens = (tokens: Credentials): void => {
+        updateConfig(config => {
+            let googleConfig = config.integrations[IntegrationId.Google] as GoogleConfig
 
-      googleConfig.credentials.accessToken = tokens.access_token
-      googleConfig.credentials.refreshToken = tokens.refresh_token
-      googleConfig.credentials.tokenType = tokens.token_type
-      googleConfig.credentials.expiryDate = tokens.expiry_date
+            googleConfig.credentials.accessToken = tokens.access_token
+            googleConfig.credentials.refreshToken = tokens.refresh_token
+            googleConfig.credentials.tokenType = tokens.token_type
+            googleConfig.credentials.expiryDate = tokens.expiry_date
 
-      config.integrations[IntegrationId.Google] = googleConfig
+            config.integrations[IntegrationId.Google] = googleConfig
 
-      return config
-    })
-  }
+            return config
+        })
+    }
+
+    public getSheets = (): Promise<sheets_v4.Schema$Sheet[]> => {
+        return this.sheets
+            .get({ spreadsheetId: this.googleConfig.documentId })
+            .then(res => {
+                logInfo(
+                    `Fetched ${res.data.sheets.length} sheets for spreadsheet ${this.googleConfig.documentId}.`,
+                    res.data.sheets
+                )
+                return res.data.sheets
+            })
+            .catch(error => {
+                logError(`Error fetching sheets for spreadsheet ${this.googleConfig.documentId}.`, error)
+                return []
+            })
+    }
+
+    public duplicateSheet = (
+        sourceSheetId: number,
+        sourceSpreadsheetId?: string
+    ): Promise<sheets_v4.Schema$SheetProperties> => {
+        return this.sheets.sheets
+            .copyTo({
+                spreadsheetId: sourceSpreadsheetId || this.googleConfig.documentId,
+                sheetId: sourceSheetId,
+                requestBody: { destinationSpreadsheetId: this.googleConfig.documentId }
+            })
+            .then(res => {
+                logInfo(`Duplicated sheet ${sourceSheetId}.`, res.data)
+                return res.data
+            })
+            .catch(error => {
+                logError(`Error duplicating sheet ${sourceSheetId}.`, error)
+                return {}
+            })
+    }
+
+    public addSheet = (title: string): Promise<sheets_v4.Schema$SheetProperties> => {
+        return this.sheets
+            .batchUpdate({
+                spreadsheetId: this.googleConfig.documentId,
+                requestBody: { requests: [{ addSheet: { properties: { title } } }] }
+            })
+            .then(res => {
+                logInfo(`Added sheet ${title}.`, res.data)
+                return res.data.replies[0].addSheet.properties
+            })
+            .catch(error => {
+                logError(`Error adding sheet ${title}.`, error)
+                return {}
+            })
+    }
+
+    public renameSheet = (sheetId: number, title: string): Promise<sheets_v4.Schema$Response[]> => {
+        return this.sheets
+            .batchUpdate({
+                spreadsheetId: process.env.SHEETS_SHEET_ID,
+                requestBody: {
+                    requests: [
+                        {
+                            updateSheetProperties: {
+                                properties: { sheetId: sheetId, title: title },
+                                fields: 'title'
+                            }
+                        }
+                    ]
+                }
+            })
+            .then(res => {
+                logInfo(`Renamed sheet ${sheetId} to ${title}.`, res.data)
+                return res.data.replies
+            })
+            .catch(error => {
+                logError(`Error renaming sheet ${sheetId} to ${title}.`, error)
+                return []
+            })
+    }
 }
-
-// const getSheets = spreadsheetId =>
-//   promisify(sheets.spreadsheets.get, { spreadsheetId: spreadsheetId }).then(res => res.data.sheets)
-
-// const duplicateSheet = (sourceSpreadsheetId, sourceSheetId) =>
-//   promisify(sheets.spreadsheets.sheets.copyTo, {
-//     spreadsheetId: sourceSpreadsheetId,
-//     sheetId: sourceSheetId,
-//     resource: { destinationSpreadsheetId: process.env.SHEETS_SHEET_ID }
-//   }).then(res => ({ properties: res.data }))
-
-// const addSheet = title =>
-//   promisify(sheets.spreadsheets.batchUpdate, {
-//     spreadsheetId: process.env.SHEETS_SHEET_ID,
-//     resource: { requests: [{ addSheet: { properties: { title } } }] }
-//   }).then(res => res.data.replies[0].addSheet)
-
-// const renameSheet = (sheetId, title) =>
-//   promisify(sheets.spreadsheets.batchUpdate, {
-//     spreadsheetId: process.env.SHEETS_SHEET_ID,
-//     resource: {
-//       requests: [{ updateSheetProperties: { properties: { sheetId: sheetId, title: title }, fields: 'title' } }]
-//     }
-//   }).then(res => res.data)
 
 // const clearRanges = ranges =>
 //   promisify(sheets.spreadsheets.values.batchClear, { spreadsheetId: process.env.SHEETS_SHEET_ID, ranges })

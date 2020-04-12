@@ -1,15 +1,17 @@
 import { getConfig } from '../lib/config'
 import { PlaidIntegration } from '../integrations/plaid/plaidIntegration'
+import { GoogleIntegration } from '../integrations/google/googleIntegration'
 import { logInfo } from '../lib/logging'
 import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
-import { sort } from 'lodash-es'
+import {sortBy} from 'lodash'
 const { parseISO, subMonths, startOfMonth } = require('date-fns')
 
     // Declare async block after imports complete
 ;(async () => {
     const config = getConfig()
     const plaid = new PlaidIntegration(config)
+    const google = new GoogleIntegration(config)
 
     // Start date to fetch transactions, default to 2 months of history
     let startDate = config.transactions.startDate
@@ -19,28 +21,33 @@ const { parseISO, subMonths, startOfMonth } = require('date-fns')
     // End date to fetch transactions in YYYY-MM-DD format, default to current date
     let endDate = config.transactions.endDate ? parseISO(config.transactions.endDate) : new Date()
 
-    let accounts: Account[] = await Promise.all(
-        Object.values(config.accounts)
-            .map(async (account: AccountConfig) => {
-                logInfo(`Fetching account ${account.id} using ${account.integration}.`)
+    // let accounts: Account[] = await Promise.all(
+    //     Object.values(config.accounts)
+    //         .map(async (account: AccountConfig) => {
+    //             logInfo(`Fetching account ${account.id} using ${account.integration}.`)
 
-                switch (account.integration) {
-                    case IntegrationId.Plaid:
-                        return await plaid.fetchAccount(account, startDate, endDate)
-                    default:
-                        return
-                }
-            })
-            .flat()
-    )
+    //             switch (account.integration) {
+    //                 case IntegrationId.Plaid:
+    //                     return await plaid.fetchAccount(account, startDate, endDate)
+    //                 default:
+    //                     return
+    //             }
+    //         })
+    //         .flat()
+    // )
 
-    // Sort transactions by date
-    accounts = accounts.map(account => ({
-        ...account,
-        transactions: sort(account.transactions, 'date')
-    }))
+    // // sortBy transactions by date
+    // accounts = accounts.map(account => ({
+    //     ...account,
+    //     transactions: sortBy(account.transactions, 'date')
+    // }))
 
     const columns = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+
+    const sheets = await google.getSheets()
+    const dupeSheet = await google.duplicateSheet(sheets[0].properties.sheetId)
+    const newSheet = await google.addSheet('my-new-sheet' + Math.random())
+    const renamedSheet = await google.renameSheet(0, 'my-renamed-sheet')
 
     //     switch (process.env.SHEET_PROVIDER) {
     //       case 'sheets':
