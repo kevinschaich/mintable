@@ -17,6 +17,7 @@
         "setup-google": "ts-node ./src/integrations/google/setup.ts"
     },
     "dependencies": {
+        "@types/lodash": "^4.14.149",
         "ajv": "^6.12.0",
         "body-parser": "^1.19.0",
         "chalk": "^3.0.0",

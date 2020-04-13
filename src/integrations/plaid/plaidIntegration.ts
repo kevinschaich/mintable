@@ -161,13 +161,13 @@ export class PlaidIntegration {
                 }))
 
                 logInfo(
-                    `Fetched ${data.accounts.length} sub-accounts and ${data.total_transactions} transactions for account ${accountConfig.id} using ${accountConfig.integration}.`,
+                    `Fetched ${data.accounts.length} sub-accounts and ${data.total_transactions} transactions.`,
                     accounts
                 )
                 return accounts
             })
             .catch(error => {
-                logError(`Error fetching account ${accountConfig.id} using ${accountConfig.integration}.`, error)
+                logError(`Error fetching account ${accountConfig.id}.`, error)
                 return []
             })
     }

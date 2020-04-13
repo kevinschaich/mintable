@@ -54,6 +54,7 @@ export interface TransactionOverride {
 }
 
 export interface TransactionConfig {
+    integration: IntegrationId
     properties?: string[]
     overrides?: TransactionOverride[]
     startDate?: string

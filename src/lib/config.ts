@@ -8,6 +8,7 @@ import os from 'os'
 import { resolve } from 'path'
 import { Definition, CompilerOptions, PartialArgs, getProgramFromFiles, generateSchema } from 'typescript-json-schema'
 import Ajv from 'ajv'
+import { BalanceConfig } from '../types/balance'
 
 const DEFAULT_CONFIG_FILE = '~/mintable.jsonc'
 
@@ -27,6 +28,7 @@ export interface Config {
     integrations: { [id: string]: IntegrationConfig }
     accounts: { [id: string]: AccountConfig }
     transactions: TransactionConfig
+    balances: BalanceConfig
 }
 
 export const getConfigSource = (): ConfigSource => {

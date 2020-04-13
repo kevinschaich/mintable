@@ -2,7 +2,7 @@ import { BaseIntegrationConfig, IntegrationId, IntegrationType } from '../integr
 
 export interface GoogleTemplateSheetSettings {
   documentId: string
-  sheetId: string
+  sheetTitle: string
 }
 
 export interface GoogleCredentials {
@@ -24,6 +24,8 @@ export interface GoogleConfig extends BaseIntegrationConfig {
   credentials: GoogleCredentials
   documentId: string
   
+  dateFormat?: string
+
   template?: GoogleTemplateSheetSettings
 }
 
