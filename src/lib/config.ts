@@ -58,7 +58,7 @@ export const readConfig = (source: ConfigSource): string => {
             return config
         } catch (e) {
             logError('Unable to open configuration file.', e)
-            logInfo("You may want to run `yarn setup` if you haven't already.")
+            logInfo("You may want to run `yarn setup` (or `yarn migrate`) if you haven't already.")
         }
     }
     if (source.type === 'environment') {

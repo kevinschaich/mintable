@@ -38,7 +38,6 @@ export class GoogleIntegration {
         this.client.setCredentials({
             access_token: this.googleConfig.credentials.accessToken,
             refresh_token: this.googleConfig.credentials.refreshToken,
-            // scope: this.googleConfig.credentials.scope,
             token_type: this.googleConfig.credentials.tokenType,
             expiry_date: this.googleConfig.credentials.expiryDate
         })
