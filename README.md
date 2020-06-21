@@ -1,10 +1,10 @@
-<h4 align="center"><img width="200" src="./docs/logo.png" alt="Mintable"><h4 align="center">Automate your personal finances – for free, with no ads, and no data collection.</h4>
+<h4 align="center"><img width="200" src="./docs/logo.png" alt="Mintable"><h4 align="center">Automate your personal finances – for free, with no ads, and no data collection.</h4><br>
 
 Mintable helps you:
 
 - Keep track of your account balances
 - Aggregate transactions from all your banking institutions, including checking accounts, savings accounts, and credit cards
-- Analyze and budget your spending using a spreadsheet
+- Analyze and budget your spending using a spreadsheet and formulas
 
 ---
 
@@ -15,9 +15,7 @@ Mintable helps you:
 [![](https://img.shields.io/github/issues-pr/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/pulls)
 [![](https://img.shields.io/reddit/subreddit-subscribers/Mintable?style=social)](https://reddit.com/r/Mintable)
 
-## 5-Min Quickstart
-
-#### A: I'm new to Mintable!
+## Quickstart
 
 1. Sign up for [Plaid's Free Plan](https://plaid.com/pricing/) (limited to 100 banking institutions).
 2. Run through the automated setup:
@@ -35,11 +33,7 @@ yarn setup
 yarn mintable
 ```
 
-#### B: I already use Mintable `v1.x.x`!
-
-```
-yarn migrate
-```
+> **Note:** If you're already a version `1.x.x` user, you can run `yarn migrate` to upgrade to version `2.x.x`.
 
 ## RTFM
 
