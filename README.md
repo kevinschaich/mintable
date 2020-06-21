@@ -48,9 +48,10 @@ yarn mintable
 
 ## FAQs
 
-**It's not working!**
+**WTF is 'Mintable'?!**
 
-- [File an issue](https://github.com/kevinschaich/mintable/issues) or  [![](https://img.shields.io/reddit/subreddit-subscribers/Mintable?style=social)](https://reddit.com/r/Mintable).
+> **min·ta·ble**: _noun._
+> 1. An open-source tool to automate your personal finances – for free, with no ads, and no data collection. Derived from *mint* (the [wildly popular personal finance app from Intuit](https://www.mint.com/)) + *table* (a spreadsheet).
 
 **Do I have to use Google Sheets/Plaid?**
 
@@ -59,6 +60,11 @@ Nope. You can import/export your transactions to/from CSV files (coming soon).
 **Do I have to manually run this every time I want new transactions in my spreadsheet?**
 
 Nope. You can automate updates using CI for free.
+
+**It's not working!**
+
+- [File an issue](https://github.com/kevinschaich/mintable/issues) or  [![](https://img.shields.io/reddit/subreddit-subscribers/Mintable?style=social)](https://reddit.com/r/Mintable).
+
 ## Alternatives
 
 - [**Money in Excel**](https://www.microsoft.com/en-us/microsoft-365/blog/2020/06/15/introducing-money-excel-easier-manage-finances/): Recently announced partnership between Microsoft/Plaid. Requires a Microsoft 365 subscription ($70+/year).
