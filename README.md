@@ -1,4 +1,4 @@
-<h4 align="center"><img width="200" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Automate your personal finances – for free, with no ads, and no data collection.</h4>
+<h4 align="center"><img width="200" src="./docs/logo.png" alt="Mintable"><h4 align="center">Automate your personal finances – for free, with no ads, and no data collection.</h4>
 
 Mintable helps you:
 
