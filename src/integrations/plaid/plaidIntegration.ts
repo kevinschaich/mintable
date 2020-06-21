@@ -36,6 +36,10 @@ export class PlaidIntegration {
         )
     }
 
+    public exchangeAccessToken = (accessToken: string): Promise<string> =>
+        // Exchange an expired API access_token for a new Link public_token
+        this.client.createPublicToken(accessToken).then(token => token.public_token)
+
     public savePublicToken = (tokenResponse: plaid.TokenResponse): void => {
         updateConfig(config => {
             config.accounts[tokenResponse.item_id] = {
@@ -66,15 +70,44 @@ export class PlaidIntegration {
                         resolve(logInfo('Plaid access token saved.'))
                     })
                 } else if (req.body.exit !== undefined) {
-                    reject(logError('Plaid authentication cancelled.'))
+                    resolve(logInfo('Plaid authentication cancelled.'))
                 } else {
                     reject(logError('Encountered error during authentication.', req.body.error))
                 }
-                server.close()
                 return res.json({})
             })
 
-            app.get('/', (req, res) => res.sendFile(__dirname + '/addAccount.html'))
+            app.post('/accounts', async (req, res) => {
+                const accounts = await Promise.all(
+                    Object.values(this.config.accounts).map(async account => {
+                        try {
+                            return await this.client.getAccounts(account.token).then(resp => {
+                                return {
+                                    name: resp.accounts[0].name,
+                                    token: account.token
+                                }
+                            })
+                        } catch {
+                            return {
+                                name: 'Error fetching account name',
+                                token: account.token
+                            }
+                        }
+                    })
+                )
+                return res.json(accounts)
+            })
+
+            app.post('/exchangeAccessToken', async (req, res) => {
+                return res.json({ token: await this.exchangeAccessToken(req.body.token) })
+            })
+
+            app.post('/done', (req, res) => {
+                res.json({})
+                return server.close()
+            })
+
+            app.get('/', (req, res) => res.sendFile(__dirname + '/add.html'))
 
             server = require('http')
                 .createServer(app)
@@ -172,12 +205,6 @@ export class PlaidIntegration {
             })
     }
 }
-
-// // Exchange an expired API access_token for a new Link public_token
-// const createPublicToken = (access_token, accountNickname) =>
-//   PLAID_CLIENT.createPublicToken(access_token).then(tokenResponse => {
-//     return tokenResponse.public_token
-//   })
 
 //   // Handle category overrides defined in config
 //   if (process.env.CATEGORY_OVERRIDES) {

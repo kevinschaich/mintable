@@ -13,6 +13,7 @@
         "fetch": "ts-node ./src/scripts/fetch.ts",
         "setup": "ts-node ./src/scripts/setup.ts",
         "setup-plaid": "ts-node ./src/integrations/plaid/setup.ts",
+        "setup-plaid-account": "ts-node ./src/integrations/plaid/add.ts",
         "setup-google": "ts-node ./src/integrations/google/setup.ts"
     },
     "dependencies": {

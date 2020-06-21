@@ -1,12 +1,10 @@
 import { PlaidEnvironmentType, PlaidConfig, defaultPlaidConfig } from '../../types/integrations/plaid'
-import { updateConfig, getConfig } from '../../lib/config'
+import { updateConfig } from '../../lib/config'
 import { IntegrationId } from '../../types/integrations'
 import prompts from 'prompts'
 import { logInfo, logError } from '../../lib/logging'
-import open from 'open'
 
 // Declare async block after imports complete
-import { PlaidIntegration } from './plaidIntegration'
 ;(async () => {
     try {
         console.log('\nThis script will walk you through setting up the Plaid integration. Follow these steps:')
@@ -81,38 +79,6 @@ import { PlaidIntegration } from './plaidIntegration'
 
             return config
         })
-
-        let numAccounts = 0
-        let continueAccountSetup = true
-
-        const config = getConfig()
-
-        const plaid = new PlaidIntegration(config)
-
-        while (continueAccountSetup) {
-            const response = await prompts([
-                {
-                    type: 'toggle',
-                    name: 'continue',
-                    message: `Would you like to setup ${numAccounts > 0 ? 'additional' : 'any'} accounts for Plaid?`,
-                    initial: true,
-                    active: 'yes',
-                    inactive: 'no'
-                }
-            ])
-
-            continueAccountSetup = response.continue
-
-            if (continueAccountSetup) {
-                logInfo('Account setup in progress.')
-                open(
-                    `http://localhost:8000?name=${credentials.name}&environment=${credentials.environment}&publicKey=${credentials.publicKey}`
-                )
-                await plaid.addAccount()
-
-                numAccounts += 1
-            }
-        }
 
         logInfo('Successfully set up Plaid Integration.')
     } catch (e) {

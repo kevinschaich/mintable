@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+                    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                background-color: #eee;
+                color: #333;
+            }
+            #container {
+                background-color: white;
+                border-radius: 5px;
+                padding: 60px;
+            }
+            div,
+            table {
+                border-collapse: collapse;
+                margin: 20px;
+            }
+            th,
+            td {
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+            h4,
+            button {
+                margin-top: 60px;
+            }
+            button {
+                font-size: 16px;
+                background-color: #0a85ea;
+                border-radius: 5px;
+                border: 0;
+                color: #fff;
+                padding: 15px 30px;
+                cursor: pointer;
+            }
+            #done-button {
+                background-color: #2abf54;
+            }
+            .update {
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <h1>Plaid – Account Configuration</h1>
+
+            <h4>Current Accounts</h4>
+            <table id="current-accounts">
+                <tr>
+                    <th>Token</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+            </table>
+
+            <button id="link-button">Link A New Account</button>
+
+            <br />
+
+            <button id="done-button">Done Linking Accounts</button>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+        <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+        <script type="text/javascript">
+            ;(function($) {
+                var params = new URLSearchParams(window.location.search)
+                var options = {
+                    clientName: params.get('name'),
+                    env: params.get('environment'),
+                    key: params.get('publicKey'),
+                    product: ['transactions'],
+                    onSuccess: function(public_token) {
+                        $.post('/get_access_token', { public_token: public_token })
+                    },
+                    onExit: function(error) {
+                        // The user encountered a Plaid API error prior to exiting.
+                        if (error != null) {
+                            $.post('/get_access_token', { error: error })
+                        }
+                        // The user exited the Link flow.
+                        $.post('/get_access_token', { exit: true })
+                    }
+                }
+
+                $.post('/accounts').then(data => {
+                    console.log(data)
+                    data.forEach(account => {
+                        const button = `<button class="update" data-token="${account.token}">Update</button>`
+                        const row = `<tr><td>${account.token}</td><td>${account.name}</td><td>${button}</td></tr>`
+                        const tableBody = $('#current-accounts')
+                        tableBody.append(row)
+                    })
+                })
+
+                $(document).on('click', 'button.update', function (e) {
+                    token = e.currentTarget.getAttribute("data-token")
+                    console.log(token)
+                    $.post('/exchangeAccessToken', {token: token}).then(resp => {
+                        console.log(resp)
+                        options.token = resp.token
+                        console.log(options)
+                        var handler = Plaid.create(options)
+                        handler.open()
+                    })
+                });
+
+                $('#link-button').on('click', function(e) {
+                    var handler = Plaid.create(options)
+                    handler.open()
+                })
+
+                $('#done-button').on('click', function(e) {
+                    $.post('/done').then(data => {
+                        $('#container').text('You can now close this page in your browser.')
+                    })
+                })
+            })(jQuery)
+        </script>
+    </body>
+</html>
