@@ -6,14 +6,14 @@ Mintable helps you:
 - Aggregate transactions from all your banking institutions, including checking accounts, savings accounts, and credit cards
 - Analyze and budget your spending using a spreadsheet and formulas
 
----
-
 [![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)](https://travis-ci.com/kevinschaich/mintable)
 [![](https://img.shields.io/github/release/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/releases)
 [![](https://img.shields.io/github/license/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/blob/master/LICENSE)
 [![](https://img.shields.io/github/issues/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/issues)
 [![](https://img.shields.io/github/issues-pr/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/pulls)
 [![](https://img.shields.io/reddit/subreddit-subscribers/Mintable?style=social)](https://reddit.com/r/Mintable)
+
+---
 
 ## Quickstart
 
@@ -37,7 +37,7 @@ yarn mintable
 
 ## RTFM
 
-- [5-Minute Quickstart](#5-min-quickstart)
+- [Quickstart](#quickstart)
 - [Full Documentation](./docs/OVERVIEW.md)
 - [FAQs](#FAQs)
 - [Alternatives](#Alternatives)
