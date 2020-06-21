@@ -6,8 +6,7 @@
 [![](https://img.shields.io/github/contributors/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/graphs/contributors)
 [![](https://img.shields.io/github/issues/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/issues)
 [![](https://img.shields.io/github/issues-pr/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/pulls)
-
-[**Join our Reddit Community**](https://www.reddit.com/r/Mintable)
+[![](https://img.shields.io/reddit/subreddit-subscribers/Mintable?style=social)](https://reddit.com/r/Mintable)
 
 ## Quickstart
 
