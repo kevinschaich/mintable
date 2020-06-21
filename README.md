@@ -1,10 +1,14 @@
-<h4 align="center"><img width="200" src="./docs/logo.png" alt="Mintable"><h4 align="center">Automate your personal finances – for free, with no ads, and no data collection.</h4><br>
+<h4 align="center"><img width="200" src="./docs/logo.png" alt="Mintable"><h4 align="center">Automate your personal finances – for free, with no ads, and no data collection.</h4>
+
+<br>
 
 Mintable helps you:
 
 - Keep track of your account balances
 - Aggregate transactions from all your banking institutions, including checking accounts, savings accounts, and credit cards
 - Analyze and budget your spending using a spreadsheet and formulas
+
+<br>
 
 [![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)](https://travis-ci.com/kevinschaich/mintable)
 [![](https://img.shields.io/github/release/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/releases)
