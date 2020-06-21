@@ -8,6 +8,8 @@ Mintable helps you:
 - Aggregate transactions from all your banking institutions, including checking accounts, savings accounts, and credit cards
 - Analyze and budget your spending using a spreadsheet and formulas
 
+![](./docs/mintable.png)
+
 <br>
 
 [![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)](https://travis-ci.com/kevinschaich/mintable)
@@ -31,7 +33,7 @@ yarn
 yarn setup
 ```
 
-3. Update your transactions:
+3. Update your account balances/transactions:
 
 ```
 yarn mintable
