@@ -58,7 +58,7 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 3. Update your account balances/transactions:
 
-    ```
+    ```bash
     mintable fetch
     ```
 
@@ -68,9 +68,9 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 After you have connected a banking institution, you can run:
 
-    ```bash
-    mintable fetch
-    ```
+```bash
+mintable fetch
+```
 
 to automate updates to your spreadsheet. You can run this manually on your local machine, or use the provided CI files for either [Travis](https://travis-ci.org/) or [Circle](https://circleci.com/) to facilitate programmatic updates.
 
