@@ -23,28 +23,28 @@ Mintable helps you:
 
 ## Quickstart
 
-1. Sign up for [Plaid's Free Plan](https://plaid.com/pricing/) (limited to 100 banking institutions).
+1. Sign up for [Plaid's Free Plan](https://plaid.com/pricing/).
 2. Install Mintable:
 
-```bash
-npm install -g mintable
-mintable setup
-```
+    ```bash
+    npm install -g mintable
+    mintable setup
+    ```
 
 3. Update your account balances/transactions:
 
-```
-mintable fetch
-```
+    ```
+    mintable fetch
+    ```
 
-> **Note:** If you're already a version `1.x.x` user, you can run `mintable migrate` to upgrade to version `2.x.x`.
+> **Note:** If you're already a version `1.x.x` user, you can [migrate your existing configuration to version `2.x.x`](./docs/README.md#migrating-from-v1.x.x).
 
 ## RTFM
 
 - [Quickstart](#quickstart)
-- [Full Documentation](./docs/OVERVIEW.md)
-- [FAQs](#FAQs)
-- [Alternatives](#Alternatives)
+- [RTFM](#rtfm)
+- [FAQs](#faqs)
+- [Alternatives](#alternatives)
 
 ## FAQs
 

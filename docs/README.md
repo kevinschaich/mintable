@@ -3,7 +3,10 @@
 #### Table of Contents
 
 - [Overview](#overview)
-- [Features](#features)
+- [Installation/Usage](#installationusage)
+  - [Creating a Fresh Installation](#creating-a-fresh-installation)
+  - [Migrating from `v1.x.x`](#migrating-from-v1xx)
+- [Development](#development)
 
 ## Overview
 
@@ -15,12 +18,63 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 1. Mintable integrates with financial institutions to automatically populate transactions in your spreadsheet.
 1. You can add whatever formulas, charts, or calculations you want (just like a normal spreadsheet). We also have templates to get you started.
 
-## Features
+## Installation/Usage
 
-- Locally hosted, open-source, 100% free, ad-free, no personal data tracking, no data stored by Mintable on central servers
-- Integrates with your financial institutions for fully-automated spreadsheet updates
-- Cross-platform, portable, able to run on CI servers
-- Command-line based setup & configuration wizard
+### Creating a Fresh Installation
+
+1. Sign up for [Plaid's Free Plan](https://plaid.com/pricing/). The free plan is limited to 100 banking institutions which should be more than enough for personal use. After applying and verifying your email it usually takes a day or two for them to approve your account.
+2. Install the global `mintable` command line utility:
+
+    ```bash
+    npm install -g mintable
+    ```
+
+3. Set up the integration with your banks and a spreadsheet:
+
+    ```bash
+    mintable setup
+    ```
+
+4. Update your account balances/transactions:
+
+    ```
+    mintable fetch
+    ```
+
+### Migrating from `v1.x.x`
+
+1. Install the new `v2.x.x` `mintable` command line utility:
+
+    ```bash
+    npm install -g mintable
+    ```
+
+2. Migrate your config to the new format:
+
+    ```bash
+    mintable migrate --old-config-file /path/to/your/old/mintable.config.json
+    ```
+
+3. Update your account balances/transactions:
+
+    ```
+    mintable fetch
+    ```
+
+> **Note:** After successful migration you can delete everything in your `v1.x.x` `mintable` folder. You may want to keep a copy of your `mintable.config.json` for prosperity.
+
+## Development
+
+To get started:
+
+```bash
+git clone https://github.com/kevinschaich/mintable
+cd mintable
+npm install
+npm link
+```
+
+The global `mintable` command will now point to your local dev version.
 
 <!--
 
@@ -106,38 +160,6 @@ If you want to enable debug mode, you can add the following line to your `mintab
 
 ```javascript
 "DEBUG": true
-```
-
-#### Host
-
-`HOST` specifies the host for Mintable's setup server.
-
-**Default:** 
-
-```javascript
-"HOST": "localhost"
-```
-
-For example, if you want to run Mintable on a custom server and listen on `0.0.0.0`, you could add the following line to your `mintable.config.json` file:
-
-```javascript
-"HOST": "0.0.0.0"
-```
-
-#### Port
-
-`PORT` specifies the port for Mintable's setup server.
-
-**Default:** 
-
-```javascript
-"PORT": 3000
-```
-
-For example, if you already have an application running on port `3000` and instead want to use port `8080`, you could add the following line to your `mintable.config.json` file:
-
-```javascript
-"PORT": "8080"
 ```
 
 #### Account Provider

@@ -36,8 +36,10 @@ const commands = {
     'setup-google': '../integrations/google/setup.ts'
 }
 
-if (commands.hasOwnProperty(process.argv[2])) {
-    require(process.argv[2])
+const command = process.argv[2]
+
+if (commands.hasOwnProperty(command)) {
+    require(commands[command])
 } else {
     console.log('\nusage: mintable <command>\n')
     console.log('Available commands:')
