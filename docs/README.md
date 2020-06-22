@@ -1,3 +1,10 @@
+# Documentation
+
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [Overview](#overview)
+- [Features](#features)
 
 ## Overview
 
@@ -13,7 +20,8 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 - Locally hosted, open-source, 100% free, ad-free, no personal data tracking, no data stored by Mintable on central servers
 - Integrates with your financial institutions for fully-automated spreadsheet updates
-- Web based setup wizard and configuration framework:
+- Cross-platform, portable, able to run on CI servers
+- Command-line based setup & configuration wizard
 
 <!--
 
