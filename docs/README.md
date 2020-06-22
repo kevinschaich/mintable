@@ -6,6 +6,7 @@
 - [Installation/Usage](#installationusage)
   - [Creating a Fresh Installation](#creating-a-fresh-installation)
   - [Migrating from `v1.x.x`](#migrating-from-v1xx)
+  - [Adding/Updating Accounts](#addingupdating-accounts)
   - [Updating Transactions/Accounts](#updating-transactionsaccounts)
 - [Development](#development)
 
@@ -30,7 +31,7 @@ Mintable simplifies managing your finances, for free, without ads, and without t
     npm install -g mintable
     ```
 
-3. Set up the integration with your banks and a spreadsheet:
+3. Set up the integration with your banks and a spreadsheet using the setup wizard:
 
     ```bash
     mintable setup
@@ -63,6 +64,18 @@ Mintable simplifies managing your finances, for free, without ads, and without t
     ```
 
 > **Note:** After successful migration you can delete everything in your `v1.x.x` `mintable` folder. You may want to keep a copy of your `mintable.config.json` for posterity.
+
+### Adding/Updating Accounts
+
+You can run:
+
+```bash
+mintable account-setup
+```
+
+to enter the account setup wizard. This will launch a local web server (necessary to authenticate with Plaid's servers) for you to connect your banks.
+
+To add a new account, click the blue **Link A New Account** button. To re-authenticate with an existing account, click the blue **Update** button next to the account name in the table.
 
 ### Updating Transactions/Accounts
 

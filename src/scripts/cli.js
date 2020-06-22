@@ -31,9 +31,9 @@ const commands = {
     migrate: './migrate.ts',
     fetch: './fetch.ts',
     setup: './setup.ts',
-    'setup-plaid': '../integrations/plaid/setup.ts',
-    'setup-plaid-account': '../integrations/plaid/add.ts',
-    'setup-google': '../integrations/google/setup.ts'
+    'plaid-setup': '../integrations/plaid/setup.ts',
+    'account-setup': '../integrations/plaid/add.ts',
+    'google-setup': '../integrations/google/setup.ts'
 }
 
 const command = process.argv[2]
