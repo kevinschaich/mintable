@@ -37,7 +37,7 @@ const { parseISO, subMonths, startOfMonth } = require('date-fns')
 
     switch (config.transactions.integration) {
         case IntegrationId.Google:
-            return await await google.updateAccounts(accounts)
+            return await google.updateAccounts(accounts)
         default:
             return
     }

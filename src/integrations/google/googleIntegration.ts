@@ -277,11 +277,16 @@ export class GoogleIntegration {
             })
     }
 
-    public getRowWithDefaults = (row: { [key: string]: any }, columns, defaultValue: any = null): any[] => {
-        return columns.reduce((output, key) => {
-            row && row.hasOwnProperty(key) ? output.push(row[key]) : output.push(defaultValue)
-            return output
-        }, [])
+    public getRowWithDefaults = (row: { [key: string]: any }, columns: string[], defaultValue: any = null): any[] => {
+        return columns.map((key) => {
+            if (row && row.hasOwnProperty(key)) {
+                if (key === 'date') {
+                    return format(row[key], this.googleConfig.dateFormat || 'yyyy.MM.dd')
+                }
+                return row[key]
+            }
+            return defaultValue
+        })
     }
 
     public updateSheet = async (
@@ -301,7 +306,6 @@ export class GoogleIntegration {
                 )
                 await this.renameSheet(copied.title, sheetTitle)
             } else {
-                logInfo('BLAH!', existing)
                 await this.addSheet(sheetTitle)
             }
         }

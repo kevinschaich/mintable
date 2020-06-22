@@ -113,11 +113,11 @@ try {
         },
         accounts: accounts,
         transactions: {
-            integration: IntegrationId.Plaid,
+            integration: IntegrationId.Google,
             properties: transactionColumns.concat(oldConfig['REFERENCE_COLUMNS'])
         },
         balances: {
-            integration: IntegrationId.Plaid,
+            integration: IntegrationId.Google,
             properties: balanceColumns
         }
     })
