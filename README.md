@@ -24,22 +24,20 @@ Mintable helps you:
 ## Quickstart
 
 1. Sign up for [Plaid's Free Plan](https://plaid.com/pricing/) (limited to 100 banking institutions).
-2. Run through the automated setup:
+2. Install Mintable:
 
 ```bash
-git clone https://github.com/kevinschaich/mintable
-cd mintable
-yarn
-yarn setup
+npm install -g mintable
+mintable setup
 ```
 
 3. Update your account balances/transactions:
 
 ```
-yarn mintable
+mintable fetch
 ```
 
-> **Note:** If you're already a version `1.x.x` user, you can run `yarn migrate` to upgrade to version `2.x.x`.
+> **Note:** If you're already a version `1.x.x` user, you can run `mintable migrate` to upgrade to version `2.x.x`.
 
 ## RTFM
 

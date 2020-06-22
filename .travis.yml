@@ -3,4 +3,4 @@ node_js:
  - "node"
 script:
   - "yarn test"
-  # - "yarn mintable"
+  # - "mintable fetch"

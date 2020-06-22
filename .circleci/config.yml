@@ -9,10 +9,10 @@ jobs:
       - checkout
       - run:
           name: Install Dependencies
-          command: yarn install
+          command: npm install -g mintable
       - run:
           name: Mintable
-          command: yarn mintable
+          command: mintable fetch
 
 workflows:
   version: 2
