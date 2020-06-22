@@ -4,9 +4,9 @@
 
 - [Overview](#overview)
 - [Installation/Usage](#installationusage)
-    - [Creating a Fresh Installation](#creating-a-fresh-installation)
-    - [Migrating from `v1.x.x`](#migrating-from-v1xx)
-    - [Updating Transactions/Accounts](#updating-transactionsaccounts)
+  - [Creating a Fresh Installation](#creating-a-fresh-installation)
+  - [Migrating from `v1.x.x`](#migrating-from-v1xx)
+  - [Updating Transactions/Accounts](#updating-transactionsaccounts)
 - [Development](#development)
 
 ## Overview
@@ -21,7 +21,7 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 ## Installation/Usage
 
-#### Creating a Fresh Installation
+### Creating a Fresh Installation
 
 1. Sign up for [Plaid's Free Plan](https://plaid.com/pricing/). The free plan is limited to 100 banking institutions which should be more than enough for personal use. After applying and verifying your email it usually takes a day or two for them to approve your account.
 2. Install the global `mintable` command line utility:
@@ -42,7 +42,7 @@ Mintable simplifies managing your finances, for free, without ads, and without t
     mintable fetch
     ```
 
-#### Migrating from `v1.x.x`
+### Migrating from `v1.x.x`
 
 1. Install the new `v2.x.x` `mintable` command line utility:
 
@@ -64,7 +64,7 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 > **Note:** After successful migration you can delete everything in your `v1.x.x` `mintable` folder. You may want to keep a copy of your `mintable.config.json` for posterity.
 
-#### Updating Transactions/Accounts
+### Updating Transactions/Accounts
 
 After you have connected a banking institution, you can run:
 
