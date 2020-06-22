@@ -37,7 +37,7 @@ Mintable helps you:
     mintable fetch
     ```
 
-> **Note:** If you're already a version `1.x.x` user, you can [migrate your existing configuration to version `2.x.x`](./docs/README.md#migrating-from-v1.x.x).
+> **Note:** If you're already a version `1.x.x` user, you can [migrate your existing configuration to version `2.x.x`](./docs/README.md#migrating-from-v1xx).
 
 ## RTFM
 
