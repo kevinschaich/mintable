@@ -1,7 +1,7 @@
 
 ## Overview
 
-![Mintable](./src/static/mintable.png)
+![Mintable](./mintable.png)
 
 Mintable simplifies managing your finances, for free, without ads, and without tracking your information. Here's how it works:
 
