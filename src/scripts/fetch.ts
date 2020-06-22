@@ -6,7 +6,7 @@ import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
 const { parseISO, subMonths, startOfMonth } = require('date-fns')
 
-// Declare async block after imports complete
+    // Declare async block after imports complete
 ;(async () => {
     const config = getConfig()
     const plaid = new PlaidIntegration(config)

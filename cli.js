@@ -28,12 +28,12 @@ logo.forEach(line => {
 console.log(' M I N T A B L E\n')
 
 const commands = {
-    migrate: './migrate.ts',
-    fetch: './fetch.ts',
-    setup: './setup.ts',
-    'plaid-setup': '../integrations/plaid/setup.ts',
-    'account-setup': '../integrations/plaid/add.ts',
-    'google-setup': '../integrations/google/setup.ts'
+    migrate: './src/scripts/migrate.ts',
+    fetch: './src/scripts/fetch.ts',
+    setup: './src/scripts/setup.ts',
+    'plaid-setup': './src/integrations/plaid/setup.ts',
+    'account-setup': './src/integrations/plaid/add.ts',
+    'google-setup': './src/integrations/google/setup.ts'
 }
 
 const command = process.argv[2]

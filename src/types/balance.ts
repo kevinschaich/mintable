@@ -1,4 +1,4 @@
-import { IntegrationId } from "./integrations";
+import { IntegrationId } from './integrations'
 
 export interface BalanceConfig {
     integration: IntegrationId

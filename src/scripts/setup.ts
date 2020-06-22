@@ -8,12 +8,12 @@ import { BalanceConfig } from '../types/balance'
 
 const capitalize = (word: string): string => word.charAt(0).toUpperCase() + word.slice(1)
 
-// Declare async block after imports complete
+    // Declare async block after imports complete
 ;(async () => {
     console.log('\nWelcome to Mintable!')
     console.log('\nThis script will walk you through three setup stages:')
     console.log('\n\t1. Set up an EXPORT integration to fetch up-to-date data from your financial institutions')
-    console.log("\t2. Select which data you care about")
+    console.log('\t2. Select which data you care about')
     console.log('\t3. Set up an EXPORT integration to put your data into a spreadsheet for analysis')
 
     const defaultTransactionProperties = [
@@ -92,9 +92,7 @@ const capitalize = (word: string): string => word.charAt(0).toUpperCase() + word
             integration: selected.exporter
         }
         const balanceConfig: BalanceConfig = {
-            properties: defaultBalanceProperties.filter(property =>
-                selected.balanceProperties.includes(property)
-            ),
+            properties: defaultBalanceProperties.filter(property => selected.balanceProperties.includes(property)),
             integration: selected.exporter
         }
         config.transactions = transactionConfig

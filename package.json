@@ -3,9 +3,9 @@
     "author": "Kevin Schaich <schaich.kevin@gmail.com> (http://kevinschaich.io)",
     "license": "MIT",
     "version": "2.0.0",
-    "main": "./src/scripts/cli.js",
+    "main": "./cli.js",
     "bin": {
-        "mintable": "./src/scripts/cli.js"
+        "mintable": "./cli.js"
     },
     "preferGlobal": true,
     "scripts": {
