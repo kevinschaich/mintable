@@ -2,6 +2,11 @@
 
 import chalk from 'chalk'
 import { updateConfig } from '../common/config'
+import plaid from '../integrations/plaid/setup'
+import google from '../integrations/google/setup'
+import add from '../integrations/plaid/add'
+import fetch from './fetch'
+import migrate from './migrate'
 ;(async function() {
     const logo = [
         '\n',
@@ -28,22 +33,22 @@ import { updateConfig } from '../common/config'
     console.log(' M I N T A B L E\n')
 
     const commands = {
-        migrate: ['./migrate.js'],
-        fetch: ['./fetch.js'],
-        'plaid-setup': ['../integrations/plaid/setup.js'],
-        'account-setup': ['../integrations/plaid/add.js'],
-        'google-setup': ['../integrations/google/setup.js']
+        migrate: migrate,
+        fetch: fetch,
+        'plaid-setup': plaid,
+        'account-setup': add,
+        'google-setup': google
     }
 
     const arg = process.argv[2]
 
     if (arg == 'setup') {
         updateConfig(config => config, true)
-        await require('../integrations/plaid/setup.js').default()
-        await require('../integrations/google/setup.js').default()
-        await require('../integrations/plaid/add.js').default()
+        // await plaid()
+        // await google()
+        // await add()
     } else if (commands.hasOwnProperty(arg)) {
-        commands[arg].forEach(command => require(command).default())
+        commands[arg]()
     } else {
         console.log('\nusage: mintable <command>\n')
         console.log('available commands:')

@@ -4,7 +4,7 @@ import { GoogleIntegration } from '../integrations/google/googleIntegration'
 import { logInfo } from '../common/logging'
 import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
-const { parseISO, subMonths, startOfMonth } = require('date-fns')
+import { parseISO, subMonths, startOfMonth } from 'date-fns'
 
 export default async () => {
     const config = getConfig()
