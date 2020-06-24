@@ -338,7 +338,7 @@ export class GoogleIntegration {
         // Write transactions by month, copying template sheet if necessary
         Promise.all(Object.keys(groupedTransactions).map(async month => {
             await this.updateSheet(
-                format(parseISO(month), this.googleConfig.dateFormat || 'yyyy.MM.dd'),
+                format(parseISO(month), this.googleConfig.dateFormat || 'yyyy.MM'),
                 groupedTransactions[month],
                 this.config.transactions.properties,
                 true
