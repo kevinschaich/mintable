@@ -1,3 +1,4 @@
+import path from 'path' 
 import { parseISO, format, subMonths } from 'date-fns'
 import plaid, { TransactionsResponse } from 'plaid'
 import { Config, updateConfig } from '../../common/config'
@@ -107,7 +108,7 @@ export class PlaidIntegration {
                 return server.close()
             })
 
-            app.get('/', (req, res) => res.sendFile(__dirname + '/add.html'))
+            app.get('/', (req, res) => res.sendFile(path.resolve(path.join(__dirname, '../../../src/integrations/plaid/add.html'))))
 
             server = require('http')
                 .createServer(app)

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk'
-
+import { updateConfig } from '../common/config'
 ;(async function() {
     const logo = [
         '\n',
@@ -38,8 +38,10 @@ import chalk from 'chalk'
     const arg = process.argv[2]
 
     if (arg == 'setup') {
+        updateConfig(config => config, true)
         await require('../integrations/plaid/setup.js').default()
         await require('../integrations/google/setup.js').default()
+        await require('../integrations/plaid/add.js').default()
     } else if (commands.hasOwnProperty(arg)) {
         commands[arg].forEach(command => require(command).default())
     } else {

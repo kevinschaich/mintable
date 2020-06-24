@@ -13,8 +13,8 @@ export default async () => {
                 '\nThis script will walk you through setting up the Google Sheets integration. Follow these steps:'
             )
             console.log('\n\t1. Visit https://developers.google.com/sheets/api/quickstart/nodejs')
-            console.log("\t2. Click 'Enable the Google Sheets API'")
-            console.log('\t3. Create a new Google Sheet')
+            console.log("\t2. Click 'Enable the Google Sheets API, select 'Desktop App', and click 'Create'")
+            console.log('\t3. Create a new Google Sheet (https://sheets.new)')
             console.log('\t4. Answer the following questions:\n')
 
             const credentials = await prompts([
