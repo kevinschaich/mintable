@@ -44,9 +44,9 @@ import migrate from './migrate'
 
     if (arg == 'setup') {
         updateConfig(config => config, true)
-        // await plaid()
-        // await google()
-        // await add()
+        await plaid()
+        await google()
+        await add()
     } else if (commands.hasOwnProperty(arg)) {
         commands[arg]()
     } else {
