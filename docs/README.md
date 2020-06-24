@@ -43,6 +43,8 @@ Mintable simplifies managing your finances, for free, without ads, and without t
     mintable fetch
     ```
 
+![Mintable CLI](./cli.png)
+
 ### Migrating from `v1.x.x`
 
 1. Install the new `v2.x.x` `mintable` command line utility:
