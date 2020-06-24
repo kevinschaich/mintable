@@ -102,10 +102,17 @@ export const parseConfig = (configString: string): Object => {
 }
 
 export const getConfigSchema = (): Definition => {
+    const basePath = resolve(join(__dirname, '../..'))
+    const config = resolve(join(basePath, 'src/common/config.ts'))
+    const tsconfig = resolve(join(basePath, 'tsconfig.json'))
+
+    console.log(basePath, config, tsconfig)
+
     // Generate JSON schema at runtime for Config interface above
     const compilerOptions: CompilerOptions = {
-        lib: ['es2019'],
-        esModuleInterop: true
+        // project: tsconfig
+        // lib: ['es2019'],
+        // esModuleInterop: true
     }
 
     const settings: PartialArgs = {
@@ -114,11 +121,14 @@ export const getConfigSchema = (): Definition => {
         noExtraProps: true
     }
 
-    const config = resolve(join(__dirname, '../../src/common/config.ts'))
-    const program = getProgramFromFiles([config], compilerOptions)
-    const configSchema = generateSchema(program, 'Config', settings)
+    try {
+        const program = getProgramFromFiles([config], compilerOptions, basePath)
+        const configSchema = generateSchema(program, 'Config', settings)
 
-    return configSchema
+        return configSchema
+    } catch (e) {
+        logError('Could not generate config schema.', e)
+    }
 }
 
 export const validateConfig = (parsedConfig: Object): Config => {
