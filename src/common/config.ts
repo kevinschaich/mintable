@@ -7,7 +7,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import { resolve, join } from 'path'
 import { Definition, CompilerOptions, PartialArgs, getProgramFromFiles, generateSchema } from 'typescript-json-schema'
-import * as Ajv from 'ajv'
+import Ajv from 'ajv'
 import { BalanceConfig } from '../types/balance'
 import { ScriptTarget } from 'typescript'
 
@@ -131,7 +131,7 @@ export const validateConfig = (parsedConfig: Object): Config => {
 
     // Validate parsed configuration object against generated JSON schema
     try {
-        const validator = new Ajv.default()
+        const validator = new Ajv()
         const valid = validator.validate(configSchema, parsedConfig)
 
         if (!valid) {

@@ -1,4 +1,4 @@
-import * as chalk from 'chalk'
+const chalk = require('chalk')
 import { argv } from 'yargs'
 import { inspect } from 'util'
 import * as os from 'os'
