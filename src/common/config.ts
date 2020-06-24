@@ -16,11 +16,11 @@ const DEFAULT_CONFIG: Config = {
     accounts: {},
     transactions: {
         integration: IntegrationId.Google,
-        properties: ['name', 'date', 'amount', 'account', 'category', 'location', 'pending', 'notes', 'work', 'shared']
+        properties: ['date', 'amount', 'name', 'account', 'category', 'pending']
     },
     balances: {
         integration: IntegrationId.Google,
-        properties: ['mask', 'institution', 'account', 'type', 'current', 'available', 'limit', 'currency']
+        properties: ['institution', 'account', 'mask', 'type', 'current', 'available', 'limit', 'currency']
     },
     integrations: {}
 }
