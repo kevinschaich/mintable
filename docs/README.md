@@ -212,10 +212,6 @@ This repo includes config files for both [CircleCI](https://circleci.com/) and [
 
 Most CI providers allow you to set **environment variables** to configure sensitive information (like the stuff in `mintable.config.json`). We've included a handy script to get that set up:
 
-```
-yarn export
-```
-
 Run this command and paste the result into an environment variable called `MINTABLE_CONFIG` in your CI provider of choice. Mintable will handle the rest.
 
 > **Note:** Some CI providers (like Travis) require you to wrap this variable in single quotes, i.e. `'{ "ACCOUNT_PROVIDER": "plaid", ...}'`. If you get an error similar to `Unable to parse JSON...` when you run your CI build, give this a try.

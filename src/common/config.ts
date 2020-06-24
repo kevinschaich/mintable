@@ -1,7 +1,7 @@
-import { IntegrationConfig } from '../types/integrations'
+import { IntegrationConfig, IntegrationId } from '../types/integrations'
 import { AccountConfig } from '../types/account'
 import { TransactionConfig } from '../types/transaction'
-import { logInfo, logError } from '../lib/logging'
+import { logInfo, logError } from './logging'
 import { argv } from 'yargs'
 import fs from 'fs'
 import os from 'os'
@@ -11,6 +11,19 @@ import Ajv from 'ajv'
 import { BalanceConfig } from '../types/balance'
 
 const DEFAULT_CONFIG_FILE = '~/mintable.jsonc'
+
+const DEFAULT_CONFIG: Config = {
+    accounts: {},
+    transactions: {
+        integration: IntegrationId.Google,
+        properties: ['name', 'date', 'amount', 'account', 'category', 'location', 'pending', 'notes', 'work', 'shared']
+    },
+    balances: {
+        integration: IntegrationId.Google,
+        properties: ['mask', 'institution', 'account', 'type', 'current', 'available', 'limit', 'currency']
+    },
+    integrations: {}
+}
 
 export interface FileConfig {
     type: 'file'
@@ -146,11 +159,18 @@ export const writeConfig = (source: ConfigSource, config: Config): void => {
 
 type ConfigTransformer = (oldConfig: Config) => Config
 
-export const updateConfig = (configTransformer: ConfigTransformer): Config => {
+export const updateConfig = (configTransformer: ConfigTransformer, initialize?: boolean): Config => {
+    let newConfig: Config
     const configSource = getConfigSource()
-    const configString = readConfig(configSource)
-    const oldConfig = parseConfig(configString) as Config
-    const newConfig = configTransformer(oldConfig)
+
+    if (initialize) {
+        newConfig = configTransformer(DEFAULT_CONFIG)
+    } else {
+        const configString = readConfig(configSource)
+        const oldConfig = parseConfig(configString) as Config
+        newConfig = configTransformer(oldConfig)
+    }
+
     const validatedConfig = validateConfig(newConfig)
     writeConfig(configSource, validatedConfig)
     return validatedConfig

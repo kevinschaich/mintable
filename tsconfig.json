@@ -1,9 +1,10 @@
 {
     "compilerOptions": {
+        "lib": ["es2019"],
         "esModuleInterop": true,
-        "outDir": "build",
-        "lib": [
-            "es2019.array"
-        ]
-    }
+        "outDir": "lib",
+        "rootDir": "src"
+    },
+    "exclude": ["lib", "node_modules"],
+    "include": ["src"]
 }

@@ -2,6 +2,7 @@
 .env
 
 build/
+lib/
 
 mintable.config.json
 mintable.sandbox.json

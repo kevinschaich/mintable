@@ -1,14 +1,13 @@
-import { updateConfig, getConfig } from '../../lib/config'
+import { updateConfig, getConfig } from '../../common/config'
 import prompts from 'prompts'
-import { logInfo, logError } from '../../lib/logging'
+import { logInfo, logError } from '../../common/logging'
 import open from 'open'
 import { PlaidIntegration } from './plaidIntegration'
 import { argv } from 'yargs'
 import { IntegrationId } from '../../types/integrations'
 import { PlaidConfig } from '../../types/integrations/plaid'
 
-// Declare async block after imports complete
-;(async () => {
+export default async () => {
     try {
         console.log('\nThis script will help you add accounts to Plaid.')
 
@@ -26,4 +25,4 @@ import { PlaidConfig } from '../../types/integrations/plaid'
     } catch (e) {
         logError('Failed to set up Plaid Account(s).', e)
     }
-})()
+}

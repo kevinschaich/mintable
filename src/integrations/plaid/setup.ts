@@ -1,11 +1,10 @@
 import { PlaidEnvironmentType, PlaidConfig, defaultPlaidConfig } from '../../types/integrations/plaid'
-import { updateConfig } from '../../lib/config'
+import { updateConfig } from '../../common/config'
 import { IntegrationId } from '../../types/integrations'
 import prompts from 'prompts'
-import { logInfo, logError } from '../../lib/logging'
+import { logInfo, logError } from '../../common/logging'
 
-// Declare async block after imports complete
-;(async () => {
+export default async () => {
     try {
         console.log('\nThis script will walk you through setting up the Plaid integration. Follow these steps:')
         console.log('\n\t1. Visit https://plaid.com')
@@ -84,4 +83,4 @@ import { logInfo, logError } from '../../lib/logging'
     } catch (e) {
         logError('Unable to set up Plaid Integration.', e)
     }
-})()
+}

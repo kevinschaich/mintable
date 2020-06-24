@@ -1,13 +1,12 @@
 import { GoogleConfig, defaultGoogleConfig } from '../../types/integrations/google'
-import { updateConfig, getConfig } from '../../lib/config'
+import { updateConfig, getConfig } from '../../common/config'
 import prompts from 'prompts'
 import { IntegrationId } from '../../types/integrations'
 import open from 'open'
 import { GoogleIntegration } from './googleIntegration'
-import { logInfo, logError } from '../../lib/logging'
+import { logInfo, logError } from '../../common/logging'
 
-// Declare async block after imports complete
-;(async () => {
+export default async () => {
     try {
         console.log('\nThis script will walk you through setting up the Google Sheets integration. Follow these steps:')
         console.log('\n\t1. Visit https://developers.google.com/sheets/api/quickstart/nodejs')
@@ -85,4 +84,4 @@ import { logInfo, logError } from '../../lib/logging'
     } catch (e) {
         logError('Unable to set up Google Integration.', e)
     }
-})()
+}

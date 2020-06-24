@@ -1,13 +1,12 @@
-import { getConfig } from '../lib/config'
+import { getConfig } from '../common/config'
 import { PlaidIntegration } from '../integrations/plaid/plaidIntegration'
 import { GoogleIntegration } from '../integrations/google/googleIntegration'
-import { logInfo } from '../lib/logging'
+import { logInfo } from '../common/logging'
 import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
 const { parseISO, subMonths, startOfMonth } = require('date-fns')
 
-    // Declare async block after imports complete
-;(async () => {
+export default async () => {
     const config = getConfig()
     const plaid = new PlaidIntegration(config)
     const google = new GoogleIntegration(config)
@@ -41,4 +40,4 @@ const { parseISO, subMonths, startOfMonth } = require('date-fns')
         default:
             return
     }
-})()
+}
