@@ -1,7 +1,7 @@
-import chalk from 'chalk'
+import * as chalk from 'chalk'
 import { argv } from 'yargs'
 import { inspect } from 'util'
-import os from 'os'
+import * as os from 'os'
 
 export enum LogLevel {
     Info = 'info',

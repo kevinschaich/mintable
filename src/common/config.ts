@@ -3,11 +3,11 @@ import { AccountConfig } from '../types/account'
 import { TransactionConfig } from '../types/transaction'
 import { logInfo, logError } from './logging'
 import { argv } from 'yargs'
-import fs from 'fs'
-import os from 'os'
+import * as fs from 'fs'
+import * as os from 'os'
 import { resolve, join } from 'path'
 import { Definition, CompilerOptions, PartialArgs, getProgramFromFiles, generateSchema } from 'typescript-json-schema'
-import Ajv from 'ajv'
+import * as Ajv from 'ajv'
 import { BalanceConfig } from '../types/balance'
 import { ScriptTarget } from 'typescript'
 
@@ -107,10 +107,10 @@ export const getConfigSchema = (): Definition => {
     console.log('TSCONFIG', tsconfig)
     const compilerOptions: CompilerOptions = {
         lib: ['es2019'],
-        esModuleInterop: true,
-        outDir: 'lib',
-        target: ScriptTarget.ES5,
-        project: tsconfig
+        esModuleInterop: true
+        // outDir: 'lib',
+        // target: ScriptTarget.ES5,
+        // project: tsconfig
     }
 
     const settings: PartialArgs = {
@@ -131,7 +131,7 @@ export const validateConfig = (parsedConfig: Object): Config => {
 
     // Validate parsed configuration object against generated JSON schema
     try {
-        const validator = new Ajv()
+        const validator = new Ajv.default()
         const valid = validator.validate(configSchema, parsedConfig)
 
         if (!valid) {

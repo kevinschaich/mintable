@@ -3,6 +3,6 @@
         "lib": ["es2019"],
         "esModuleInterop": true,
         "outDir": "lib",
-        "target": "ES5"
+        // "target": "ES5"
     }
 }

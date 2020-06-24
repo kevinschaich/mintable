@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import chalk from 'chalk'
+import * as chalk from 'chalk'
 import { updateConfig } from '../common/config'
 import plaid from '../integrations/plaid/setup'
 import google from '../integrations/google/setup'

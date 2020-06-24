@@ -1,7 +1,7 @@
 import { ConfigSource, readConfig, parseConfig, getConfigSource, writeConfig } from '../common/config'
 import { argv } from 'yargs'
 import { logInfo, logError, logWarn } from '../common/logging'
-import os from 'os'
+import * as os from 'os'
 import { IntegrationId, IntegrationType } from '../types/integrations'
 import { defaultGoogleConfig } from '../types/integrations/google'
 import { AccountConfig } from '../types/account'
