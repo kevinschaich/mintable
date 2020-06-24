@@ -108,11 +108,15 @@ export const getConfigSchema = (): Definition => {
     console.log(basePath, config, tsconfig)
 
     // Generate JSON schema at runtime for Config interface above
-    const compilerOptions: CompilerOptions = {
-        project: tsconfig
-        // lib: ['es2019'],
-        // esModuleInterop: true
-    }
+    // const compilerOptions: CompilerOptions = {
+    const tsconfigContents = require(tsconfig)
+    console.log(tsconfigContents)
+    // const compilerOptions: CompilerOptions = {
+    //     project: tsconfigContents,
+    //     lib: ['es2019'],
+    //     esModuleInterop: true
+    // }
+    const compilerOptions = tsconfigContents
 
     const settings: PartialArgs = {
         required: true,
