@@ -95,6 +95,7 @@ To get started:
 git clone https://github.com/kevinschaich/mintable
 cd mintable
 npm install
+npm run-script build
 npm link
 ```
 
