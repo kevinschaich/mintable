@@ -336,14 +336,14 @@ export class GoogleIntegration {
         const groupedTransactions = groupBy(transactions, transaction => formatISO(startOfMonth(transaction.date)))
 
         // Write transactions by month, copying template sheet if necessary
-        Object.keys(groupedTransactions).forEach(async month => {
+        Promise.all(Object.keys(groupedTransactions).map(async month => {
             await this.updateSheet(
                 format(parseISO(month), this.googleConfig.dateFormat || 'yyyy.MM.dd'),
                 groupedTransactions[month],
                 this.config.transactions.properties,
                 true
             )
-        })
+        }))
 
         // Sort Sheets
         await this.sortSheets()
