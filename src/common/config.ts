@@ -103,9 +103,12 @@ export const parseConfig = (configString: string): Object => {
 
 export const getConfigSchema = (): Definition => {
     // Generate JSON schema at runtime for Config interface above
+    const tsconfig = resolve(join(__dirname, '../../tsconfig.json'))
+    console.log('TSCONFIG', tsconfig)
     const compilerOptions: CompilerOptions = {
-        lib: ['es2019'],
-        esModuleInterop: true
+        // lib: ['es2019'],
+        // esModuleInterop: true
+        project: tsconfig
     }
 
     const settings: PartialArgs = {
