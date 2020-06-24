@@ -99,7 +99,20 @@ npm run-script build
 npm link
 ```
 
-The global `mintable` command will now point to your local dev version.
+The global `mintable` command will now point to your local dev version. To publish a new version, make sure you complete all the below steps:
+
+```bash
+npm install
+npm run-script lint-fix
+npm run-script build
+npm run-script test
+
+<increment semver version>
+<push changes>
+
+npm publish --tag next
+npm install -g mintable@next
+```
 
 <!--
 
