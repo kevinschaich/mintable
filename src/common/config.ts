@@ -109,7 +109,7 @@ export const getConfigSchema = (): Definition => {
     // Generate JSON schema at runtime for Config interface above
     const compilerOptions: CompilerOptions = {
         ...tsconfig.compilerOptions,
-        // typeRoots: [types],
+        typeRoots: [types],
         baseUrl: basePath
     }
 
