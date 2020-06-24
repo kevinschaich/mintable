@@ -2,7 +2,7 @@
     "name": "mintable",
     "author": "Kevin Schaich <schaich.kevin@gmail.com> (http://kevinschaich.io)",
     "license": "MIT",
-    "version": "2.0.0-beta.16",
+    "version": "2.0.0-beta.17",
     "bin": "./lib/scripts/cli.js",
     "preferGlobal": true,
     "scripts": {
@@ -13,7 +13,8 @@
     },
     "files": [
         "src",
-        "lib"
+        "lib",
+        "tsconfig.json"
     ],
     "dependencies": {
         "@types/body-parser": "^1.19.0",

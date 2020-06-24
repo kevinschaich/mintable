@@ -9,7 +9,6 @@ import { resolve, join } from 'path'
 import { Definition, CompilerOptions, PartialArgs, getProgramFromFiles, generateSchema } from 'typescript-json-schema'
 import Ajv from 'ajv'
 import { BalanceConfig } from '../types/balance'
-import { ScriptTarget } from 'typescript'
 
 const DEFAULT_CONFIG_FILE = '~/mintable.jsonc'
 
@@ -110,7 +109,7 @@ export const getConfigSchema = (): Definition => {
 
     // Generate JSON schema at runtime for Config interface above
     const compilerOptions: CompilerOptions = {
-        // project: tsconfig
+        project: tsconfig
         // lib: ['es2019'],
         // esModuleInterop: true
     }
