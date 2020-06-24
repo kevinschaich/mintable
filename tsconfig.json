@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "target": "es5",
         "lib": ["es2019"],
         "esModuleInterop": true,
-        "outDir": "lib"
+        "outDir": "lib",
+        "types": ["node"]
     }
 }
