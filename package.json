@@ -12,6 +12,7 @@
         "test": "npm run-script build && npm run-script lint"
     },
     "files": [
+        "src", 
         "lib"
     ],
     "dependencies": {

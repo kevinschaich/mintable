@@ -5,7 +5,7 @@ import { logInfo, logError } from './logging'
 import { argv } from 'yargs'
 import fs from 'fs'
 import os from 'os'
-import { resolve } from 'path'
+import { resolve, join } from 'path'
 import { Definition, CompilerOptions, PartialArgs, getProgramFromFiles, generateSchema } from 'typescript-json-schema'
 import Ajv from 'ajv'
 import { BalanceConfig } from '../types/balance'
@@ -111,7 +111,8 @@ export const getConfigSchema = (): Definition => {
         defaultProps: true,
         noExtraProps: true
     }
-    const program = getProgramFromFiles([resolve(__filename)], compilerOptions)
+
+    const program = getProgramFromFiles([resolve(join(__dirname, '../../src/common/config.ts'))], compilerOptions)
     const configSchema = generateSchema(program, 'Config', settings)
 
     return configSchema
