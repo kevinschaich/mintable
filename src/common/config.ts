@@ -102,8 +102,14 @@ export const parseConfig = (configString: string): Object => {
 
 export const getConfigSchema = (): Definition => {
     // Generate JSON schema at runtime for Config interface above
+    const tsconfig = resolve(join(__dirname, '../../tsconfig.json'))
+    console.log('TSCONFIG', tsconfig)
     const compilerOptions: CompilerOptions = {
-        esModuleInterop: true
+        // lib: ['es2019'],
+        // esModuleInterop: true,
+        // outDir: 'lib',
+        // target: 'ES5'
+        project: tsconfig
     }
 
     const settings: PartialArgs = {
@@ -112,7 +118,8 @@ export const getConfigSchema = (): Definition => {
         noExtraProps: true
     }
 
-    const program = getProgramFromFiles([resolve(join(__dirname, '../../src/common/config.ts'))], compilerOptions)
+    const config = resolve(join(__dirname, '../../src/common/config.ts'))
+    const program = getProgramFromFiles([config], compilerOptions)
     const configSchema = generateSchema(program, 'Config', settings)
 
     return configSchema
@@ -122,11 +129,15 @@ export const validateConfig = (parsedConfig: Object): Config => {
     const configSchema = getConfigSchema()
 
     // Validate parsed configuration object against generated JSON schema
-    const validator = new Ajv()
-    const valid = validator.validate(configSchema, parsedConfig)
+    try {
+        const validator = new Ajv()
+        const valid = validator.validate(configSchema, parsedConfig)
 
-    if (!valid) {
-        logError('Unable to validate configuration.', validator.errors)
+        if (!valid) {
+            logError('Unable to validate configuration.', validator.errors)
+        }
+    } catch (e) {
+        logError('Unable to validate configuration.', e)
     }
 
     const validatedConfig = parsedConfig as Config
