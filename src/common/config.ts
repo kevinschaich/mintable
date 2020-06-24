@@ -104,7 +104,7 @@ export const getConfigSchema = (): Definition => {
     const basePath = resolve(join(__dirname, '../..'))
     const config = resolve(join(basePath, 'src/common/config.ts'))
     const tsconfig = require(resolve(join(basePath, 'tsconfig.json')))
-    const types = require(resolve(join(basePath, 'node_modules/@types')))
+    const types = resolve(join(basePath, 'node_modules/@types'))
 
     // Generate JSON schema at runtime for Config interface above
     const compilerOptions: CompilerOptions = {
