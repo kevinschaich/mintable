@@ -50,6 +50,7 @@ import migrate from './migrate'
     } else if (commands.hasOwnProperty(arg)) {
         commands[arg]()
     } else {
+        console.log(`\nmintable v${require('../../package.json').version}\n`)
         console.log('\nusage: mintable <command>\n')
         console.log('available commands:')
         Object.keys(commands)

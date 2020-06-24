@@ -10,7 +10,10 @@ import { PlaidConfig } from '../../types/integrations/plaid'
 export default async () => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log('\nThis script will help you add accounts to Plaid.')
+            console.log('\nThis script will help you add accounts to Plaid.\n')
+            console.log('\n\t1. A page will open in your browser allowing you to link accounts with Plaid.')
+            console.log('\t2. Sign in with your banking provider for each account you wish to link.')
+            console.log("\t3. Click 'Done Linking Accounts' in your browser when you are finished.")
 
             const config = getConfig()
             const plaidConfig = config.integrations[IntegrationId.Plaid] as PlaidConfig
