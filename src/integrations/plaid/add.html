@@ -77,7 +77,9 @@
                     key: params.get('publicKey'),
                     product: ['transactions'],
                     onSuccess: function(public_token) {
-                        $.post('/get_access_token', { public_token: public_token })
+                        $.post('/get_access_token', { public_token: public_token }).then(resp =>
+                            setTimeout(() => location.reload(), 1000)
+                        )
                     },
                     onExit: function(error) {
                         // The user encountered a Plaid API error prior to exiting.
@@ -85,7 +87,9 @@
                             $.post('/get_access_token', { error: error })
                         }
                         // The user exited the Link flow.
-                        $.post('/get_access_token', { exit: true })
+                        $.post('/get_access_token', { exit: true }).then(resp =>
+                            setTimeout(() => location.reload(), 1000)
+                        )
                     }
                 }
 
@@ -99,17 +103,17 @@
                     })
                 })
 
-                $(document).on('click', 'button.update', function (e) {
-                    token = e.currentTarget.getAttribute("data-token")
+                $(document).on('click', 'button.update', function(e) {
+                    token = e.currentTarget.getAttribute('data-token')
                     console.log(token)
-                    $.post('/exchangeAccessToken', {token: token}).then(resp => {
+                    $.post('/exchangeAccessToken', { token: token }).then(resp => {
                         console.log(resp)
                         options.token = resp.token
                         console.log(options)
                         var handler = Plaid.create(options)
                         handler.open()
                     })
-                });
+                })
 
                 $('#link-button').on('click', function(e) {
                     var handler = Plaid.create(options)
