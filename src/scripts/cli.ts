@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
+import prompts from 'prompts'
 const chalk = require('chalk')
-import { updateConfig } from '../common/config'
+import { updateConfig, readConfig, getConfigSource } from '../common/config'
 import plaid from '../integrations/plaid/setup'
 import google from '../integrations/google/setup'
 import add from '../integrations/plaid/add'
 import fetch from './fetch'
 import migrate from './migrate'
+import { logError } from '../common/logging'
 ;(async function() {
     const logo = [
         '\n',
@@ -43,6 +45,20 @@ import migrate from './migrate'
     const arg = process.argv[2]
 
     if (arg == 'setup') {
+        const configSource = getConfigSource()
+        if (readConfig(configSource, true)) {
+            const overwrite = await prompts([
+                {
+                    type: 'confirm',
+                    name: 'confirm',
+                    message: 'Config already exists. Do you to overwrite it?',
+                    initial: false
+                }
+            ])
+            if (overwrite.confirm === false) {
+                logError('Config update cancelled by user.')
+            }
+        }
         updateConfig(config => config, true)
         await plaid()
         await google()
