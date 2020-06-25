@@ -11,6 +11,7 @@ import Ajv from 'ajv'
 import { BalanceConfig } from '../types/balance'
 
 const DEFAULT_CONFIG_FILE = '~/mintable.jsonc'
+const DEFAULT_CONFIG_VAR = 'MINTABLE_CONFIG'
 
 const DEFAULT_CONFIG: Config = {
     accounts: {},
@@ -51,9 +52,9 @@ export const getConfigSource = (): ConfigSource => {
         return { type: 'file', path: path }
     }
 
-    if (argv['config-variable']) {
-        logInfo(`Using configuration variable \`${argv['config-variable']}.\``)
-        return { type: 'environment', variable: argv['config-variable'] }
+    if (process.env[DEFAULT_CONFIG_VAR]) {
+        logInfo(`Using configuration variable '${DEFAULT_CONFIG_VAR}.'`)
+        return { type: 'environment', variable: DEFAULT_CONFIG_VAR }
     }
 
     // Default to DEFAULT_CONFIG_FILE
@@ -63,15 +64,19 @@ export const getConfigSource = (): ConfigSource => {
     return { type: 'file', path: path }
 }
 
-export const readConfig = (source: ConfigSource): string => {
+export const readConfig = (source: ConfigSource, checkExists?: boolean): string => {
     if (source.type === 'file') {
         try {
             const config = fs.readFileSync(source.path, 'utf8')
             logInfo('Successfully opened configuration file.')
             return config
         } catch (e) {
-            logError('Unable to open configuration file.', e)
-            logInfo("You may want to run `mintable setup` (or `mintable migrate`) if you haven't already.")
+            if (checkExists) {
+                logInfo('Unable to open config file.')
+            } else {
+                logError('Unable to open configuration file.', e)
+                logInfo("You may want to run `mintable setup` (or `mintable migrate`) if you haven't already.")
+            }
         }
     }
     if (source.type === 'environment') {
@@ -85,7 +90,11 @@ export const readConfig = (source: ConfigSource): string => {
             logInfo('Successfully retrieved configuration variable.')
             return config
         } catch (e) {
-            logError('Unable to retrieve configuration variable.', e)
+            if (!checkExists) {
+                logInfo('Unable to read config variable from env.')
+            } else {
+                logError('Unable to read config variable from env.', e)
+            }
         }
     }
 }
