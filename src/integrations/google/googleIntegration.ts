@@ -86,7 +86,13 @@ export class GoogleIntegration {
 
     public copySheet = async (title: string, sourceDocumentId?: string): Promise<sheets_v4.Schema$SheetProperties> => {
         const sheets = await this.getSheets()
-        const sourceSheetId = sheets.find(sheet => sheet.properties.title === title).properties.sheetId
+        let sourceSheetId
+        
+        try {
+            sourceSheetId = sheets.find(sheet => sheet.properties.title === title).properties.sheetId
+        } catch(e){ 
+            logError(`Error finding template sheet ${title} in document ${sourceDocumentId}.`, e)
+        }
 
         return this.sheets.sheets
             .copyTo({
