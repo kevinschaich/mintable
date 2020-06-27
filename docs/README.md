@@ -118,6 +118,8 @@ to automate updates to your spreadsheet.
 
 You can put Mintable in your Mac's menu bar, and have it run automatically every hour using our [BitBar Plugin](https://github.com/matryer/bitbar-plugins/pull/1460)
 
+![BitBar](./bitbar.png)
+
 ### Automatically – in the cloud – via GitHub Actions
 
 TODO
