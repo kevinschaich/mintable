@@ -7,9 +7,10 @@
   - [Creating a Fresh Installation](#creating-a-fresh-installation)
   - [Migrating from `v1.x.x`](#migrating-from-v1xx)
 - [Adding/Updating Accounts](#addingupdating-accounts)
-  - [Automatically, via Plaid](#automatically-via-plaid)
-  - [Manually, via your bank's CSV statements](#manually-via-your-banks-csv-statements)
+  - [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
+  - [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
 - [Updating Transactions/Accounts](#updating-transactionsaccounts)
+  - [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
   - [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
   - [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
 - [Development](#development)
@@ -73,7 +74,7 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 ## Adding/Updating Accounts
 
-### Automatically, via [Plaid](https://plaid.com)
+### Automatically – in the cloud – via [Plaid](https://plaid.com)
 
 You can run:
 
@@ -85,7 +86,7 @@ to enter the account setup wizard. This will launch a local web server (necessar
 
 To add a new account, click the blue **Link A New Account** button. To re-authenticate with an existing account, click the blue **Update** button next to the account name in the table.
 
-### Manually, via your bank's CSV statements
+### Manually – on your local machine – via CSV bank statements
 
 You can run:
 
@@ -102,6 +103,8 @@ We have a number of templates available for popular financial institutions if yo
 - [Apple Card](./templates/apple-card.json)
 
 ## Updating Transactions/Accounts
+
+### Manually – in your local machine's terminal
 
 After you have connected a banking institution, you can run:
 
