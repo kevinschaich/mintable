@@ -10,8 +10,8 @@
   - [Automatically, via Plaid](#automatically-via-plaid)
   - [Manually, via your bank's CSV statements](#manually-via-your-banks-csv-statements)
 - [Updating Transactions/Accounts](#updating-transactionsaccounts)
-  - [Automatically in your Mac's Menu Bar, via BitBar](#automatically-in-your-macs-menu-bar-via-bitbar)
-  - [Automatically, via GitHub Actions](#automatically-via-github-actions)
+  - [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
+  - [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
 - [Development](#development)
 
 ## Overview
@@ -111,11 +111,11 @@ mintable fetch
 
 to automate updates to your spreadsheet.
 
-### Automatically in your Mac's Menu Bar, via [BitBar](https://github.com/matryer/bitbar#get-started)
+### Automatically – in your Mac's Menu Bar – via [BitBar](https://github.com/matryer/bitbar#get-started)
 
 You can put Mintable in your Mac's menu bar, and have it run automatically every hour using our [BitBar Plugin](https://github.com/matryer/bitbar-plugins/pull/1460)
 
-### Automatically, via GitHub Actions
+### Automatically – in the cloud – via GitHub Actions
 
 TODO
 
