@@ -7,7 +7,12 @@
   - [Creating a Fresh Installation](#creating-a-fresh-installation)
   - [Migrating from `v1.x.x`](#migrating-from-v1xx)
   - [Adding/Updating Accounts](#addingupdating-accounts)
+    - [Automatically, via Plaid](#automatically-via-plaid)
+    - [Manually, via your bank's CSV statements](#manually-via-your-banks-csv-statements)
   - [Updating Transactions/Accounts](#updating-transactionsaccounts)
+  - [Running `mintable` Automatically (every hour/day/etc.)](#running-mintable-automatically-every-hourdayetc)
+    - [In your Mac's Menu Bar, via BitBar](#in-your-macs-menu-bar-via-bitbar)
+    - [On a CI Server, via GitHub Actions](#on-a-ci-server-via-github-actions)
 - [Development](#development)
 
 ## Overview
@@ -69,6 +74,8 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 ### Adding/Updating Accounts
 
+#### Automatically, via [Plaid](https://plaid.com)
+
 You can run:
 
 ```bash
@@ -79,6 +86,22 @@ to enter the account setup wizard. This will launch a local web server (necessar
 
 To add a new account, click the blue **Link A New Account** button. To re-authenticate with an existing account, click the blue **Update** button next to the account name in the table.
 
+#### Manually, via your bank's CSV statements
+
+You can run:
+
+```bash
+mintable csv-import-setup
+```
+
+to enter the CSV import setup wizard. This will allow you to manually import files or globs (`path/to/my/folder/transactions/*.csv`) every time `mintable fetch` is run.
+
+You'll need to define a transformer to map properties in your source CSV spreadsheet to valid Mintable transaction properties, and a valid date format.
+
+We have a number of templates available for popular financial institutions if you want to take this route:
+
+- [Apple Card](./templates/apple-card.json)
+
 ### Updating Transactions/Accounts
 
 After you have connected a banking institution, you can run:
@@ -88,6 +111,16 @@ mintable fetch
 ```
 
 to automate updates to your spreadsheet. You can run this manually on your local machine, or use the provided CI files for either [Travis](https://travis-ci.org/) or [Circle](https://circleci.com/) to facilitate programmatic updates.
+
+### Running `mintable` Automatically (every hour/day/etc.)
+
+#### In your Mac's Menu Bar, via [BitBar](https://github.com/matryer/bitbar#get-started)
+
+You can put Mintable in your Mac's menu bar, and have it run automatically every hour using our [BitBar Plugin](https://github.com/matryer/bitbar-plugins/pull/1460)
+
+#### On a CI Server, via GitHub Actions
+
+TODO
 
 ## Development
 

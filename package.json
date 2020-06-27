@@ -8,8 +8,8 @@
     "scripts": {
         "build": "tsc",
         "watch": "tsc --watch",
-        "lint": "prettier --check ./src/**/*.js ./src/**/*.html ./src/**/*.ts",
-        "lint-fix": "prettier --write ./src/**/*.js ./src/**/*.html ./src/**/*.ts",
+        "lint": "prettier --check ./src/**/*.js ./src/**/*.html ./src/**/*.ts ./docs/**/*.json",
+        "lint-fix": "prettier --write ./src/**/*.js ./src/**/*.html ./src/**/*.ts ./docs/**/*.json",
         "test": "npm run-script build && npm run-script lint"
     },
     "files": [
