@@ -40,6 +40,7 @@ export interface CSVAccountConfig extends BaseAccountConfig {
     paths: string[]
     transformer: { [inputColumn: string]: keyof Transaction }
     dateFormat: string
+    negateValues?: boolean
 }
 
 export type AccountConfig = PlaidAccountConfig | CSVAccountConfig

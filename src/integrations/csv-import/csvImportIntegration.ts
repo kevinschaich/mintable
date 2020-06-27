@@ -50,7 +50,8 @@ export class CSVImportIntegration {
                                     Object.keys(CSVAccountConfig.transformer).map(column => {
                                         newRecord[CSVAccountConfig.transformer[column]] = record[column]
                                     })
-                                    console.log(newRecord)
+
+                                    // Parse dates
                                     if (newRecord.hasOwnProperty('date')) {
                                         newRecord['date'] = dateFns.parse(
                                             newRecord['date'],
@@ -58,7 +59,12 @@ export class CSVImportIntegration {
                                             new Date()
                                         )
                                     }
-                                    console.log(newRecord)
+                                    
+                                    if (CSVAccountConfig.negateValues === true && newRecord.hasOwnProperty('amount')) {
+                                        newRecord['amount'] = -newRecord['amount']
+                                    }
+
+                                    newRecord['account'] = CSVAccountConfig.id
 
                                     return newRecord
                                 })
