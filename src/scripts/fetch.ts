@@ -29,7 +29,7 @@ export default async () => {
                         return await plaid.fetchAccount(account, startDate, endDate)
                     case IntegrationId.CSVImport:
                         const csv = new CSVImportIntegration(config)
-                        return await csv.fetchAccount(account)
+                        return await csv.fetchAccount(account, startDate, endDate)
                     default:
                         return
                 }

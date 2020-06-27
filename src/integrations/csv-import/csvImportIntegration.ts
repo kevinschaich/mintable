@@ -18,7 +18,7 @@ export class CSVImportIntegration {
         this.CSVImportConfig = this.config.integrations[IntegrationId.CSVImport] as CSVImportConfig
     }
 
-    public fetchAccount = async (accountConfig: AccountConfig): Promise<Account> => {
+    public fetchAccount = async (accountConfig: AccountConfig, startDate: Date, endDate: Date): Promise<Account> => {
         return new Promise(async (resolve, reject) => {
             const CSVAccountConfig = accountConfig as CSVAccountConfig
 
@@ -59,7 +59,7 @@ export class CSVImportIntegration {
                                             new Date()
                                         )
                                     }
-                                    
+
                                     if (CSVAccountConfig.negateValues === true && newRecord.hasOwnProperty('amount')) {
                                         newRecord['amount'] = -newRecord['amount']
                                     }
@@ -71,7 +71,12 @@ export class CSVImportIntegration {
 
                                 logInfo(`Successfully imported transactions from ${match}.`)
 
-                                return transactions
+                                return transactions.filter(transaction => {
+                                    if (transaction.hasOwnProperty('date')) {
+                                        return transaction.date >= startDate && transaction.date <= endDate
+                                    }
+                                    return true
+                                })
                             } catch (e) {
                                 logError(`Error importing transactions from ${match}.`, e)
                             }
