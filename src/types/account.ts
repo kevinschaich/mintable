@@ -36,4 +36,9 @@ export interface PlaidAccountConfig extends BaseAccountConfig {
     token: string
 }
 
-export type AccountConfig = PlaidAccountConfig
+export interface CSVAccountConfig extends BaseAccountConfig {
+    paths: string[]
+    transformer: { [inputColumn: string]: keyof Transaction }
+}
+
+export type AccountConfig = PlaidAccountConfig | CSVAccountConfig
