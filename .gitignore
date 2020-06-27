@@ -6,6 +6,7 @@ lib/
 
 mintable.config.json
 mintable.sandbox.json
+mintable.jsonc
 
 node_modules/
 package-lock.json

@@ -7,6 +7,7 @@
     "preferGlobal": true,
     "scripts": {
         "build": "tsc",
+        "watch": "tsc --watch",
         "lint": "prettier --check ./src/**/*.js ./src/**/*.html ./src/**/*.ts",
         "lint-fix": "prettier --write ./src/**/*.js ./src/**/*.html ./src/**/*.ts",
         "test": "npm run-script build && npm run-script lint"
@@ -19,14 +20,17 @@
     "dependencies": {
         "@types/body-parser": "^1.19.0",
         "@types/express": "^4.17.3",
+        "@types/glob": "^7.1.2",
         "@types/lodash": "^4.14.149",
         "@types/node": "^14.0.13",
         "@types/prompts": "^2.0.3",
         "ajv": "^6.12.0",
         "body-parser": "^1.19.0",
         "chalk": "^3.0.0",
+        "csv-parse": "^4.10.1",
         "date-fns": "^2.10.0",
         "express": "^4.17.1",
+        "glob": "^7.1.6",
         "googleapis": "47.0.0",
         "lodash": "^4.17.15",
         "open": "^7.0.2",

@@ -8,7 +8,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import { logInfo, logError, logWarn } from '../../common/logging'
 import http from 'http'
-import { AccountConfig, Account } from '../../types/account'
+import { AccountConfig, Account, PlaidAccountConfig } from '../../types/account'
 import { Transaction } from '../../types/transaction'
 
 export class PlaidIntegration {
@@ -85,17 +85,18 @@ export class PlaidIntegration {
             app.post('/accounts', async (req, res) => {
                 const accounts = await Promise.all(
                     Object.values(this.config.accounts).map(async account => {
+                        const plaidAccount = account as PlaidAccountConfig
                         try {
-                            return await this.client.getAccounts(account.token).then(resp => {
+                            return await this.client.getAccounts(plaidAccount.token).then(resp => {
                                 return {
                                     name: resp.accounts[0].name,
-                                    token: account.token
+                                    token: plaidAccount.token
                                 }
                             })
                         } catch {
                             return {
                                 name: 'Error fetching account name',
-                                token: account.token
+                                token: plaidAccount.token
                             }
                         }
                     })
@@ -128,6 +129,7 @@ export class PlaidIntegration {
         endDate: Date
     ): Promise<TransactionsResponse> => {
         return new Promise(async (resolve, reject) => {
+            accountConfig = accountConfig as PlaidAccountConfig
             try {
                 const dateFormat = 'yyyy-MM-dd'
                 const start = format(startDate, dateFormat)

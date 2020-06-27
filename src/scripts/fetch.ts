@@ -5,11 +5,10 @@ import { logInfo } from '../common/logging'
 import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
 import { parseISO, subMonths, startOfMonth } from 'date-fns'
+import { CSVImportIntegration } from '../integrations/csv-import/csvImportIntegration'
 
 export default async () => {
     const config = getConfig()
-    const plaid = new PlaidIntegration(config)
-    const google = new GoogleIntegration(config)
 
     // Start date to fetch transactions, default to 2 months of history
     let startDate = config.transactions.startDate
@@ -26,7 +25,11 @@ export default async () => {
 
                 switch (account.integration) {
                     case IntegrationId.Plaid:
+                        const plaid = new PlaidIntegration(config)
                         return await plaid.fetchAccount(account, startDate, endDate)
+                    case IntegrationId.CSVImport:
+                        const csv = new CSVImportIntegration(config)
+                        return await csv.fetchAccount(account, startDate, endDate)
                     default:
                         return
                 }
@@ -36,6 +39,7 @@ export default async () => {
 
     switch (config.transactions.integration) {
         case IntegrationId.Google:
+            const google = new GoogleIntegration(config)
             return await google.updateAccounts(accounts)
         default:
             return

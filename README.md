@@ -55,7 +55,7 @@ Mintable helps you:
 
 **Do I have to use Google Sheets/Plaid?**
 
-Nope. You can import/export your transactions to/from CSV files (coming soon).
+Nope. You can import/export your transactions to/from CSV files.
 
 **Do I have to manually run this every time I want new transactions in my spreadsheet?**
 

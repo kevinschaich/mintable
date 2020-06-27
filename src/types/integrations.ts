@@ -1,5 +1,7 @@
 import { PlaidConfig } from './integrations/plaid'
 import { GoogleConfig } from './integrations/google'
+import { CSVImportConfig } from './integrations/csv-import'
+import { CSVExportConfig } from './integrations/csv-export'
 
 export enum IntegrationType {
     Import = 'import',
@@ -9,7 +11,8 @@ export enum IntegrationType {
 export enum IntegrationId {
     Plaid = 'plaid',
     Google = 'google',
-    CSV = 'csv'
+    CSVImport = 'csv-import',
+    CSVExport = 'csv-export'
 }
 
 export interface BaseIntegrationConfig {
@@ -18,4 +21,4 @@ export interface BaseIntegrationConfig {
     type: IntegrationType
 }
 
-export type IntegrationConfig = PlaidConfig | GoogleConfig
+export type IntegrationConfig = PlaidConfig | GoogleConfig | CSVImportConfig | CSVExportConfig
