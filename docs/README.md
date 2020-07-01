@@ -83,7 +83,11 @@ You can run:
 mintable account-setup
 ```
 
-to enter the account setup wizard. This will launch a local web server (necessary to authenticate with Plaid's servers) for you to connect your banks.
+to enter the account setup wizard.
+
+![Account Setup](./account-setup.png)
+
+This will launch a local web server (necessary to authenticate with Plaid's servers) for you to connect your banks.
 
 To add a new account, click the blue **Link A New Account** button. To re-authenticate with an existing account, click the blue **Update** button next to the account name in the table.
 
@@ -139,6 +143,8 @@ You can put Mintable in your Mac's menu bar, and have it run automatically every
 
 You can run Mintable automatically within your terminal using `cron`:
 
+![`cron`](./cron.png)
+
 ```bash
 echo "0 * * * * export PATH="/usr/local/bin:$PATH" && mintable fetch" > ~/mintable.cron
 crontab ~/mintable.cron
@@ -158,11 +164,15 @@ crontab -r
 
 ### Automatically – in the cloud – via GitHub Actions
 
+You can use GitHub Actions to run Mintable automatically in the cloud:
+
+![GitHub Actions](./github-actions.png)
+
 1. Fork [this repo](https://github.com/kevinschaich/mintable).
-1. Go to your repo's **Actions** > Click **I understand my workflows, go ahead and enable them**
-1. Go to your repo's **Settings** > **Secrets** and add a **New Secret**.
-1. Name the secret `MINTABLE_CONFIG`, and copy and paste the full contents of your `~/mintable.jsonc` file into the body of the secret.
-1. In your repo's `./.github/workflows/fetch.yml`, uncomment the following block and commit the changes:
+2. Go to your repo's **Actions** > Click **I understand my workflows, go ahead and enable them**
+3. Go to your repo's **Settings** > **Secrets** and add a **New Secret**.
+4. Name the secret `MINTABLE_CONFIG`, and copy and paste the full contents of your `~/mintable.jsonc` file into the body of the secret.
+5. In your repo's `./.github/workflows/fetch.yml`, uncomment the following block and commit the changes:
 
     ```
         # schedule:
