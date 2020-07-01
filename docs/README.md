@@ -99,12 +99,13 @@ to enter the CSV import setup wizard. This will allow you to manually import fil
 
 You'll need to define a transformer to map properties in your source CSV spreadsheet to valid Mintable transaction properties, and a valid date format.
 
-We have a number of templates available for popular financial institutions if you want to take this route:
+We have a number of templates available for popular financial institutions to get you started:
 
 - [Apple Card](./templates/apple-card.json)
 - [Discover Card](./templates/discover-card.json)
 - [Venmo](./templates/venmo.json)
 - [Chase](./templates/chase.json)
+- [American Express](./templates/american-express.json)
 
 These templates can be added into the `accounts` section of your `mintable.jsonc` configuration file.
 
