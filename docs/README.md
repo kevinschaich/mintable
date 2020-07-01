@@ -102,6 +102,7 @@ We have a number of templates available for popular financial institutions if yo
 
 - [Apple Card](./templates/apple-card.json)
 - [Discover Card](./templates/discover-card.json)
+- [Venmo](./templates/venmo.json)
 
 These templates can be added into the `accounts` section of your `mintable.jsonc` configuration file.
 
