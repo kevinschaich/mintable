@@ -22,6 +22,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
       env:
-        super_secret: ${{ secrets.MINTABLE_CONFIG }}
+        MINTABLE_CONFIG: ${{ secrets.MINTABLE_CONFIG }}
     - run: npm install
+    - run: npm build
     - run: npm run mintable fetch
