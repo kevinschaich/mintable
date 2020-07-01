@@ -123,9 +123,17 @@ to automate updates to your spreadsheet.
 
 ### Automatically – in your Mac's Menu Bar – via [BitBar](https://github.com/matryer/bitbar#get-started)
 
-You can put Mintable in your Mac's menu bar, and have it run automatically every hour using our [BitBar Plugin](https://github.com/matryer/bitbar-plugins/pull/1460)
+You can put Mintable in your Mac's menu bar, and have it run automatically every hour using our [BitBar Plugin](https://github.com/matryer/bitbar-plugins/pull/1460).
 
 ![BitBar](./bitbar.png)
+
+1. [Install BitBar](https://github.com/matryer/bitbar/releases) on your Mac.
+2. Set your plugin folder.
+3. Create a new file in `mintable.1h.zsh` in your plugin folder.
+4. Copy & paste [this](https://github.com/matryer/bitbar-plugins/blob/39e8f252ed69d0dd46bbe095299e52279e86d737/Finance/mintable.1h.zsh) into the file you just created and save.
+5. Open **BitBar** > **Preferences** > **Refresh All** to update your spreadsheet.
+
+> **Note:** The plugin above is pending approval and this install process should be much easier moving forward.
 
 ### Automatically – in your local machine's terminal – via `cron`
 
