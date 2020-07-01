@@ -201,7 +201,7 @@ export class GoogleIntegration {
 
     public sortSheets = async (): Promise<sheets_v4.Schema$BatchUpdateSpreadsheetResponse> => {
         const sheets = await this.getSheets()
-        const ordered = sortBy(sheets, sheet => sheet.properties.title)
+        const ordered = sortBy(sheets, sheet => sheet.properties.title).reverse()
 
         return this.sheets
             .batchUpdate({
