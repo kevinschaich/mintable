@@ -9,6 +9,7 @@ import { resolve, join } from 'path'
 import { Definition, CompilerOptions, PartialArgs, getProgramFromFiles, generateSchema } from 'typescript-json-schema'
 import Ajv from 'ajv'
 import { BalanceConfig } from '../types/balance'
+import { jsonc } from 'jsonc'
 
 const DEFAULT_CONFIG_FILE = '~/mintable.jsonc'
 const DEFAULT_CONFIG_VAR = 'MINTABLE_CONFIG'
@@ -101,7 +102,7 @@ export const readConfig = (source: ConfigSource, checkExists?: boolean): string 
 
 export const parseConfig = (configString: string): Object => {
     try {
-        const parsedConfig = JSON.parse(configString)
+        const parsedConfig = jsonc.parse(configString)
         logInfo('Successfully parsed configuration.')
         return parsedConfig
     } catch (e) {
