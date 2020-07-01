@@ -23,7 +23,7 @@ export const log = (request: LogRequest): void => {
     switch (request.level) {
         case LogLevel.Error:
             console.error(chalk.red(text))
-            console.error('\n', chalk.red(inspect(request.data)), '\n')
+            console.error('\n', chalk.red(inspect(request.data, true, 10)), '\n')
 
             const searchIssuesLink = encodeURI(
                 `https://github.com/kevinschaich/mintable/issues?q=is:issue+${request.message}`
@@ -57,9 +57,9 @@ export const log = (request: LogRequest): void => {
 
     if (argv['debug']) {
         try {
-            console.log('\n', JSON.stringify(request.data, null, 2), '\n')
+            console.log('\n', inspect(request.data, true, 10), '\n')
         } catch (e) {
-            console.log('\n', inspect(request.data), '\n')
+            console.log('\n', JSON.stringify(request.data, null, 2), '\n')
         }
     }
 }

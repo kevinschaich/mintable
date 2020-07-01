@@ -83,24 +83,25 @@ export class PlaidIntegration {
             })
 
             app.post('/accounts', async (req, res) => {
-                const accounts = await Promise.all(
-                    Object.values(this.config.accounts).map(async account => {
-                        const plaidAccount = account as PlaidAccountConfig
-                        try {
-                            return await this.client.getAccounts(plaidAccount.token).then(resp => {
-                                return {
-                                    name: resp.accounts[0].name,
-                                    token: plaidAccount.token
-                                }
-                            })
-                        } catch {
+                let accounts: Account[]
+
+                for (const accountId in this.config.accounts) {
+                    const accountConfig: PlaidAccountConfig = this.config.accounts[accountId] as PlaidAccountConfig
+
+                    try {
+                        return await this.client.getAccounts(accountConfig.token).then(resp => {
                             return {
-                                name: 'Error fetching account name',
-                                token: plaidAccount.token
+                                name: resp.accounts[0].name,
+                                token: accountConfig.token
                             }
+                        })
+                    } catch {
+                        return {
+                            name: 'Error fetching account name',
+                            token: accountConfig.token
                         }
-                    })
-                )
+                    }
+                }
                 return res.json(accounts)
             })
 

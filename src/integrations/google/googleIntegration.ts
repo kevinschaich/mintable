@@ -71,9 +71,9 @@ export class GoogleIntegration {
         })
     }
 
-    public getSheets = (): Promise<sheets_v4.Schema$Sheet[]> => {
+    public getSheets = (documentId?: string): Promise<sheets_v4.Schema$Sheet[]> => {
         return this.sheets
-            .get({ spreadsheetId: this.googleConfig.documentId })
+            .get({ spreadsheetId: documentId || this.googleConfig.documentId })
             .then(res => {
                 logInfo(`Fetched ${res.data.sheets.length} sheets.`, res.data.sheets)
                 return res.data.sheets
@@ -85,13 +85,13 @@ export class GoogleIntegration {
     }
 
     public copySheet = async (title: string, sourceDocumentId?: string): Promise<sheets_v4.Schema$SheetProperties> => {
-        const sheets = await this.getSheets()
+        const sheets = await this.getSheets(sourceDocumentId || this.googleConfig.documentId)
         let sourceSheetId
-        
+
         try {
             sourceSheetId = sheets.find(sheet => sheet.properties.title === title).properties.sheetId
-        } catch(e){ 
-            logError(`Error finding template sheet ${title} in document ${sourceDocumentId}.`, e)
+        } catch (error) {
+            logError(`Error finding template sheet ${title} in document ${sourceDocumentId}.`, { error, sheets })
         }
 
         return this.sheets.sheets
@@ -270,7 +270,7 @@ export class GoogleIntegration {
                                 }
                             }
                         ])
-                        .flat()
+                        .flat(10)
                 }
             })
             .then(res => {
@@ -284,7 +284,7 @@ export class GoogleIntegration {
     }
 
     public getRowWithDefaults = (row: { [key: string]: any }, columns: string[], defaultValue: any = null): any[] => {
-        return columns.map((key) => {
+        return columns.map(key => {
             if (row && row.hasOwnProperty(key)) {
                 if (key === 'date') {
                     return format(row[key], this.googleConfig.dateFormat || 'yyyy.MM.dd')
@@ -336,25 +336,28 @@ export class GoogleIntegration {
         await this.updateSheet('Balances', accounts, this.config.balances.properties)
 
         // Sort transactions by date
-        const transactions = sortBy(accounts.map(account => account.transactions).flat(), 'date')
+        const transactions = sortBy(accounts.map(account => account.transactions).flat(10), 'date')
 
         // Split transactions by month
         const groupedTransactions = groupBy(transactions, transaction => formatISO(startOfMonth(transaction.date)))
 
         // Write transactions by month, copying template sheet if necessary
-        Promise.all(Object.keys(groupedTransactions).map(async month => {
+        for (const month in groupedTransactions) {
             await this.updateSheet(
                 format(parseISO(month), this.googleConfig.dateFormat || 'yyyy.MM'),
                 groupedTransactions[month],
                 this.config.transactions.properties,
                 true
             )
-        }))
+        }
 
         // Sort Sheets
         await this.sortSheets()
 
         // Format, etc.
         await this.formatSheets()
+
+        logInfo('You can view your sheet at the below link:\n')
+        console.log(`https://docs.google.com/spreadsheets/d/${this.googleConfig.documentId}`)
     }
 }
