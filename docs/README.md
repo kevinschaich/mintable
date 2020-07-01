@@ -159,9 +159,10 @@ crontab -r
 ### Automatically – in the cloud – via GitHub Actions
 
 1. Fork [this repo](https://github.com/kevinschaich/mintable).
-2. Go to your repo's **Settings** > **Secrets** and add a **New Secret**.
-3. Name the secret `MINTABLE_CONFIG`, and copy and paste the full contents of your `~/mintable.jsonc` file into the body of the secret.
-4. In your repo's `./.github/workflows/fetch.yml`, uncomment the following block:
+1. Go to your repo's **Actions** > Click **I understand my workflows, go ahead and enable them**
+1. Go to your repo's **Settings** > **Secrets** and add a **New Secret**.
+1. Name the secret `MINTABLE_CONFIG`, and copy and paste the full contents of your `~/mintable.jsonc` file into the body of the secret.
+1. In your repo's `./.github/workflows/fetch.yml`, uncomment the following block and commit the changes:
 
     ```
         # schedule:
