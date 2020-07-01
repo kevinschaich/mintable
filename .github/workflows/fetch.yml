@@ -24,5 +24,6 @@ jobs:
       env:
         super_secret: ${{ secrets.MINTABLE_CONFIG }}
     - run: npm install
+    - run: npm build
     - run: npm link
     - run: mintable fetch
