@@ -18,7 +18,7 @@ export default async () => {
     // End date to fetch transactions in YYYY-MM-DD format, default to current date
     let endDate = config.transactions.endDate ? parseISO(config.transactions.endDate) : new Date()
 
-    let accounts: Account[]
+    let accounts: Account[] = []
 
     for (const accountId in config.accounts) {
         const accountConfig = config.accounts[accountId]
