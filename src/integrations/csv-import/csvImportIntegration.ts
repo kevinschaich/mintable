@@ -40,33 +40,48 @@ export class CSVImportIntegration {
 
                         return files.map(match => {
                             try {
-                                const records = parse(readFileSync(match), {
+                                const rows = parse(readFileSync(match), {
                                     columns: true,
                                     skip_empty_lines: true
                                 })
 
-                                const transactions: Transaction[] = records.map(record => {
-                                    const newRecord = {}
-                                    Object.keys(CSVAccountConfig.transformer).map(column => {
-                                        newRecord[CSVAccountConfig.transformer[column]] = record[column]
+                                const transactions: Transaction[] = rows.map(inputRow => {
+                                    const outputRow = {}
+
+                                    Object.keys(CSVAccountConfig.transformer).map(inputColumn => {
+                                        // Concatenate multiple columns
+                                        if (inputColumn.includes('+')) {
+                                            outputRow[CSVAccountConfig.transformer[inputColumn]] = inputColumn
+                                                .split('+')
+                                                .map(c => inputRow[c])
+                                                .join(' - ')
+                                        } else {
+                                            outputRow[CSVAccountConfig.transformer[inputColumn]] = inputRow[inputColumn]
+                                        }
                                     })
 
+                                    // Remove spaces/special characters from amount field
+                                    if (outputRow.hasOwnProperty('amount')) {
+                                        const pattern = new RegExp(`[^0-9\.\-]*`, 'gi')
+                                        outputRow['amount'] = outputRow['amount'].toString().replace(pattern, '')
+                                    }
+
                                     // Parse dates
-                                    if (newRecord.hasOwnProperty('date')) {
-                                        newRecord['date'] = dateFns.parse(
-                                            newRecord['date'],
+                                    if (outputRow.hasOwnProperty('date')) {
+                                        outputRow['date'] = dateFns.parse(
+                                            outputRow['date'],
                                             CSVAccountConfig.dateFormat,
                                             new Date()
                                         )
                                     }
 
-                                    if (CSVAccountConfig.negateValues === true && newRecord.hasOwnProperty('amount')) {
-                                        newRecord['amount'] = -newRecord['amount']
+                                    if (CSVAccountConfig.negateValues === true && outputRow.hasOwnProperty('amount')) {
+                                        outputRow['amount'] = -outputRow['amount']
                                     }
 
-                                    newRecord['account'] = CSVAccountConfig.id
+                                    outputRow['account'] = CSVAccountConfig.id
 
-                                    return newRecord
+                                    return outputRow
                                 })
 
                                 logInfo(`Successfully imported transactions from ${match}.`)
