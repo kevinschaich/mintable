@@ -24,5 +24,4 @@ jobs:
       env:
         super_secret: ${{ secrets.MINTABLE_CONFIG }}
     - run: npm install
-    - run: npm run build
-    - run: ./lib/scripts/cli.js fetch
+    - run: npm run mintable fetch
