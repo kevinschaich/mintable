@@ -1,1 +1,0 @@
-Object.keys(process.env).map(console.log)
