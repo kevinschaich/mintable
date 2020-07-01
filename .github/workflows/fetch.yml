@@ -26,4 +26,4 @@ jobs:
     - run: npm install
     - run: npm build
     - run: npm link
-    - run: mintable fetch
+    - run: ./lib/scripts/cli.js fetch
