@@ -101,6 +101,9 @@ You'll need to define a transformer to map properties in your source CSV spreads
 We have a number of templates available for popular financial institutions if you want to take this route:
 
 - [Apple Card](./templates/apple-card.json)
+- [Discover Card](./templates/discover-card.json)
+
+These templates can be added into the `accounts` section of your `mintable.jsonc` configuration file.
 
 ## Updating Transactions/Accounts
 

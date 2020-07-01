@@ -1,0 +1,17 @@
+{
+    "accounts": {
+        "Discover Card": {
+            "paths": ["/path/to/my/discover/card/statements/*.csv"],
+            "transformer": {
+                "Description": "name",
+                "Trans. Date": "date",
+                "Amount": "amount",
+                "Category": "category"
+            },
+            "dateFormat": "MM/dd/yyyy",
+            "id": "Discover Card",
+            "integration": "csv-import",
+            "negateValues": true
+        }
+    }
+}
