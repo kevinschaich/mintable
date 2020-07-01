@@ -110,6 +110,7 @@ We have a number of templates available for popular financial institutions to ge
 - [Venmo](./templates/venmo.json)
 - [Chase](./templates/chase.json)
 - [American Express](./templates/american-express.json)
+- [Rogers Bank Credit Card](./templates/rogers-bank-credit-card.json)
 
 These templates can be added into the `accounts` section of your `mintable.jsonc` configuration file.
 
@@ -208,7 +209,7 @@ npm publish
 
 `CATEGORY_OVERRIDES` specifies a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers.
 
-**Default:** 
+**Default:**
 
 ```javascript
 "CATEGORY_OVERRIDES": []
@@ -240,7 +241,7 @@ For example, if you want anything matching `autopay` or `e-payment` to get categ
 
 `TEMPLATE_SHEET` specifies the template spreadsheet to use when creating a _new_ sheet for a month.
 
-**Default:** 
+**Default:**
 
 ```javascript
 "TEMPLATE_SHEET": {
