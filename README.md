@@ -53,9 +53,13 @@ Mintable helps you:
 > **min·ta·ble**: _noun._
 > 1. An open-source tool to automate your personal finances – for free, with no ads, and no data collection. Derived from *mint* (the [wildly popular personal finance app from Intuit](https://www.mint.com/)) + *table* (a spreadsheet).
 
+**Do I have to use Plaid?**
+
+Nope. You can [import transactions from a bank CSV statement](./docs/README.md#manually--on-your-local-machine--via-csv-bank-statements). We also have some [templates](./docs/templates) to get you started.
+
 **Do I have to use Google Sheets/Plaid?**
 
-Nope. You can import/export your transactions to/from CSV files.
+Nope. You can export your transactions to a CSV file.
 
 **Do I have to manually run this every time I want new transactions in my spreadsheet?**
 
