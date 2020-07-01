@@ -1,0 +1,124 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+p,
+th,
+tr,
+button,
+a {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    text-rendering: optimizeLegibility;
+}
+
+#logo {
+    width: 100px;
+}
+
+h1 {
+    font-weight: 500;
+    font-size: 40px;
+    margin: 40px 0 0 0;
+    padding: 0 40px;
+    color: #333;
+}
+
+h2 {
+    font-weight: 200;
+    margin: 20px 0 0 0;
+    padding: 0 40px;
+    color: #333;
+}
+
+h3 {
+    padding: 0 0 20px 0;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.code {
+    background-color: #333;
+    color: white;
+    width: 300px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.code p {
+    font-family: "Fira Code";
+    text-align: left;
+    margin: 0;
+    padding: 10px;
+}
+
+#install {
+    margin-top: 40px;
+}
+
+#features {
+    margin-top: 40px;
+    padding: 40px 20px;
+    background: rgb(245, 245, 245);
+    border-radius: 5px;
+}
+
+#features p {
+    display: inline-block;
+}
+
+.feature {
+    font-size: 12px;
+    font-weight: 600;
+    background: #89c063;
+    color: white;
+    padding: 5px 10px;
+    margin: 10px;
+    border-radius: 5px;
+    transition: all 300ms;
+}
+
+.feature:hover {
+    background: #c5e255;
+}
+
+#links {
+    margin-top: 40px;
+}
+
+a {
+    display: inline-block;
+    font-weight: 400;
+    color: #89c063;
+    margin: 0 20px;
+    text-decoration: none;
+    border-bottom: 1px solid #89c063;
+    padding-bottom: 5px;
+    transition: all 300ms;
+}
+
+a:hover {
+    color: #c5e255;
+    border-bottom: 1px solid #c5e255;
+}
