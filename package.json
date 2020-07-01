@@ -10,7 +10,8 @@
         "watch": "tsc --watch",
         "lint": "prettier --check ./src/**/*.js ./src/**/*.html ./src/**/*.ts ./docs/**/*.json",
         "lint-fix": "prettier --write ./src/**/*.js ./src/**/*.html ./src/**/*.ts ./docs/**/*.json",
-        "test": "npm run-script build && npm run-script lint"
+        "test": "npm run-script build && npm run-script lint",
+        "mintable": "npm run build && node ./lib/scripts/cli.js"
     },
     "files": [
         "src",
