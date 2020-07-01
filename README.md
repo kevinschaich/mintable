@@ -55,15 +55,15 @@ Mintable helps you:
 
 **Do I have to use Plaid?**
 
-Nope. You can [import transactions from a bank CSV statement](./docs/README.md#manually--on-your-local-machine--via-csv-bank-statements). We also have some [templates](./docs/templates) to get you started.
+Nope. You can [import transactions from a bank CSV statement](./docs/README.md#manually--on-your-local-machine--via-csv-bank-statements). We also have [templates](./docs/templates) to get you started.
 
 **Do I have to use Google Sheets/Plaid?**
 
-Nope. You can export your transactions to a CSV file.
+Nope. You can export your transactions to a CSV file (TODO).
 
 **Do I have to manually run this every time I want new transactions in my spreadsheet?**
 
-Nope. You can automate updates using CI for free.
+Nope. You can automate it for free using [BitBar](./docs/README.md#automatically-in-your-macs-menu-bar--via-bitbar), [`cron`](./docs/README.md#automatically-in-your-local-machines-terminal--via-cron), or [GitHub Actions](./docs/README#automatically-in-the-cloud--via-github-actions).
 
 **It's not working!**
 
