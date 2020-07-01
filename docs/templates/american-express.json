@@ -1,15 +1,15 @@
 {
     "accounts": {
-        "Chase": {
-            "paths": ["/path/to/my/chase/statements/*.csv"],
+        "American Express": {
+            "paths": ["/path/to/my/american/express/statements/*.csv"],
             "transformer": {
                 "Description": "name",
-                "Transaction Date": "date",
+                "Date": "date",
                 "Amount": "amount",
                 "Category": "category"
             },
             "dateFormat": "MM/dd/yyyy",
-            "id": "Chase",
+            "id": "American Express",
             "integration": "csv-import",
             "negateValues": true
         }
