@@ -10,6 +10,7 @@ import { logInfo, logError, logWarn } from '../../common/logging'
 import http from 'http'
 import { AccountConfig, Account, PlaidAccountConfig } from '../../types/account'
 import { Transaction } from '../../types/transaction'
+import { update } from 'lodash'
 
 export class PlaidIntegration {
     config: Config
@@ -59,6 +60,8 @@ export class PlaidIntegration {
             const app = express()
                 .use(bodyParser.json())
                 .use(bodyParser.urlencoded({ extended: true }))
+                .use(express.static(path.resolve(path.join(__dirname, '../../../docs'))))
+
             let server: http.Server
 
             app.post('/get_access_token', (req, res) => {
@@ -110,13 +113,33 @@ export class PlaidIntegration {
                 return res.json({ token: await this.exchangeAccessToken(req.body.token) })
             })
 
+            app.post('/remove', async (req, res) => {
+                try {
+                    await updateConfig(config => {
+                        Object.values(config.accounts).forEach(account => {
+                            const accountConfig: PlaidAccountConfig = account as PlaidAccountConfig
+
+                            if (accountConfig.hasOwnProperty('token') && accountConfig.token == req.body.token) {
+                                delete config.accounts[accountConfig.id]
+                            }
+                        })
+                        this.config = config
+                        return config
+                    })
+                    logInfo('Successfully removed Plaid account.', req.body.token)
+                    return res.json({})
+                } catch (error) {
+                    logError('Error removing Plaid account.', error)
+                }
+            })
+
             app.post('/done', (req, res) => {
                 res.json({})
                 return server.close()
             })
 
             app.get('/', (req, res) =>
-                res.sendFile(path.resolve(path.join(__dirname, '../../../src/integrations/plaid/add.html')))
+                res.sendFile(path.resolve(path.join(__dirname, '../../../src/integrations/plaid/account-setup.html')))
             )
 
             server = require('http')
