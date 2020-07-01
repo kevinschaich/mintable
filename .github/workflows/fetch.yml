@@ -3,11 +3,12 @@ name: Fetch
 on:
   push:
     branches: [ master, release/2.0.0 ]
+  
   pull_request:
     branches: [ master, release/2.0.0 ]
-  schedule:
-    # Default: build every 15 minutes – see https://crontab.guru/
-    - cron:  '*/15 * * * *'
+
+  # schedule:
+  #   - cron:  '0 * * * *'
 
 jobs:
   build:

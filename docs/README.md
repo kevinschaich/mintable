@@ -12,6 +12,7 @@
 - [Updating Transactions/Accounts](#updating-transactionsaccounts)
   - [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
   - [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
+  - [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
   - [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
 - [Development](#development)
 
@@ -125,12 +126,42 @@ You can put Mintable in your Mac's menu bar, and have it run automatically every
 
 ![BitBar](./bitbar.png)
 
+### Automatically – in your local machine's terminal – via `cron`
+
+You can run Mintable automatically within your terminal using `cron`:
+
+```bash
+echo "0 * * * * export PATH="/usr/local/bin:$PATH" && mintable fetch" > ~/mintable.cron
+crontab ~/mintable.cron
+```
+
+The first step creates a new file `~/mintable.cron` which contains an interval and the command you want to run. The second step registers that file with `crontab`, the command-line executable which actually schedules the job with your operating system.
+
+The default refresh interval is 1 hour – you can use [Crontab Guru](https://crontab.guru/) to define your own interval.
+
+You can remove this schedule by running:
+
+```bash
+crontab -r
+```
+
+> **Note:** The instructions above assume your global `mintable` CLI lives in `/usr/local/bin`, but if your installation path is different (run `which mintable`) you should use that instead.
+
 ### Automatically – in the cloud – via GitHub Actions
 
 1. Fork [this repo](https://github.com/kevinschaich/mintable).
-2. Go to your forked repo's **Settings** > **Secrets** and add a **New Secret**.
+2. Go to your repo's **Settings** > **Secrets** and add a **New Secret**.
 3. Name the secret `MINTABLE_CONFIG`, and copy and paste the full contents of your `~/mintable.jsonc` file into the body of the secret.
-4. Go to your forked repo's **Actions** tab and the **Fetch** job will build your repo by default on every commit.
+4. In your repo's `./.github/workflows/fetch.yml`, uncomment the following block:
+
+    ```
+        # schedule:
+        #   - cron:  '0 * * * *'
+    ```
+
+In the **Actions** tab of your repo, the **Fetch** workflow will now update your sheet periodically. The default refresh interval is 1 hour – you can use [Crontab Guru](https://crontab.guru/) to define your own interval.
+
+> **Note:** The minimum interval supported by GitHub Actions is every 5 minutes.
 
 ## Development
 
