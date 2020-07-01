@@ -85,7 +85,7 @@ export class CSVImportIntegration {
                         logError(`Error resolving path glob ${path}.`, e)
                     }
                 })
-                .flat(3)
+                .flat(10)
 
             logInfo(`Successfully imported transactions for integration ${IntegrationId.CSVImport}`, account)
             return resolve(account)

@@ -18,24 +18,30 @@ export default async () => {
     // End date to fetch transactions in YYYY-MM-DD format, default to current date
     let endDate = config.transactions.endDate ? parseISO(config.transactions.endDate) : new Date()
 
-    let accounts: Account[] = (
-        await Promise.all(
-            Object.values(config.accounts).map(async (account: AccountConfig) => {
-                logInfo(`Fetching account ${account.id} using ${account.integration}.`)
+    let accounts: Account[] = []
 
-                switch (account.integration) {
-                    case IntegrationId.Plaid:
-                        const plaid = new PlaidIntegration(config)
-                        return await plaid.fetchAccount(account, startDate, endDate)
-                    case IntegrationId.CSVImport:
-                        const csv = new CSVImportIntegration(config)
-                        return await csv.fetchAccount(account, startDate, endDate)
-                    default:
-                        return
-                }
-            })
-        )
-    ).flat()
+    for (const accountId in config.accounts) {
+        const accountConfig = config.accounts[accountId]
+
+        logInfo(`Fetching account ${accountConfig.id} using ${accountConfig.integration}.`)
+
+        switch (accountConfig.integration) {
+            case IntegrationId.Plaid:
+                const plaid = new PlaidIntegration(config)
+                accounts = accounts.concat(await plaid.fetchAccount(accountConfig, startDate, endDate))
+                break
+
+            case IntegrationId.CSVImport:
+                const csv = new CSVImportIntegration(config)
+                accounts = accounts.concat(await csv.fetchAccount(accountConfig, startDate, endDate))
+                break
+
+            default:
+                break
+        }
+    }
+
+    accounts.flat(10)
 
     switch (config.transactions.integration) {
         case IntegrationId.Google:
