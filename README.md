@@ -1,5 +1,5 @@
 <h4 align="center"><img width="150" src="./docs/icon.png" alt="Mintable"></h4>
-<h1 align="center" style="font-weight: 500; font-size: 60px;">Mintable</h1>
+<h1 align="center" style="font-weight: 500; font-size: 60px; border: 0;">Mintable</h1>
 
 <h4 align="center">Automate your personal finances – for free, with no ads, and no data collection.</h4>
 
