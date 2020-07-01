@@ -1,0 +1,17 @@
+{
+    "accounts": {
+        "Rogers Bank Credit Card": {
+            "paths": ["/path/to/my/rogers/bank/credit/card/statements/*.csv"],
+            "transformer": {
+                "Merchant Name": "name",
+                "Date": "date",
+                "Amount": "amount",
+                "Merchant Category Description": "category"
+            },
+            "dateFormat": "yyyy/MM/dd",
+            "id": "Rogers Bank Credit Card",
+            "integration": "csv-import",
+            "negateValues": true
+        }
+    }
+}
