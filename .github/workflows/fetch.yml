@@ -25,4 +25,4 @@ jobs:
         super_secret: ${{ secrets.MINTABLE_CONFIG }}
     - run: npm install
     - run: npm link
-    - run: mintable fetch
+    - run: ./lib/scripts/cli.js fetch
