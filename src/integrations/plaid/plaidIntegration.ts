@@ -83,23 +83,23 @@ export class PlaidIntegration {
             })
 
             app.post('/accounts', async (req, res) => {
-                let accounts: Account[]
+                let accounts: {name: string, token: string}[]
 
                 for (const accountId in this.config.accounts) {
                     const accountConfig: PlaidAccountConfig = this.config.accounts[accountId] as PlaidAccountConfig
 
                     try {
-                        return await this.client.getAccounts(accountConfig.token).then(resp => {
-                            return {
+                        await this.client.getAccounts(accountConfig.token).then(resp => {
+                            accounts = accounts.concat({
                                 name: resp.accounts[0].name,
                                 token: accountConfig.token
-                            }
+                            })
                         })
                     } catch {
-                        return {
+                        accounts = accounts.concat({
                             name: 'Error fetching account name',
                             token: accountConfig.token
-                        }
+                        })
                     }
                 }
                 return res.json(accounts)
