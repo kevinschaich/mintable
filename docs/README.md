@@ -93,13 +93,13 @@ mintable plaid-setup
 
 to enter the Plaid setup wizard. This will allow you to automatically fetch updated account balances/transactions from your banking institutions every time `mintable fetch` is run.
 
-You can run:
+After you have the base Plaid integration working, you can run:
 
 ```bash
 mintable account-setup
 ```
 
-to enter the account setup wizard.
+to enter the account setup wizard to add, update, or remove accounts.
 
 ![Account Setup](./img/account-setup.png)
 
