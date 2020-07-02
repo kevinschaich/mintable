@@ -132,6 +132,8 @@ We have a number of templates available for popular financial institutions to ge
 
 These templates can be added into the `accounts` section of your `mintable.jsonc` configuration file.
 
+> **Note:** CSV Imports do not support account balances.
+
 ---
 
 ## Exporting Account Balances & Transactions
