@@ -46,7 +46,7 @@ export class CSVImportIntegration {
                                 })
 
                                 const transactions: Transaction[] = rows.map(inputRow => {
-                                    const outputRow = {}
+                                    const outputRow = {} as Account
 
                                     Object.keys(CSVAccountConfig.transformer).map(inputColumn => {
                                         // Concatenate multiple columns
@@ -79,7 +79,9 @@ export class CSVImportIntegration {
                                         outputRow['amount'] = -outputRow['amount']
                                     }
 
-                                    outputRow['account'] = CSVAccountConfig.id
+                                    if (!outputRow.hasOwnProperty('account')) {
+                                        outputRow.account = CSVAccountConfig.id
+                                    }
 
                                     return outputRow
                                 })

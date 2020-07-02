@@ -27,13 +27,21 @@ export default async () => {
                     type: 'text',
                     name: 'transactionPath',
                     message: `Where would you like to save exported transactions?`,
-                    initial: '/path/to/my/transactions.csv'
+                    initial: '/path/to/my/transactions.csv',
+                    validate: (s: string) =>
+                        s.substring(0, 1) === '/' && s.substring(s.length - 4) === '.csv'
+                            ? true
+                            : 'Must start with `/` and end with `.csv`.'
                 },
                 {
                     type: 'text',
                     name: 'balancePath',
                     message: `Where would you like to save exported account balances?`,
-                    initial: '/path/to/my/account-balances.csv'
+                    initial: '/path/to/my/account-balances.csv',
+                    validate: (s: string) =>
+                        s.substring(0, 1) === '/' && s.substring(s.length - 4) === '.csv'
+                            ? true
+                            : 'Must start with `/` and end with `.csv`.'
                 }
             ])
 
@@ -45,14 +53,13 @@ export default async () => {
                 CSVExportConfig.transactionPath = responses.transactionPath
                 CSVExportConfig.balancePath = responses.balancePath
 
+                config.balances.integration = IntegrationId.CSVExport
+                config.transactions.integration = IntegrationId.CSVExport
+
                 config.integrations[IntegrationId.CSVExport] = CSVExportConfig
 
                 return config
             })
-
-            console.log(
-                `\n\t4. Change the 'transactions.integration' field in your '~/mintable.jsonc' config if you're ready to use this integration.\n`
-            )
 
             logInfo('Successfully set up CSV Export Integration.')
             return resolve()

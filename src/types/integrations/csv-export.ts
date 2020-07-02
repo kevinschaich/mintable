@@ -16,5 +16,5 @@ export const defaultCSVExportConfig: CSVExportConfig = {
 
   transactionPath: '',
   balancePath: '',
-  dateFormat: ''
+  dateFormat: 'yyyy-MM-dd'
 }

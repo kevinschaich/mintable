@@ -44,20 +44,20 @@ export default async () => {
 
     accounts.flat(10)
 
-    switch (config.transactions.integration) {
+    switch (config.balances.integration) {
         case IntegrationId.Google:
             const google = new GoogleIntegration(config)
-            await google.updateTransactions(accounts)
+            await google.updateBalances(accounts)
             break
         case IntegrationId.CSVExport:
             const csv = new CSVExportIntegration(config)
-            await csv.updateTransactions(accounts)
+            await csv.updateBalances(accounts)
             break
         default:
             break
     }
 
-    switch (config.balances.integration) {
+    switch (config.transactions.integration) {
         case IntegrationId.Google:
             const google = new GoogleIntegration(config)
             await google.updateTransactions(accounts)
