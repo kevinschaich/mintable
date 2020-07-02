@@ -6,7 +6,7 @@ import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
 import { parseISO, subMonths, startOfMonth } from 'date-fns'
 import { CSVImportIntegration } from '../integrations/csv-import/csvImportIntegration'
-import { CSVExportIntegration } from '../integrations/csv-export/CSVExportIntegration'
+import { CSVExportIntegration } from '../integrations/csv-export/csvExportIntegration'
 
 export default async () => {
     const config = getConfig()
