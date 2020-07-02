@@ -2,22 +2,22 @@
 
 #### Table of Contents
 
-- [Overview](#overview)
-- [Installation](#installation)
-  - [Creating a Fresh Installation](#creating-a-fresh-installation)
-  - [Migrating from `v1.x.x`](#migrating-from-v1xx)
-- [Importing Account Balances & Transactions](#importing-account-balances--transactions)
-  - [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
-  - [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
-- [Exporting Account Balances & Transactions](#exporting-account-balances--transactions)
-  - [In the cloud – via Google Sheets](#in-the-cloud-via-google-sheets)
-  - [On your local machine – via CSV files](#on-your-local-machine--via-csv-files)
-- [Updating Transactions/Accounts](#updating-transactionsaccounts)
-  - [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
-  - [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
-  - [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
-  - [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
-- [Development](#development)
++ [Overview](#overview)
++ [Installation](#installation)
+  + [Creating a Fresh Installation](#creating-a-fresh-installation)
+  + [Migrating from `v1.x.x`](#migrating-from-v1xx)
++ [Importing Account Balances & Transactions](#importing-account-balances--transactions)
+  + [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
+  + [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
++ [Exporting Account Balances & Transactions](#exporting-account-balances--transactions)
+  + [In the cloud – via Google Sheets](#in-the-cloud-via-google-sheets)
+  + [On your local machine – via CSV files](#on-your-local-machine--via-csv-files)
++ [Updating Transactions/Accounts](#updating-transactionsaccounts)
+  + [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
+  + [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
+  + [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
+  + [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
++ [Development](#development)
 
 ## Overview
 
