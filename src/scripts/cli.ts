@@ -5,7 +5,8 @@ const chalk = require('chalk')
 import { updateConfig, readConfig, getConfigSource } from '../common/config'
 import plaid from '../integrations/plaid/setup'
 import google from '../integrations/google/setup'
-import csv from '../integrations/csv-import/setup'
+import csvImport from '../integrations/csv-import/setup'
+import csvExport from '../integrations/csv-export/setup'
 import add from '../integrations/plaid/add'
 import fetch from './fetch'
 import migrate from './migrate'
@@ -41,7 +42,8 @@ import { logError } from '../common/logging'
         'plaid-setup': plaid,
         'account-setup': add,
         'google-setup': google,
-        'csv-import-setup': csv
+        'csv-import-setup': csvImport,
+        'csv-export-setup': csvExport
     }
 
     const arg = process.argv[2]

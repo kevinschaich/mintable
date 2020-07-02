@@ -36,12 +36,13 @@ export default async () => {
                     type: 'text',
                     name: 'path',
                     message: "What is the path/globs to the CSV file(s) you'd like to import?",
-                    initial: '/path/to/my/csv/files/*.csv'
+                    initial: '/path/to/my/csv/files/*.csv',
+                    validate: (s: string) => (s.substring(0, 1) === '/' ? true : 'Must start with `/`.')
                 },
                 {
                     type: 'text',
                     name: 'dateFormat',
-                    message: "What is the format of the date column in these files?",
+                    message: 'What is the format of the date column in these files?',
                     initial: 'yyyyMMdd',
                     validate: (s: string) =>
                         1 < s.length && s.length <= 64 ? true : 'Must be between 1 and 64 characters in length.'

@@ -1,5 +1,5 @@
-<h4 align="center"><img width="100" src="./docs/icon.png" alt="Mintable"></h4>
-<h3 align="center" style="font-weight: 500; font-size: 60px; border: 0;">Mintable</h3>
+<h4 align="center"><img width="100" src="./docs/img/icon.png" alt="Mintable"></h4>
+<h1 align="center" style="font-weight: 500; font-size: 60px !important; border-bottom: 0 !important;">Mintable</h1>
 
 <h4 align="center">Automate your personal finances – for free, with no ads, and no data collection.</h4>
 
@@ -11,7 +11,7 @@ Mintable helps you:
 - Aggregate transactions from all your banking institutions, including checking accounts, savings accounts, and credit cards
 - Analyze and budget your spending using a spreadsheet and formulas
 
-![](./docs/mintable.png)
+![](./docs/img/mintable.png)
 
 <br>
 
@@ -42,12 +42,9 @@ Mintable helps you:
 
 > **Note:** If you're already a version `1.x.x` user, you can [migrate your existing configuration to version `2.x.x`](./docs/README.md#migrating-from-v1xx).
 
-## RTFM
+## Documentation
 
-- [Quickstart](#quickstart)
-- [RTFM](#rtfm)
-- [FAQs](#faqs)
-- [Alternatives](#alternatives)
+Check out the full documentation [in the `./docs` folder](./docs/README.md).
 
 ## FAQs
 
@@ -58,11 +55,11 @@ Mintable helps you:
 
 **Do I have to use Plaid?**
 
-Nope. You can [import transactions from a bank CSV statement](./docs/README.md#manually--on-your-local-machine--via-csv-bank-statements). We also have [templates](./docs/templates) to get you started.
+Nope. You can [import transactions from a CSV bank statement](./docs/README.md#manually--on-your-local-machine--via-csv-bank-statements) exclusively on your local machine. We also have [templates](./docs/templates) to get you started.
 
-**Do I have to use Google Sheets/Plaid?**
+**Do I have to use Google Sheets?**
 
-Nope. You can export your transactions to a CSV file (TODO).
+Nope. You can [export your account balances & transactions to a CSV file](./docs/README.md#on-your-local-machine--via-csv-files) exclusively on your local machine.
 
 **Do I have to manually run this every time I want new transactions in my spreadsheet?**
 

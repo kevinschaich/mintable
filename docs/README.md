@@ -2,29 +2,35 @@
 
 #### Table of Contents
 
-- [Overview](#overview)
-- [Installation](#installation)
-  - [Creating a Fresh Installation](#creating-a-fresh-installation)
-  - [Migrating from `v1.x.x`](#migrating-from-v1xx)
-- [Adding/Updating Accounts](#addingupdating-accounts)
-  - [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
-  - [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
-- [Updating Transactions/Accounts](#updating-transactionsaccounts)
-  - [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
-  - [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
-  - [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
-  - [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
-- [Development](#development)
++ [Overview](#overview)
++ [Installation](#installation)
+  + [Creating a Fresh Installation](#creating-a-fresh-installation)
+  + [Migrating from `v1.x.x`](#migrating-from-v1xx)
++ [Importing Account Balances & Transactions](#importing-account-balances--transactions)
+  + [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
+  + [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
++ [Exporting Account Balances & Transactions](#exporting-account-balances--transactions)
+  + [In the cloud – via Google Sheets](#in-the-cloud-via-google-sheets)
+  + [On your local machine – via CSV files](#on-your-local-machine--via-csv-files)
++ [Updating Transactions/Accounts](#updating-transactionsaccounts)
+  + [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
+  + [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
+  + [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
+  + [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
++ [Development](#development)
++ [Contributing](#contributing)
 
 ## Overview
 
-![Mintable](./mintable.png)
+![Mintable](./img/mintable.png)
 
 Mintable simplifies managing your finances, for free, without ads, and without tracking your information. Here's how it works:
 
 1. You connect your accounts and a spreadsheet to Mintable.
 1. Mintable integrates with financial institutions to automatically populate transactions in your spreadsheet.
 1. You can add whatever formulas, charts, or calculations you want (just like a normal spreadsheet). We also have templates to get you started.
+
+---
 
 ## Installation
 
@@ -49,7 +55,7 @@ Mintable simplifies managing your finances, for free, without ads, and without t
     mintable fetch
     ```
 
-![Mintable CLI](./cli.png)
+![Mintable CLI](./img/cli.png)
 
 ### Migrating from `v1.x.x`
 
@@ -73,23 +79,35 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 > **Note:** After successful migration you can delete everything in your `v1.x.x` `mintable` folder. You may want to keep a copy of your `mintable.config.json` for posterity.
 
-## Adding/Updating Accounts
+---
+
+## Importing Account Balances & Transactions
 
 ### Automatically – in the cloud – via [Plaid](https://plaid.com)
 
 You can run:
 
 ```bash
+mintable plaid-setup
+```
+
+to enter the Plaid setup wizard. This will allow you to automatically fetch updated account balances/transactions from your banking institutions every time `mintable fetch` is run.
+
+After you have the base Plaid integration working, you can run:
+
+```bash
 mintable account-setup
 ```
 
-to enter the account setup wizard.
+to enter the account setup wizard to add, update, or remove accounts.
 
-![Account Setup](./account-setup.png)
+![Account Setup](./img/account-setup.png)
 
 This will launch a local web server (necessary to authenticate with Plaid's servers) for you to connect your banks.
 
 To add a new account, click the blue **Link A New Account** button. To re-authenticate with an existing account, click the blue **Update** button next to the account name in the table.
+
+> **Note:** Plaid is the default import integration and these steps are not necessary if you've already run `mintable setup`.
 
 ### Manually – on your local machine – via CSV bank statements
 
@@ -114,6 +132,34 @@ We have a number of templates available for popular financial institutions to ge
 
 These templates can be added into the `accounts` section of your `mintable.jsonc` configuration file.
 
+---
+
+## Exporting Account Balances & Transactions
+
+### In the cloud – via [Google Sheets](https://www.google.com/sheets/about/)
+
+You can run:
+
+```bash
+mintable google-setup
+```
+
+to enter the Google Sheets setup wizard. This will allow you to automatically update a sheet with your transactions/account balances every time `mintable fetch` is run.
+
+> **Note:** Google Sheets is the default export integration and this step is not necessary if you've already run `mintable setup`.
+
+### On your local machine – via CSV files
+
+You can run:
+
+```bash
+mintable csv-export-setup
+```
+
+to enter the CSV export setup wizard. This will allow you to manually export a CSV containing your transactions/account balances every time `mintable fetch` is run.
+
+---
+
 ## Updating Transactions/Accounts
 
 ### Manually – in your local machine's terminal
@@ -130,7 +176,7 @@ to automate updates to your spreadsheet.
 
 You can put Mintable in your Mac's menu bar, and have it run automatically every hour using our [BitBar Plugin](https://github.com/matryer/bitbar-plugins/pull/1460).
 
-![BitBar](./bitbar.png)
+![BitBar](./img/bitbar.png)
 
 1. [Install BitBar](https://github.com/matryer/bitbar/releases) on your Mac.
 2. Set your plugin folder.
@@ -144,7 +190,7 @@ You can put Mintable in your Mac's menu bar, and have it run automatically every
 
 You can run Mintable automatically within your terminal using `cron`:
 
-![`cron`](./cron.png)
+![`cron`](./img/cron.png)
 
 ```bash
 echo "0 * * * * export PATH="/usr/local/bin:$PATH" && mintable fetch" > ~/mintable.cron
@@ -167,7 +213,7 @@ crontab -r
 
 You can use GitHub Actions to run Mintable automatically in the cloud:
 
-![GitHub Actions](./github-actions.png)
+![GitHub Actions](./img/github-actions.png)
 
 1. Fork [this repo](https://github.com/kevinschaich/mintable).
 2. Go to your repo's **Actions** > Click **I understand my workflows, go ahead and enable them**
@@ -184,6 +230,8 @@ In the **Actions** tab of your repo, the **Fetch** workflow will now update your
 
 > **Note:** The minimum interval supported by GitHub Actions is every 5 minutes.
 
+---
+
 ## Development
 
 To get started:
@@ -191,17 +239,35 @@ To get started:
 ```bash
 git clone https://github.com/kevinschaich/mintable
 cd mintable
+
 npm install
-npm run-script build
+npm run build
 npm link
 ```
 
-The global `mintable` command will now point to your local dev version. To publish a new version:
+The global `mintable` command will now point to your local version (`/lib/scripts/cli.js`). To start compilation in watch mode:
+
+```bash
+npm run watch
+```
+
+To publish a new version, increment `version` in `package.json` and run:
 
 ```bash
 npm run build
 npm publish
 ```
+
+To revert to the production release of `mintable`, run:
+
+```bash
+npm unlink
+npm install -g mintable
+```
+
+## Contributing
+
+Before posting please check if your issue has already been reported. We'll gladly accept PRs, feature requests, or bugs via [Issues](https://github.com/kevinschaich/mintable/issues).
 
 <!--
 

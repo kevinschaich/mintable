@@ -57,6 +57,9 @@ export default async () => {
 
                 config.integrations[IntegrationId.Google] = googleConfig
 
+                config.transactions.integration = IntegrationId.Google
+                config.balances.integration = IntegrationId.Google
+
                 return config
             })
 

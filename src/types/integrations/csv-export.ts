@@ -1,16 +1,21 @@
 import { BaseIntegrationConfig, IntegrationId, IntegrationType } from '../integrations'
 
 export interface CSVExportConfig extends BaseIntegrationConfig {
-  id: IntegrationId.CSVExport
-  type: IntegrationType
+    id: IntegrationId.CSVExport
+    type: IntegrationType
 
-  outputPath: string
+    dateFormat: string
+
+    transactionPath?: string
+    balancePath?: string
 }
 
 export const defaultCSVExportConfig: CSVExportConfig = {
-  name: 'CSV-Export',
-  id: IntegrationId.CSVExport,
-  type: IntegrationType.Export,
+    name: 'CSV-Export',
+    id: IntegrationId.CSVExport,
+    type: IntegrationType.Export,
 
-  outputPath: '',
+    transactionPath: '',
+    balancePath: '',
+    dateFormat: 'yyyy-MM-dd'
 }
