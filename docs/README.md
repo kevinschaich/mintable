@@ -21,7 +21,7 @@
 
 ## Overview
 
-![Mintable](./mintable.png)
+![Mintable](./img/mintable.png)
 
 Mintable simplifies managing your finances, for free, without ads, and without tracking your information. Here's how it works:
 
@@ -52,7 +52,7 @@ Mintable simplifies managing your finances, for free, without ads, and without t
     mintable fetch
     ```
 
-![Mintable CLI](./cli.png)
+![Mintable CLI](./img/cli.png)
 
 ### Migrating from `v1.x.x`
 
@@ -96,7 +96,7 @@ mintable account-setup
 
 to enter the account setup wizard.
 
-![Account Setup](./account-setup.png)
+![Account Setup](./img/account-setup.png)
 
 This will launch a local web server (necessary to authenticate with Plaid's servers) for you to connect your banks.
 
@@ -167,7 +167,7 @@ to automate updates to your spreadsheet.
 
 You can put Mintable in your Mac's menu bar, and have it run automatically every hour using our [BitBar Plugin](https://github.com/matryer/bitbar-plugins/pull/1460).
 
-![BitBar](./bitbar.png)
+![BitBar](./img/bitbar.png)
 
 1. [Install BitBar](https://github.com/matryer/bitbar/releases) on your Mac.
 2. Set your plugin folder.
@@ -181,7 +181,7 @@ You can put Mintable in your Mac's menu bar, and have it run automatically every
 
 You can run Mintable automatically within your terminal using `cron`:
 
-![`cron`](./cron.png)
+![`cron`](./img/cron.png)
 
 ```bash
 echo "0 * * * * export PATH="/usr/local/bin:$PATH" && mintable fetch" > ~/mintable.cron
@@ -204,7 +204,7 @@ crontab -r
 
 You can use GitHub Actions to run Mintable automatically in the cloud:
 
-![GitHub Actions](./github-actions.png)
+![GitHub Actions](./img/github-actions.png)
 
 1. Fork [this repo](https://github.com/kevinschaich/mintable).
 2. Go to your repo's **Actions** > Click **I understand my workflows, go ahead and enable them**
