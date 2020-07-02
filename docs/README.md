@@ -18,6 +18,7 @@
   + [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
   + [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
 + [Development](#development)
++ [Contributing](#contributing)
 
 ## Overview
 
@@ -28,6 +29,8 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 1. You connect your accounts and a spreadsheet to Mintable.
 1. Mintable integrates with financial institutions to automatically populate transactions in your spreadsheet.
 1. You can add whatever formulas, charts, or calculations you want (just like a normal spreadsheet). We also have templates to get you started.
+
+---
 
 ## Installation
 
@@ -75,6 +78,8 @@ Mintable simplifies managing your finances, for free, without ads, and without t
     ```
 
 > **Note:** After successful migration you can delete everything in your `v1.x.x` `mintable` folder. You may want to keep a copy of your `mintable.config.json` for posterity.
+
+---
 
 ## Importing Account Balances & Transactions
 
@@ -127,6 +132,8 @@ We have a number of templates available for popular financial institutions to ge
 
 These templates can be added into the `accounts` section of your `mintable.jsonc` configuration file.
 
+---
+
 ## Exporting Account Balances & Transactions
 
 ### In the cloud – via [Google Sheets](https://www.google.com/sheets/about/)
@@ -150,6 +157,8 @@ mintable csv-export-setup
 ```
 
 to enter the CSV export setup wizard. This will allow you to manually export a CSV containing your transactions/account balances every time `mintable fetch` is run.
+
+---
 
 ## Updating Transactions/Accounts
 
@@ -221,6 +230,8 @@ In the **Actions** tab of your repo, the **Fetch** workflow will now update your
 
 > **Note:** The minimum interval supported by GitHub Actions is every 5 minutes.
 
+---
+
 ## Development
 
 To get started:
@@ -228,17 +239,35 @@ To get started:
 ```bash
 git clone https://github.com/kevinschaich/mintable
 cd mintable
+
 npm install
-npm run-script build
+npm run build
 npm link
 ```
 
-The global `mintable` command will now point to your local dev version. To publish a new version:
+The global `mintable` command will now point to your local version (`/lib/scripts/cli.js`). To start compilation in watch mode:
+
+```bash
+npm run watch
+```
+
+To publish a new version, increment `version` in `package.json` and run:
 
 ```bash
 npm run build
 npm publish
 ```
+
+To revert to the production release of `mintable`, run:
+
+```bash
+npm unlink
+npm install -g mintable
+```
+
+## Contributing
+
+Before posting please check if your issue has already been reported. We'll gladly accept PRs, feature requests, or bugs via [Issues](https://github.com/kevinschaich/mintable/issues).
 
 <!--
 
