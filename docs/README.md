@@ -107,7 +107,7 @@ This will launch a local web server (necessary to authenticate with Plaid's serv
 
 To add a new account, click the blue **Link A New Account** button. To re-authenticate with an existing account, click the blue **Update** button next to the account name in the table.
 
-> **Note:** Plaid is the default import integration and thes steps are not necessary if you've already run `mintable setup`.
+> **Note:** Plaid is the default import integration and these steps are not necessary if you've already run `mintable setup`.
 
 ### Manually – on your local machine – via CSV bank statements
 
