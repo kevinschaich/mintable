@@ -6,9 +6,12 @@
 - [Installation](#installation)
   - [Creating a Fresh Installation](#creating-a-fresh-installation)
   - [Migrating from `v1.x.x`](#migrating-from-v1xx)
-- [Adding/Updating Accounts](#addingupdating-accounts)
+- [Importing Account Balances & Transactions](#importing-account-balances--transactions)
   - [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
   - [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
+- [Exporting Account Balances & Transactions](#exporting-account-balances--transactions)
+  - [In the cloud – via Google Sheets](#in-the-cloud-via-google-sheets)
+  - [On your local machine – via CSV files](#on-your-local-machine--via-csv-files)
 - [Updating Transactions/Accounts](#updating-transactionsaccounts)
   - [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
   - [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
@@ -73,9 +76,17 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 > **Note:** After successful migration you can delete everything in your `v1.x.x` `mintable` folder. You may want to keep a copy of your `mintable.config.json` for posterity.
 
-## Adding/Updating Accounts
+## Importing Account Balances & Transactions
 
 ### Automatically – in the cloud – via [Plaid](https://plaid.com)
+
+You can run:
+
+```bash
+mintable plaid-setup
+```
+
+to enter the Plaid setup wizard. This will allow you to automatically fetch updated account balances/transactions from your banking institutions every time `mintable fetch` is run.
 
 You can run:
 
@@ -90,6 +101,8 @@ to enter the account setup wizard.
 This will launch a local web server (necessary to authenticate with Plaid's servers) for you to connect your banks.
 
 To add a new account, click the blue **Link A New Account** button. To re-authenticate with an existing account, click the blue **Update** button next to the account name in the table.
+
+> **Note:** Plaid is the default import integration and thes steps are not necessary if you've already run `mintable setup`.
 
 ### Manually – on your local machine – via CSV bank statements
 
@@ -113,6 +126,30 @@ We have a number of templates available for popular financial institutions to ge
 - [Rogers Bank Credit Card](./templates/rogers-bank-credit-card.json)
 
 These templates can be added into the `accounts` section of your `mintable.jsonc` configuration file.
+
+## Exporting Account Balances & Transactions
+
+### In the cloud – via [Google Sheets](https://www.google.com/sheets/about/)
+
+You can run:
+
+```bash
+mintable google-setup
+```
+
+to enter the Google Sheets setup wizard. This will allow you to automatically update a sheet with your transactions/account balances every time `mintable fetch` is run.
+
+> **Note:** Google Sheets is the default export integration and this step is not necessary if you've already run `mintable setup`.
+
+### On your local machine – via CSV files
+
+You can run:
+
+```bash
+mintable csv-export-setup
+```
+
+to enter the CSV export setup wizard. This will allow you to manually export a CSV containing your transactions/account balances every time `mintable fetch` is run.
 
 ## Updating Transactions/Accounts
 

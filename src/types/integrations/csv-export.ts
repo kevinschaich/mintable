@@ -4,7 +4,9 @@ export interface CSVExportConfig extends BaseIntegrationConfig {
   id: IntegrationId.CSVExport
   type: IntegrationType
 
-  outputPath: string
+  transactionPath?: string
+  balancePath?: string
+  dateFormat?: string
 }
 
 export const defaultCSVExportConfig: CSVExportConfig = {
@@ -12,5 +14,7 @@ export const defaultCSVExportConfig: CSVExportConfig = {
   id: IntegrationId.CSVExport,
   type: IntegrationType.Export,
 
-  outputPath: '',
+  transactionPath: '',
+  balancePath: '',
+  dateFormat: ''
 }

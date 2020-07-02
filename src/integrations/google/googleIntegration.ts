@@ -331,10 +331,7 @@ export class GoogleIntegration {
         return this.updateRanges([{ range, data }])
     }
 
-    public updateAccounts = async (accounts: Account[]) => {
-        // Update Account Balances Sheets
-        await this.updateSheet('Balances', accounts, this.config.balances.properties)
-
+    public updateTransactions = async (accounts: Account[]) => {
         // Sort transactions by date
         const transactions = sortBy(accounts.map(account => account.transactions).flat(10), 'date')
 
@@ -357,7 +354,21 @@ export class GoogleIntegration {
         // Format, etc.
         await this.formatSheets()
 
-        logInfo('You can view your sheet at the below link:\n')
+        logInfo('You can view your sheet here:\n')
+        console.log(`https://docs.google.com/spreadsheets/d/${this.googleConfig.documentId}`)
+    }
+
+    public updateBalances = async (accounts: Account[]) => {
+        // Update Account Balances Sheets
+        await this.updateSheet('Balances', accounts, this.config.balances.properties)
+
+        // Sort Sheets
+        await this.sortSheets()
+
+        // Format, etc.
+        await this.formatSheets()
+
+        logInfo('You can view your sheet here:\n')
         console.log(`https://docs.google.com/spreadsheets/d/${this.googleConfig.documentId}`)
     }
 }

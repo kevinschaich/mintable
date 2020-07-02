@@ -6,6 +6,7 @@ import { Account, AccountConfig } from '../types/account'
 import { IntegrationId } from '../types/integrations'
 import { parseISO, subMonths, startOfMonth } from 'date-fns'
 import { CSVImportIntegration } from '../integrations/csv-import/csvImportIntegration'
+import { CSVExportIntegration } from '../integrations/csv-export/CSVExportIntegration'
 
 export default async () => {
     const config = getConfig()
@@ -46,8 +47,26 @@ export default async () => {
     switch (config.transactions.integration) {
         case IntegrationId.Google:
             const google = new GoogleIntegration(config)
-            return await google.updateAccounts(accounts)
+            await google.updateTransactions(accounts)
+            break
+        case IntegrationId.CSVExport:
+            const csv = new CSVExportIntegration(config)
+            await csv.updateTransactions(accounts)
+            break
         default:
-            return
+            break
+    }
+
+    switch (config.balances.integration) {
+        case IntegrationId.Google:
+            const google = new GoogleIntegration(config)
+            await google.updateTransactions(accounts)
+            break
+        case IntegrationId.CSVExport:
+            const csv = new CSVExportIntegration(config)
+            await csv.updateTransactions(accounts)
+            break
+        default:
+            break
     }
 }
