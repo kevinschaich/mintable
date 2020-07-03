@@ -323,7 +323,7 @@ export class GoogleIntegration {
         const range = {
             sheet: sheetTitle,
             start: `A1`,
-            end: `${columnHeaders[columns.length]}${rows.length + 1}`
+            end: `${columnHeaders[columns.length > 0 ? columns.length - 1 : 1]}${rows.length + 1}`
         }
         const data = [columns].concat(rows.map(row => this.getRowWithDefaults(row, columns)))
 

@@ -27,8 +27,8 @@
 Mintable simplifies managing your finances, for free, without ads, and without tracking your information. Here's how it works:
 
 1. You connect your accounts and a spreadsheet to Mintable.
-1. Mintable integrates with financial institutions to automatically populate transactions in your spreadsheet.
-1. You can add whatever formulas, charts, or calculations you want (just like a normal spreadsheet). We also have templates to get you started.
+1. Mintable integrates with your financial institutions to automatically populate transactions into the leftmost columns in your spreadsheet.
+1. You can add whatever formulas, charts, or calculations you want to the right of your transactions (just like a normal spreadsheet). We also have templates to get you started.
 
 ---
 
