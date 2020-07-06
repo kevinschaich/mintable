@@ -15,10 +15,48 @@ export interface LogRequest {
     data?: any
 }
 
+const sanitize = (data: any) => {
+    if (typeof data === 'string') {
+        data = data.replace(RegExp(`(token).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(secret).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(refresh_token).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(client_id).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(client_secret).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(refreshToken).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(clientId).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(clientSecret).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(publicKey).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(privateKey).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(public_key).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+        data = data.replace(RegExp(`(private_key).([\w\-]*)`, 'gi'), `$1=[redacted]`)
+    }
+    if (typeof data === 'boolean') {
+        return data
+    }
+    if (typeof data === 'number') {
+        return data
+    }
+    if (typeof data === 'object') {
+        let sanitized = {}
+        for (const key in data) {
+            sanitized[sanitize(key) as string] = sanitize(data[key])
+        }
+    }
+    if (Array.isArray(data)) {
+        return data.map(sanitize)
+    } else {
+        return '[redacted]'
+    }
+}
+
 export const log = (request: LogRequest): void => {
     const date = chalk.bold(new Date().toISOString())
     const level = chalk.bold(`[${request.level.toUpperCase()}]`)
     const text = `${date} ${level} ${request.message}`
+
+    if (argv['ci']) {
+        request.data = sanitize(request.data)
+    }
 
     switch (request.level) {
         case LogLevel.Error:
