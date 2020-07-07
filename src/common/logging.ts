@@ -55,14 +55,14 @@ const sanitize = (data: any) => {
 }
 
 export const log = (request: LogRequest): void => {
-    const date = chalk.bold(new Date().toISOString())
-    const level = chalk.bold(`[${request.level.toUpperCase()}]`)
-    const text = `${date} ${level} ${request.message}`
-
     if (argv['ci']) {
         request.message = sanitize(request.message)
         request.data = sanitize(request.data)
     }
+
+    const date = chalk.bold(new Date().toISOString())
+    const level = chalk.bold(`[${request.level.toUpperCase()}]`)
+    const text = `${date} ${level} ${request.message}`
 
     switch (request.level) {
         case LogLevel.Error:
