@@ -15,7 +15,51 @@ export interface LogRequest {
     data?: any
 }
 
+const sanitize = (data: any) => {
+    const blacklist = [
+        'account.?id',
+        'account',
+        'client.?id',
+        'client.?secret',
+        'private.?key',
+        'private.?token',
+        'public.?key',
+        'public.?token',
+        'refresh.?token',
+        'secret',
+        'spreadsheet.?id',
+        'spreadsheet',
+        'token'
+    ]
+
+    if (typeof data === 'string') {
+        blacklist.forEach(term => {
+            data = data.replace(RegExp(`(${term}).?(.*)`, 'gi'), `$1=<redacted>`)
+        })
+        return data
+    } else if (typeof data === 'boolean') {
+        return data
+    } else if (typeof data === 'number') {
+        return data
+    } else if (Array.isArray(data)) {
+        return data.map(sanitize)
+    } else if (typeof data === 'object') {
+        let sanitized = {}
+        for (const key in data) {
+            sanitized[sanitize(key) as string] = sanitize(data[key])
+        }
+        return sanitized
+    } else {
+        return '[redacted]'
+    }
+}
+
 export const log = (request: LogRequest): void => {
+    if (argv['ci']) {
+        request.message = sanitize(request.message)
+        request.data = sanitize(request.data)
+    }
+
     const date = chalk.bold(new Date().toISOString())
     const level = chalk.bold(`[${request.level.toUpperCase()}]`)
     const text = `${date} ${level} ${request.message}`
