@@ -17,6 +17,9 @@
   + [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
   + [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
   + [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
++ [Options](#options)
+  + [Transaction Filters](#transaction-filters)
+  + [Transaction Overrides](#transaction-overrides)
 + [Development](#development)
 + [Contributing](#contributing)
 
@@ -234,6 +237,48 @@ In the **Actions** tab of your repo, the **Fetch** workflow will now update your
 
 ---
 
+## Options
+
+### Transaction Filters
+
+Transaction filters allow you to exclude transactions from your spreadsheet if a property matches a specific [regex pattern](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
+
+For example, if you wanted to exclude any cross-account transfers, you might add the following to your `transactions.filters` config:
+
+```json
+"filters": [
+    {
+        "property": "name",
+        "pattern": "(transfer|xfer|trnsfr)",
+        "flags": "ig"
+    }
+]
+```
+
+### Transaction Overrides
+
+Transaction overrides allow you to override any auto-populated fields based on a set of conditions and a [regex find & replace pattern](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
+
+You might want to do this to standardize values between financial institutions (`XFER` -> `Transfer`), or tune things to suit your particular budgeting needs (described below).
+
+For example, let's say you want to know how much you are spending on coffee each month, but Plaid/your bank categorizes your favorite shops as `Restaurants – Fast Food`. You might add the following to your `transactions.overrides` config:
+
+```json
+"overrides": [
+    {
+        "conditions": [
+            { "property": "name", "pattern": "(dunkin|starbucks|peets|philz)", "flags": "ig" }
+        ],
+        "property": "category",
+        "findPattern": "Fast Food",
+        "replacePattern": "Coffee Shops",
+        "flags": "i"
+    }
+]
+```
+
+When you run `mintable fetch` the next time, the category would be `Restaurants – Coffee Shops`.
+
 ## Development
 
 To get started:
@@ -270,65 +315,3 @@ npm install -g mintable
 ## Contributing
 
 Before posting please check if your issue has already been reported. We'll gladly accept PRs, feature requests, or bugs via [Issues](https://github.com/kevinschaich/mintable/issues).
-
-<!--
-
-#### Category Overrides
-
-`CATEGORY_OVERRIDES` specifies a list of overrides to handle transactions that are routinely miscategorized by Plaid's servers.
-
-**Default:**
-
-```javascript
-"CATEGORY_OVERRIDES": []
-```
-
-Overrides take the following format:
-
-* `pattern`: [JavaScript Regular Expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Syntax) to test transaction names against
-* `flags`: [JavaScript Regular Expression flags](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Syntax) (i.e. `i` for case insensitive)
-* `category.0`: Override for first (top-level) category
-* `category.1`: Override for second (level-2) category
-
-For example, if you want anything matching `autopay` or `e-payment` to get categorized as `Credit Card Payment`, you could add the following lines to your `mintable.config.json` file:
-
-```javascript
-"CATEGORY_OVERRIDES": [
-    {
-        "pattern": ".*(autopay|e.payment).*",
-        "flags": "i",
-        "category.0": "Transfer",
-        "category.1": "Credit Card Payments"
-    }
-]
-```
-
-## Google Sheets
-
-#### Template Sheet
-
-`TEMPLATE_SHEET` specifies the template spreadsheet to use when creating a _new_ sheet for a month.
-
-**Default:**
-
-```javascript
-"TEMPLATE_SHEET": {
-     // Public template: https://docs.google.com/spreadsheets/d/10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw
-    "SHEET_ID": "10fYhPJzABd8KlgAzxtiyFN-L_SebTvM8SaAK_wHk-Fw",
-    "SHEET_TITLE": "Template"
-}
-```
-
-* `SHEET_ID`: Google Sheets spreadsheet ID (from the URL: `docs.google.com/spreadsheets/d/`**`sheet_id`**`/edit`)
-* `SHEET_TITLE`: Title of the sheet (along the bottom row of the document)
-
-For example, you could add the following lines to your `mintable.config.json` file:
-
-```javascript
-"TEMPLATE_SHEET": {
-    "SHEET_ID": "10fYhPJzABd8KasbqiyFN-L_SebTvM8SaAK_wHk-Fw",
-    "SHEET_TITLE": "My Template Sheet"
-}
-```
-
--->

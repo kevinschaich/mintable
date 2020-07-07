@@ -55,7 +55,7 @@ export default async () => {
     const transactionMatchesFilters = (transaction: Transaction, filters: TransactionFilter[]): boolean => {
         return filters
             .map(filter => new RegExp(filter.pattern, filter.flags).test(transaction[filter.property]))
-            .every(filter => filter === true)
+            .every(filter => filter === false)
     }
 
     // Transaction Filters
