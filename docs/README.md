@@ -17,9 +17,9 @@
   + [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
   + [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
   + [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
-+ [Options](#options)
-  + [Transaction Filters](#transaction-filters)
-  + [Transaction Overrides](#transaction-overrides)
++ [Transaction Rules](#transaction-rules)
+  + [Transaction `filter` Rules](#transaction-filter-rules)
+  + [Transaction `override` Rules](#transaction-override-rules)
 + [Development](#development)
 + [Contributing](#contributing)
 
@@ -237,38 +237,48 @@ In the **Actions** tab of your repo, the **Fetch** workflow will now update your
 
 ---
 
-## Options
+## Transaction Rules
 
-### Transaction Filters
+### Transaction `filter` Rules
 
-Transaction filters allow you to exclude transactions from your spreadsheet if a property matches a specific [regex pattern](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
+Transaction `filter` rules allow you to exclude transactions from your spreadsheet based on a set of [conditions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 
-For example, if you wanted to exclude any cross-account transfers, you might add the following to your `transactions.filters` config:
+For example, if you wanted to exclude any cross-account transfers, you might add the following to your `transactions.rules` config:
 
 ```json
-"filters": [
+"rules": [
     {
-        "property": "name",
-        "pattern": "(transfer|xfer|trnsfr)",
-        "flags": "ig"
+        "conditions": [
+            {
+                "property": "name",
+                "pattern": "(transfer|xfer|trnsfr)",
+                "flags": "ig"
+            }
+        ],
+        "type": "filter"
     }
 ]
 ```
 
-### Transaction Overrides
+### Transaction `override` Rules
 
-Transaction overrides allow you to override any auto-populated fields based on a set of conditions and a [regex find & replace pattern](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
+Transaction `override` rules allow you to override auto-populated fields based on a set of [conditions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions), search for a [pattern](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions), and replace it with another [pattern](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 
 You might want to do this to standardize values between financial institutions (`XFER` -> `Transfer`), or tune things to suit your particular budgeting needs (described below).
 
-For example, let's say you want to know how much you are spending on coffee each month, but Plaid/your bank categorizes your favorite shops as `Restaurants – Fast Food`. You might add the following to your `transactions.overrides` config:
+For example, let's say you want to know how much you are spending on coffee each month, but Plaid/your bank categorizes your favorite shops as `Restaurants – Fast Food`. You might add the following to your `transactions.rules` config:
 
 ```json
-"overrides": [
+"rules": [
     {
         "conditions": [
-            { "property": "name", "pattern": "(dunkin|starbucks|peets|philz)", "flags": "ig" }
+            {
+                "property": "name",
+                "pattern": "(dunkin|starbucks|peets|philz)",
+                "flags": "ig"
+            }
         ],
+        "type": "override",
         "property": "category",
         "findPattern": "Fast Food",
         "replacePattern": "Coffee Shops",

@@ -46,25 +46,35 @@ export interface Transaction {
     pending?: boolean
 }
 
-export interface TransactionFilter {
+export interface TransactionRuleCondition {
     property: string // property to test on (e.g. "Name")
     pattern: string // regex to find matches of (e.g. "*(Wegman's|Publix|Safeway)*")
     flags?: string // regex flags (e.g. "i" for case insensitivity)
 }
 
-export interface TransactionOverride {
-    conditions: TransactionFilter[] // conditions which must hold to apply this override
+export interface BaseTransactionRule {
+    conditions: TransactionRuleCondition[] // conditions which must hold to apply this rule
+    type: "filter" | "override"
+}
+
+export interface TransactionFilterRule extends BaseTransactionRule {
+    type: "filter"
+}
+
+export interface TransactionOverrideRule extends BaseTransactionRule {
+    type: "override"
     property: string // transaction property to override
     findPattern: string // regex to find matches of (e.g. "*(Wegman's|Publix|Safeway)*")
     replacePattern: string // regex to replace any matches with (e.g. "Grocery Stores")
-    flags?: string // regex flags (e.g. "i" for case insensitivity)
+    flags: string // regex flags (e.g. "i" for case insensitivity)
 }
+
+export type TransactionRule = TransactionFilterRule | TransactionOverrideRule
 
 export interface TransactionConfig {
     integration: IntegrationId
     properties?: string[]
-    overrides?: TransactionOverride[]
-    filters?: TransactionFilter[]
+    rules?: TransactionRule[]
     startDate?: string
     endDate?: string
 }
