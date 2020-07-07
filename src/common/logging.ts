@@ -29,7 +29,7 @@ const sanitize = (data: any) => {
         'secret',
         'spreadsheet.?id',
         'spreadsheet',
-        'token',
+        'token'
     ]
 
     if (typeof data === 'string') {
