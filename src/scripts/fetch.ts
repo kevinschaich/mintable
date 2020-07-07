@@ -7,6 +7,7 @@ import { IntegrationId } from '../types/integrations'
 import { parseISO, subMonths, startOfMonth } from 'date-fns'
 import { CSVImportIntegration } from '../integrations/csv-import/csvImportIntegration'
 import { CSVExportIntegration } from '../integrations/csv-export/csvExportIntegration'
+import { Transaction, TransactionFilter } from '../types/transaction'
 
 export default async () => {
     const config = getConfig()
@@ -43,6 +44,63 @@ export default async () => {
     }
 
     accounts.flat(10)
+
+    const totalTransactions = accounts
+        .map(account => (account.hasOwnProperty('transactions') ? account.transactions.length : 0))
+        .reduce((a, b) => a + b, 0)
+
+    const transactionMatchesFilters = (transaction: Transaction, filters: TransactionFilter[]): boolean => {
+        return filters
+            .map(filter => new RegExp(filter.pattern, filter.flags).test(transaction[filter.property]))
+            .every(filter => filter === true)
+    }
+
+    // Transaction Filters
+    if (config.transactions.filters) {
+        let count = 0
+
+        accounts = accounts.map(account => {
+            if (account.hasOwnProperty('transactions')) {
+                account.transactions = account.transactions.filter(transaction =>
+                    transactionMatchesFilters(transaction, config.transactions.filters)
+                )
+                count += account.transactions.length
+            }
+
+            return account
+        })
+
+        logInfo(`${count} transactions out of ${totalTransactions} total transactions matched current filters.`)
+    }
+
+    // Transaction Overrides
+    if (config.transactions.overrides) {
+        let count = 0
+
+        accounts = accounts.map(account => {
+            if (account.hasOwnProperty('transactions')) {
+                account.transactions = account.transactions.map(transaction => {
+                    config.transactions.overrides.forEach(override => {
+                        if (transactionMatchesFilters(transaction, config.transactions.filters)) {
+                            if (transaction.hasOwnProperty(override.property)) {
+                                count += 1
+
+                                return transaction[override.property] = transaction[override.property]
+                                    .toString()
+                                    .replace(new RegExp(override.findPattern, override.flags), override.replacePattern)
+                            }
+                        }
+                    })
+
+                    return transaction
+                })
+            }
+
+            return account
+        })
+
+        logInfo(`Overrode ${count} transactions out of ${totalTransactions} total transactions.`)
+    }
 
     switch (config.balances.integration) {
         case IntegrationId.Google:
