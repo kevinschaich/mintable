@@ -60,6 +60,7 @@ export const log = (request: LogRequest): void => {
     const text = `${date} ${level} ${request.message}`
 
     if (argv['ci']) {
+        request.message = sanitize(request.message)
         request.data = sanitize(request.data)
     }
 
