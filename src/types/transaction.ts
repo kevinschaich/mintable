@@ -54,15 +54,15 @@ export interface TransactionRuleCondition {
 
 export interface BaseTransactionRule {
     conditions: TransactionRuleCondition[] // conditions which must hold to apply this rule
-    type: "filter" | "override"
+    type: 'filter' | 'override'
 }
 
 export interface TransactionFilterRule extends BaseTransactionRule {
-    type: "filter"
+    type: 'filter'
 }
 
 export interface TransactionOverrideRule extends BaseTransactionRule {
-    type: "override"
+    type: 'override'
     property: string // transaction property to override
     findPattern: string // regex to find matches of (e.g. "*(Wegman's|Publix|Safeway)*")
     replacePattern: string // regex to replace any matches with (e.g. "Grocery Stores")
