@@ -16,34 +16,35 @@ export interface LogRequest {
 }
 
 const sanitize = (data: any) => {
+    const blacklist = [
+        'client.?id',
+        'client.?secret',
+        'private.?key',
+        'private.?token',
+        'public.?key',
+        'public.?token',
+        'refresh.?token',
+        'secret',
+        'token'
+    ]
+
     if (typeof data === 'string') {
-        data = data.replace(RegExp(`(token).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(secret).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(refresh_token).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(client_id).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(client_secret).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(refreshToken).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(clientId).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(clientSecret).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(publicKey).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(privateKey).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(public_key).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-        data = data.replace(RegExp(`(private_key).([\w\-]*)`, 'gi'), `$1=[redacted]`)
-    }
-    if (typeof data === 'boolean') {
+        blacklist.forEach(term => {
+            data = data.replace(RegExp(`(${term}).?(.*)`, 'gi'), `$1=[redacted]`)
+        })
         return data
-    }
-    if (typeof data === 'number') {
+    } else if (typeof data === 'boolean') {
         return data
-    }
-    if (typeof data === 'object') {
+    } else if (typeof data === 'number') {
+        return data
+    } else if (Array.isArray(data)) {
+        return data.map(sanitize)
+    } else if (typeof data === 'object') {
         let sanitized = {}
         for (const key in data) {
             sanitized[sanitize(key) as string] = sanitize(data[key])
         }
-    }
-    if (Array.isArray(data)) {
-        return data.map(sanitize)
+        return sanitized
     } else {
         return '[redacted]'
     }
