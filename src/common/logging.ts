@@ -17,6 +17,8 @@ export interface LogRequest {
 
 const sanitize = (data: any) => {
     const blacklist = [
+        'account.?id',
+        'account',
         'client.?id',
         'client.?secret',
         'private.?key',
@@ -25,12 +27,14 @@ const sanitize = (data: any) => {
         'public.?token',
         'refresh.?token',
         'secret',
-        'token'
+        'spreadsheet.?id',
+        'spreadsheet',
+        'token',
     ]
 
     if (typeof data === 'string') {
         blacklist.forEach(term => {
-            data = data.replace(RegExp(`(${term}).?(.*)`, 'gi'), `$1=redacted`)
+            data = data.replace(RegExp(`(${term}).?(.*)`, 'gi'), `$1=<redacted>`)
         })
         return data
     } else if (typeof data === 'boolean') {
