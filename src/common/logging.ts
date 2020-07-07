@@ -30,7 +30,7 @@ const sanitize = (data: any) => {
 
     if (typeof data === 'string') {
         blacklist.forEach(term => {
-            data = data.replace(RegExp(`(${term}).?(.*)`, 'gi'), `$1=[redacted]`)
+            data = data.replace(RegExp(`(${term}).?(.*)`, 'gi'), `$1=redacted`)
         })
         return data
     } else if (typeof data === 'boolean') {
