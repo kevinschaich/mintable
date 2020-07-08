@@ -69,6 +69,7 @@ a {
 
 #install .code p {
     font-family: "Fira Code";
+    white-space: nowrap;
     text-align: left;
     padding: 10px;
 }
