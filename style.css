@@ -27,6 +27,10 @@ body {
     justify-content: center;
 }
 
+#intro  {
+    padding: 0 40px 40px 40px;
+}
+
 #intro img {
     width: 150px;
 }
