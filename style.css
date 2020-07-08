@@ -1,60 +1,50 @@
 html,
 body {
     height: 100%;
-    margin: 0;
-    padding: 0;
 }
 
 body {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-#container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-h1,
-h2,
-h3,
-p,
-th,
-tr,
-button,
-a {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     text-rendering: optimizeLegibility;
+    color: #333;
 }
 
-#logo {
+#container,
+#intro,
+#install,
+#features,
+#links,
+#feature-list {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#intro img {
     width: 150px;
 }
 
 h1 {
-    font-weight: 500;
     font-size: 80px;
-    margin: 40px 0 0 0;
-    padding: 0 40px;
-    color: #333;
+    padding-top: 40px;
+    font-weight: 500;
 }
 
 h2 {
     font-size: 30px;
+    padding-top: 40px;
+    line-height: 45px;
     font-weight: 200;
-    margin: 40px 0 0 0;
-    padding: 0 40px;
-    color: #333;
 }
 
 h3 {
-    padding: 0 0 40px 0;
-    margin: 0;
     font-size: 30px;
     font-weight: 500;
 }
@@ -64,28 +54,24 @@ a {
     font-size: 20px;
 }
 
-#install {
-    margin-top: 80px;
-}
-
 #install .code {
     background-color: #333;
     color: white;
     width: 400px;
     padding: 20px;
     border-radius: 5px;
+    margin-top: 40px;
 }
 
 #install .code p {
     font-family: "Fira Code";
     text-align: left;
-    margin: 0;
     padding: 10px;
 }
 
 .green {
     color: #89c063;
-    transition: all 300ms;
+    transition: color 300ms;
 }
 
 .green:hover {
@@ -94,22 +80,23 @@ a {
 }
 
 #features {
-    margin-top: 80px;
-    padding: 40px;
     background: rgb(245, 245, 245);
     border-radius: 5px;
+    margin: 40px auto;
 }
 
-#features p {
-    display: inline-block;
+#feature-list, #links {
+    flex-direction: row;
+    padding: 0;
 }
 
 .feature {
+    flex-shrink: 0;
     font-weight: 600;
     background: #89c063;
     color: white;
-    padding: 10px 20px;
-    margin: 20px;
+    padding: 20px;
+    margin: 40px 20px 0 20px;
     border-radius: 5px;
     transition: all 300ms;
 }
@@ -120,7 +107,7 @@ a {
 }
 
 #links {
-    margin-top: 80px;
+    padding: 40px 40px 0 40px;
 }
 
 a {

@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <!--         <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Mintable</title>
 
         <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="./reset.css" />
         <link rel="stylesheet" href="./style.css" />
     </head>
     <body>
         <div id="container">
-            <img id="logo" src="./icon.png" alt="Mintable Logo" />
-            <h1>Mintable</h1>
-            <h2>Automate your personal finances – for free, with no ads, and no data collection.</h2>
+            <div id="intro">
+                <img src="./icon.png" alt="Mintable Logo" />
+                <h1>Mintable</h1>
+                <h2>Automate your personal finances – for free, with no ads, and no data collection.</h2>
+            </div>
             <div id="install">
                 <h3>Install</h3>
                 <div class="code">
@@ -21,9 +24,11 @@
             </div>
             <div id="features">
                 <h3>Features</h3>
-                <p class="feature">Import your balances/transactions automatically</p>
-                <p class="feature">CSV Import/Export</p>
-                <p class="feature">Mac Menu Bar + GitHub Actions/CI Support</p>
+                <div id="feature-list">
+                    <p class="feature">Import your balances/transactions automatically</p>
+                    <p class="feature">CSV Import/Export</p>
+                    <p class="feature">Mac Menu Bar + GitHub Actions/CI Support</p>
+                </div>
             </div>
             <div id="links">
                 <a

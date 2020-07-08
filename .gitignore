@@ -2,6 +2,8 @@
 .env
 .next
 */.next
+build
+lib
 mintable.config.json
 mintable.sandbox.json
 node_modules
