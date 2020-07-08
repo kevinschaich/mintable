@@ -65,6 +65,7 @@ a {
     padding: 20px;
     border-radius: 5px;
     margin-top: 40px;
+    overflow-x: scroll;
 }
 
 #install .code p {
