@@ -85,12 +85,13 @@ a {
     margin: 40px auto;
 }
 
-#feature-list, #links {
+#feature-list,
+#links {
     flex-direction: row;
     padding: 0;
 }
 
-.feature {
+#feature-list .feature {
     flex-shrink: 0;
     font-weight: 600;
     background: #89c063;
@@ -98,10 +99,12 @@ a {
     padding: 20px;
     margin: 40px 20px 0 20px;
     border-radius: 5px;
+    cursor: pointer;
     transition: all 300ms;
+    text-decoration: none;
 }
 
-.feature:hover {
+#feature-list .feature:hover {
     background: #c5e255;
     transform: scale(1.1);
 }
@@ -110,7 +113,7 @@ a {
     padding: 40px 40px 0 40px;
 }
 
-a {
+#links a {
     display: inline-block;
     font-weight: 400;
     color: #89c063;
@@ -121,7 +124,7 @@ a {
     transition: all 300ms;
 }
 
-a:hover {
+#links a:hover {
     color: #c5e255;
     border-bottom: 1px solid #c5e255;
     transform: scale(1.1);
