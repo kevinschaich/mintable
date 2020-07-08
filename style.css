@@ -147,7 +147,7 @@ a {
     }
     
     #install .code {
-        max-width: 200px;
+        max-width: 250px;
         overflow-x: scroll;
     }
     #feature-list .feature {
