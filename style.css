@@ -61,11 +61,10 @@ a {
 #install .code {
     background-color: #333;
     color: white;
-    max-width: 400px;
+    width: 400px;
     padding: 20px;
     border-radius: 5px;
     margin-top: 40px;
-    overflow-x: scroll;
 }
 
 #install .code p {
@@ -149,6 +148,7 @@ a {
     
     #install .code {
         max-width: 200px;
+        overflow-x: scroll;
     }
     #feature-list .feature {
         padding: 10px;
