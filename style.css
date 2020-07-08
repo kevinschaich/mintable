@@ -61,7 +61,7 @@ a {
 #install .code {
     background-color: #333;
     color: white;
-    width: 400px;
+    max-width: 400px;
     padding: 20px;
     border-radius: 5px;
     margin-top: 40px;
