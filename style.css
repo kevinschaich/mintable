@@ -27,7 +27,7 @@ body {
     justify-content: center;
 }
 
-#intro  {
+#intro {
     padding: 0 40px 40px 40px;
 }
 
@@ -72,7 +72,7 @@ a {
     font-family: "Fira Code";
     white-space: nowrap;
     text-align: left;
-    padding: 10px;
+    padding: 10px 0;
 }
 
 .green {
@@ -123,7 +123,6 @@ a {
 #links a {
     display: inline-block;
     font-weight: 400;
-    font-size: 30px;
     color: #89c063;
     margin: 0 20px 20px 20px;
     text-decoration: none;
@@ -136,4 +135,43 @@ a {
     color: #c5e255;
     border-bottom: 1px solid #c5e255;
     transform: scale(1.1);
+}
+
+@media only screen and (max-width: 600px) {
+    #container,
+    #intro,
+    #install,
+    #features,
+    #links,
+    #feature-list {
+        padding: 20px;
+    }
+    
+    #install .code {
+        max-width: 200px;
+    }
+    #feature-list .feature {
+        padding: 10px;
+        margin: 10px;
+    }
+    #intro img {
+        width: 100px;
+    }
+
+    h1 {
+        font-size: 60px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    p,
+    a {
+        font-size: 18px;
+    }
 }
