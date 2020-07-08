@@ -83,6 +83,7 @@ a {
     background: rgb(245, 245, 245);
     border-radius: 5px;
     margin: 40px auto;
+    max-width: 1200px;
 }
 
 #feature-list,
@@ -116,6 +117,7 @@ a {
 #links a {
     display: inline-block;
     font-weight: 400;
+    font-size: 30px;
     color: #89c063;
     margin: 0 20px;
     text-decoration: none;
