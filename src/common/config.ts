@@ -170,7 +170,7 @@ export const getConfig = (): Config => {
 export const writeConfig = (source: ConfigSource, config: Config): void => {
     if (source.type === 'file') {
         try {
-            fs.writeFileSync(source.path, JSON.stringify(config, null, 2))
+            fs.writeFileSync(source.path, jsonc.stringify(config, null, 2))
             logInfo('Successfully wrote configuration file.')
         } catch (e) {
             logError('Unable to write configuration file.', e)
