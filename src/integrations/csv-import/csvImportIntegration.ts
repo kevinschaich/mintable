@@ -46,30 +46,31 @@ export class CSVImportIntegration {
                                 })
 
                                 const transactions: Transaction[] = rows.map(inputRow => {
-                                    const outputRow = {} as Account
+                                    const outputRow = {} as Transaction
 
                                     Object.keys(CSVAccountConfig.transformer).map(inputColumn => {
                                         // Concatenate multiple columns
                                         if (inputColumn.includes('+')) {
-                                            outputRow[CSVAccountConfig.transformer[inputColumn]] = inputColumn
+                                            outputRow[CSVAccountConfig.transformer[inputColumn] as string] = inputColumn
                                                 .split('+')
                                                 .map(c => inputRow[c])
                                                 .join(' - ')
                                         } else {
-                                            outputRow[CSVAccountConfig.transformer[inputColumn]] = inputRow[inputColumn]
+                                            outputRow[CSVAccountConfig.transformer[inputColumn] as string] =
+                                                inputRow[inputColumn]
                                         }
                                     })
 
                                     // Remove spaces/special characters from amount field
                                     if (outputRow.hasOwnProperty('amount')) {
                                         const pattern = new RegExp(`[^0-9\.\-]*`, 'gi')
-                                        outputRow['amount'] = outputRow['amount'].toString().replace(pattern, '')
+                                        outputRow['amount'] = parseFloat(outputRow['amount'].toString().replace(pattern, ''))
                                     }
 
                                     // Parse dates
                                     if (outputRow.hasOwnProperty('date')) {
                                         outputRow['date'] = dateFns.parse(
-                                            outputRow['date'],
+                                            outputRow['date'].toString(),
                                             CSVAccountConfig.dateFormat,
                                             new Date()
                                         )
@@ -81,6 +82,10 @@ export class CSVImportIntegration {
 
                                     if (!outputRow.hasOwnProperty('account')) {
                                         outputRow.account = CSVAccountConfig.id
+                                    }
+
+                                    if (!outputRow.hasOwnProperty('pending')) {
+                                        outputRow.pending = false
                                     }
 
                                     return outputRow
