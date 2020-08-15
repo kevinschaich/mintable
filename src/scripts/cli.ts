@@ -7,7 +7,7 @@ import plaid from '../integrations/plaid/setup'
 import google from '../integrations/google/setup'
 import csvImport from '../integrations/csv-import/setup'
 import csvExport from '../integrations/csv-export/setup'
-import add from '../integrations/plaid/add'
+import accountSetup from '../integrations/plaid/accountSetup'
 import fetch from './fetch'
 import migrate from './migrate'
 import { logError } from '../common/logging'
@@ -40,7 +40,7 @@ import { logError } from '../common/logging'
         migrate: migrate,
         fetch: fetch,
         'plaid-setup': plaid,
-        'account-setup': add,
+        'account-setup': accountSetup,
         'google-setup': google,
         'csv-import-setup': csvImport,
         'csv-export-setup': csvExport
@@ -66,7 +66,7 @@ import { logError } from '../common/logging'
         updateConfig(config => config, true)
         await plaid()
         await google()
-        await add()
+        await accountSetup()
     } else if (commands.hasOwnProperty(arg)) {
         commands[arg]()
     } else {
