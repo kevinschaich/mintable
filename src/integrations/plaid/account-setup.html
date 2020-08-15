@@ -73,9 +73,7 @@
                     const confirmed = confirm('Are you sure you want to remove this account? This cannot be undone.')
                     if (confirmed === true) {
                         token = e.currentTarget.getAttribute('data-access-token')
-                        $.post('/remove', { token: token }).then(resp => {
-                            handler.destroy()
-                        })
+                        $.post('/remove', { token: token }).then(setTimeout(() => location.reload(), 1000))
                     }
                 })
 
