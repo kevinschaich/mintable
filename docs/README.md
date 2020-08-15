@@ -62,19 +62,23 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 ### Migrating from `v1.x.x`
 
-1. Install the new `v2.x.x` `mintable` command line utility:
+> **⚠️ Warning:** Plaid introduced a breaking change in July 2020 which deprecates the Public Key component from the authentication process. You'll need to update your Plaid account before you can use 2.x.x, and you're not able to return to version 1.x.x once you upgrade. Proceed with caution.
+
+1. [Disable the Public Key in your Plaid Dashboard](https://plaid.com/docs/upgrade-to-link-tokens/#disable-the-public-key)
+
+2. Install the new `v2.x.x` `mintable` command line utility:
 
     ```bash
     npm install -g mintable
     ```
 
-2. Migrate your config to the new format:
+3. Migrate your config to the new format:
 
     ```bash
     mintable migrate --old-config-file /path/to/your/old/mintable.config.json
     ```
 
-3. Update your account balances/transactions:
+4. Update your account balances/transactions:
 
     ```bash
     mintable fetch
