@@ -62,7 +62,7 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 ### Migrating from `v1.x.x`
 
-> **⚠️ Warning:** Plaid introduced a breaking change in July 2020 which deprecates the Public Key component from the authentication process. Once you upgrade to `v2.x.x` and disable your Public Key, you will no longer be able to continue using your `v1.x.x` installation. Proceed with caution.
+> **⚠️ Warning:** Plaid [introduced a breaking change in July 2020](https://github.com/plaid/plaid-node/pull/310) which deprecates the Public Key component from the authentication process. Once you upgrade to `v2.x.x` and disable your Public Key, you will no longer be able to continue using your `v1.x.x` installation. Proceed with caution.
 
 1. [Disable the Public Key in your Plaid Dashboard](https://plaid.com/docs/upgrade-to-link-tokens/#disable-the-public-key) (read ⚠️ above!)
 

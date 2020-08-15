@@ -1,6 +1,6 @@
 import path from 'path'
 import { parseISO, format, subMonths } from 'date-fns'
-import plaid, { TransactionsResponse } from 'plaid'
+import plaid, { TransactionsResponse, CreateLinkTokenOptions } from 'plaid'
 import { Config, updateConfig } from '../../common/config'
 import { PlaidConfig, PlaidEnvironmentType } from '../../types/integrations/plaid'
 import { IntegrationId } from '../../types/integrations'
@@ -10,13 +10,15 @@ import { logInfo, logError, logWarn } from '../../common/logging'
 import http from 'http'
 import { AccountConfig, Account, PlaidAccountConfig } from '../../types/account'
 import { Transaction } from '../../types/transaction'
-import { update } from 'lodash'
+
+const PLAID_USER_ID = 'LOCAL'
 
 export class PlaidIntegration {
     config: Config
     plaidConfig: PlaidConfig
     environment: string
     client: plaid.Client
+    user: plaid.User
 
     constructor(config: Config) {
         this.config = config
@@ -27,15 +29,19 @@ export class PlaidIntegration {
                 ? plaid.environments.development
                 : plaid.environments.sandbox
 
-        this.client = new plaid.Client(
-            this.plaidConfig.credentials.clientId,
-            this.plaidConfig.credentials.secret,
-            this.plaidConfig.credentials.publicKey,
-            this.environment,
-            {
+        this.client = new plaid.Client({
+            clientID: this.plaidConfig.credentials.clientId,
+            secret: this.plaidConfig.credentials.secret,
+            env: this.environment,
+            options: {
                 version: '2019-05-29'
             }
-        )
+        })
+
+        // In production this is supposed to be a unique identifier but for Mintable we only have one user (you)
+        this.user = {
+            client_user_id: PLAID_USER_ID
+        }
     }
 
     public exchangeAccessToken = (accessToken: string): Promise<string> =>
@@ -54,7 +60,7 @@ export class PlaidIntegration {
         })
     }
 
-    public addAccount = (): Promise<void> => {
+    public accountSetup = (): Promise<void> => {
         return new Promise((resolve, reject) => {
             const client = this.client
             const app = express()
@@ -109,8 +115,27 @@ export class PlaidIntegration {
                 return res.json(accounts)
             })
 
-            app.post('/exchangeAccessToken', async (req, res) => {
-                return res.json({ token: await this.exchangeAccessToken(req.body.token) })
+            app.post('/createLinkToken', async (req, res) => {
+                const clientUserId = this.user.client_user_id
+                const options: CreateLinkTokenOptions = {
+                    user: {
+                        client_user_id: clientUserId
+                    },
+                    client_name: 'Mintable',
+                    products: ['transactions'],
+                    country_codes: ['US'], // TODO
+                    language: 'en' // TODO
+                }
+                if (req.body.access_token) {
+                    options.access_token = req.body.access_token
+                }
+                this.client.createLinkToken(options, (err, data) => {
+                    if (err) {
+                        logError('Error creating Plaid link token.', err)
+                    }
+                    logInfo('Successfully created Plaid link token.')
+                    res.json({ link_token: data.link_token })
+                })
             })
 
             app.post('/remove', async (req, res) => {

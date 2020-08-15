@@ -107,8 +107,7 @@ export default () => {
                     environment: oldConfig['PLAID_ENVIRONMENT'],
                     credentials: {
                         clientId: oldConfig['PLAID_CLIENT_ID'],
-                        secret: oldConfig['PLAID_SECRET'],
-                        publicKey: oldConfig['PLAID_PUBLIC_KEY']
+                        secret: oldConfig['PLAID_SECRET']
                     }
                 }
             },
