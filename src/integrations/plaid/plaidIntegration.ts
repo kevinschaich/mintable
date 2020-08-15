@@ -77,15 +77,15 @@ export class PlaidIntegration {
                             reject(logError('Encountered error exchanging Plaid public token.', error))
                         }
                         this.savePublicToken(tokenResponse)
-                        resolve(logInfo('Plaid access token saved.'))
+                        resolve(logInfo('Plaid access token saved.', req.body))
                     })
                 } else if (req.body.exit !== undefined) {
-                    resolve(logInfo('Plaid authentication cancelled.'))
+                    resolve(logInfo('Plaid authentication exited.', req.body))
                 } else {
                     if ((req.body.error['error-code'] = 'item-no-error')) {
-                        resolve(logInfo('Account is OK, no further action is required.'))
+                        resolve(logInfo('Account is OK, no further action is required.', req.body))
                     } else {
-                        reject(logError('Encountered error during authentication.', req.body.error))
+                        reject(logError('Encountered error during authentication.', req.body))
                     }
                 }
                 return res.json({})
@@ -115,7 +115,7 @@ export class PlaidIntegration {
                 return res.json(accounts)
             })
 
-            app.post('/createLinkToken', async (req, res) => {
+            app.post('/create_link_token', async (req, res) => {
                 const clientUserId = this.user.client_user_id
                 const options: CreateLinkTokenOptions = {
                     user: {
@@ -128,6 +128,7 @@ export class PlaidIntegration {
                 }
                 if (req.body.access_token) {
                     options.access_token = req.body.access_token
+                    delete options.products
                 }
                 this.client.createLinkToken(options, (err, data) => {
                     if (err) {

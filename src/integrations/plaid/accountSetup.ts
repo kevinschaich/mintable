@@ -2,6 +2,8 @@ import { getConfig } from '../../common/config'
 import { logInfo, logError } from '../../common/logging'
 import open from 'open'
 import { PlaidIntegration } from './plaidIntegration'
+import { IntegrationId } from '../../types/integrations'
+import { PlaidConfig } from '../../types/integrations/plaid'
 
 export default async () => {
     return new Promise(async (resolve, reject) => {
@@ -12,10 +14,11 @@ export default async () => {
             console.log("\t3. Click 'Done Linking Accounts' in your browser when you are finished.\n")
 
             const config = getConfig()
+            const plaidConfig = config.integrations[IntegrationId.Plaid] as PlaidConfig
             const plaid = new PlaidIntegration(config)
 
             logInfo('Account setup in progress.')
-            open(`http://localhost:8000`)
+            open(`http://localhost:8000?environment=${plaidConfig.environment}`)
             await plaid.accountSetup()
 
             logInfo('Successfully set up Plaid Account(s).')
