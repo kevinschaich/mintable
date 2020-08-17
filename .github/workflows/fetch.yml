@@ -2,10 +2,10 @@ name: Fetch
 
 on:
   push:
-    branches: [ master, release/2.0.0 ]
+    branches: [ master ]
   
   pull_request:
-    branches: [ master, release/2.0.0 ]
+    branches: [ master ]
 
   # schedule:
   #   - cron:  '0 * * * *'
