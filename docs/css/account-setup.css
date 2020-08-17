@@ -1,0 +1,119 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+h1,
+h2,
+h3,
+p,
+th,
+tr,
+button {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    text-rendering: optimizeLegibility;
+}
+
+#logo {
+    width: 150px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+h1 {
+    font-weight: 500;
+    font-size: 60px;
+    margin-top: 40px;
+    color: #333;
+}
+
+h2 {
+    font-weight: 300;
+    margin-top: 40px;
+    color: #333;
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+th {
+    font-weight: 700;
+}
+
+td {
+    font-weight: 400;
+    color: #333;
+}
+
+#accounts {
+    margin-top: 80px;
+}
+
+#accounts-table {
+    border-radius: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(235, 235, 235);
+}
+
+p {
+    padding: 10px 40px;
+}
+
+th {
+    padding: 20px;
+}
+
+td {
+    padding: 10px 20px;
+    border-top: 1px solid rgb(235, 235, 235);
+    background: #fff;
+}
+
+button {
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 10px 40px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid #0a85ea;
+    color: #0a85ea;
+    transition: all 300ms;
+}
+
+button:hover {
+    color: white;
+    background-color: #0a85ea;
+}
+
+button.remove {
+    border: 1px solid #ed0d3a;
+    color: #ed0d3a;
+}
+
+button.remove:hover {
+    color: white;
+    background-color: #ed0d3a;
+}
+
+#link-button {
+    margin-top: 80px;
+}
+
+#done-button {
+    border: 1px solid #2abf54;
+    color: #2abf54;
+    margin-top: 40px;
+}
+
+#done-button:hover {
+    color: white;
+    background-color: #2abf54;
+}

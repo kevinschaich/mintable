@@ -1,0 +1,17 @@
+{
+    "accounts": {
+        "Venmo": {
+            "paths": ["/path/to/my/venmo/statements/*.csv"],
+            "transformer": {
+                "Note": "name",
+                "Datetime": "date",
+                "Amount (total)": "amount",
+                "Type+From+To": "category"
+            },
+            "dateFormat": "yyyy-MM-dd'T'HH:mm:ss",
+            "id": "Venmo",
+            "integration": "csv-import",
+            "negateValues": false
+        }
+    }
+}

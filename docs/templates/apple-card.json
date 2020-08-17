@@ -1,0 +1,17 @@
+{
+    "accounts": {
+        "Apple Card": {
+            "paths": ["/path/to/my/apple/card/statements/*.csv"],
+            "transformer": {
+                "Merchant": "name",
+                "Transaction Date": "date",
+                "Amount (USD)": "amount",
+                "Category": "category"
+            },
+            "dateFormat": "MM/dd/yyyy",
+            "id": "Apple Card",
+            "integration": "csv-import",
+            "negateValues": true
+        }
+    }
+}

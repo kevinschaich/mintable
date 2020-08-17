@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/account-setup.css" />
+    </head>
+    <body>
+        <div id="container">
+            <img id="logo" src="/img/icon.png" alt="Mintable Logo" />
+            <h1>Mintable</h1>
+            <h2>Plaid Account Setup</h2>
+            <div id="accounts"><div id="accounts-table"></div></div>
+
+            <button id="link-button">Link A New Account</button>
+
+            <br />
+
+            <button id="done-button">Done Linking Accounts</button>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+        <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+
+        <script type="text/javascript">
+            ;(function($) {
+                let handler
+                let params = new URLSearchParams(window.location.search)
+
+                let options = {
+                    env: params.get('environment'),
+                    onSuccess: function(public_token, metadata) {
+                        $.post('/get_access_token', { public_token }).then(setTimeout(() => location.reload(), 1000))
+                    },
+                    onExit: function(error, metadata) {
+                        // The user encountered a Plaid API error prior to exiting.
+                        if (error != null) {
+                            $.post('/get_access_token', { error }).then(setTimeout(() => location.reload(), 1000))
+                        }
+                        // The user exited the Link flow.
+                        $.post('/get_access_token', { exit: true }).then(setTimeout(() => location.reload(), 1000))
+                    }
+                }
+
+                $.post('/accounts').then(accounts => {
+                    console.log(accounts)
+
+                    if (accounts.length == 0) {
+                        const text = `<p>No Plaid accounts set up yet. Click "Link A New Account" to add one.`
+                        $('#accounts-table').append(text)
+                    } else {
+                        const text = `<h3>Current Accounts</h3>`
+                        $('#accounts').prepend(text)
+                        const table = `<table><tr><th>Token</th><th>Name</th><th>Update</th><th>Remove</th></tr></table>`
+                        $('#accounts-table').append(table)
+
+                        accounts.forEach(account => {
+                            const updateButton = `<button class="update" data-access-token="${account.token}">Update</button>`
+                            const removeButton = `<button class="remove" data-access-token="${account.token}">Remove</button>`
+                            const row = `<tr><td>${account.token}</td><td>${account.name}</td><td>${updateButton}</td><td>${removeButton}</td></tr>`
+                            $('#accounts table').append(row)
+                        })
+                    }
+                })
+
+                $(document).on('click', 'button.update', function(e) {
+                    access_token = e.currentTarget.getAttribute('data-access-token')
+                    $.post('/create_link_token', { access_token }).then(link_token => {
+                        options.token = link_token.link_token
+                        handler = Plaid.create(options)
+                        handler.open()
+                    })
+                })
+
+                $(document).on('click', 'button.remove', function(e) {
+                    const confirmed = confirm('Are you sure you want to remove this account? This cannot be undone.')
+                    if (confirmed === true) {
+                        token = e.currentTarget.getAttribute('data-access-token')
+                        $.post('/remove', { token: token }).then(setTimeout(() => location.reload(), 1000))
+                    }
+                })
+
+                $('#link-button').on('click', function(e) {
+                    $.post('/create_link_token', {}).then(link_token => {
+                        options.token = link_token.link_token
+                        handler = Plaid.create(options)
+                        handler.open()
+                    })
+                })
+
+                $('#done-button').on('click', function(e) {
+                    $.post('/done').then(data => {
+                        $('#container').text('You can now close this page in your browser.')
+                    })
+                })
+            })(jQuery)
+        </script>
+    </body>
+</html>

@@ -1,0 +1,17 @@
+{
+    "accounts": {
+        "American Express": {
+            "paths": ["/path/to/my/american/express/statements/*.csv"],
+            "transformer": {
+                "Description": "name",
+                "Date": "date",
+                "Amount": "amount",
+                "Category": "category"
+            },
+            "dateFormat": "MM/dd/yyyy",
+            "id": "American Express",
+            "integration": "csv-import",
+            "negateValues": true
+        }
+    }
+}

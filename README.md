@@ -1,74 +1,76 @@
-<h4 align="center"><img width="200" src="./src/static/logo.png" alt="Mintable"><h4 align="center">Roll your own ad-free Mint clone for managing personal finances using publicly available APIs.</h4><br></h4>
+<h4 align="center"><img width="100" src="./docs/img/icon.png" alt="Mintable"></h4>
+<h1 align="center" style="font-weight: 500; font-size: 60px !important; border-bottom: 0 !important;">Mintable</h1>
+
+<h4 align="center">Automate your personal finances – for free, with no ads, and no data collection.</h4>
+
+<br>
+
+Mintable helps you:
+
+- Keep track of your account balances
+- Aggregate transactions from all your banking institutions, including checking accounts, savings accounts, and credit cards
+- Analyze and budget your spending using a spreadsheet and formulas
+
+![](./docs/img/mintable.png)
+
+<br>
 
 [![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)](https://travis-ci.com/kevinschaich/mintable)
 [![](https://img.shields.io/github/release/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/releases)
 [![](https://img.shields.io/github/license/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/blob/master/LICENSE)
-[![](https://img.shields.io/github/contributors/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/graphs/contributors)
 [![](https://img.shields.io/github/issues/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/issues)
 [![](https://img.shields.io/github/issues-pr/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/pulls)
 [![](https://img.shields.io/reddit/subreddit-subscribers/Mintable?style=social)](https://reddit.com/r/Mintable)
 
+---
+
 ## Quickstart
 
-**Prerequisites:** `node` (tested `v11.6.0`), `yarn` (tested `v1.10.0`)
+1. Sign up for [Plaid's Free Plan](https://plaid.com/pricing/).
+2. Install Mintable:
 
-1. If you plan on using Plaid to fetch account data, [sign up](https://dashboard.plaid.com/signup) for an account and [apply for the development plan](https://plaid.com/pricing/). It usually takes them 1-2 business days to approve this request.
-2. Link your accounts and a spreadsheet to Mintable. Run these commands to walk through the setup:
+    ```bash
+    npm install -g mintable
+    mintable setup
+    ```
 
-```bash
-git clone https://github.com/kevinschaich/mintable.git
-cd mintable
-yarn
-yarn setup
-```
+3. Update your account balances/transactions:
 
-3. After completing the setup, run the following at any time to populate updated data into your spreadsheet: 
+    ```
+    mintable fetch
+    ```
 
-```
-yarn mintable
-```
+> **Note:** If you're already a version `1.x.x` user, you can [migrate your existing configuration to version `2.x.x`](./docs/README.md#migrating-from-v1xx).
 
-> **Note**: If you started using Mintable before `v1.0.0`, you can run `yarn migrate` to migrate to the new web-based configuration framework.
+## Documentation
 
-## Overview
-
-![Mintable](./src/static/mintable.png)
-
-Mintable simplifies managing your finances, for free, without ads, and without tracking your information. Here's how it works:
-
-1. You connect your accounts and a spreadsheet to Mintable.
-1. Mintable integrates with financial institutions to automatically populate transactions in your spreadsheet.
-1. You can add whatever formulas, charts, or calculations you want (just like a normal spreadsheet). We also have templates to get you started.
-
-## Features
-
-- Locally hosted, open-source, 100% free, ad-free, no personal data tracking, no data stored by Mintable on central servers
-- Integrates with your financial institutions for fully-automated spreadsheet updates
-- Web based setup wizard and configuration framework:
-
-![Setup Wizard](./src/static/setup.png)
-
-You can see a full list of options in the **[Config Docs](./docs/CONFIG.md)**.
+Check out the full documentation [in the `./docs` folder](./docs/README.md).
 
 ## FAQs
 
-**It's not working / I'm having trouble / I need help**
+**WTF is 'Mintable'?!**
 
-- [File an issue](https://github.com/kevinschaich/mintable/issues) or reach out on our [Reddit community](https://www.reddit.com/r/Mintable/).
+> **min·ta·ble**: _noun._
+> 1. An open-source tool to automate your personal finances – for free, with no ads, and no data collection. Derived from *mint* (the [wildly popular personal finance app from Intuit](https://www.mint.com/)) + *table* (a spreadsheet).
 
-**How is this different from [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)?**
+**Do I have to use Plaid?**
 
-- **[build-your-own-mint](https://github.com/yyx990803/build-your-own-mint)** is a set of scripts which solely facilitates the integration between Plaid and Google Sheets. It makes no assumptions about what you want your spreadsheet to look like, and you have to define your own logic to map transactions to spreadsheet updates.
-- **[Mintable](#)** is and end-to-end system that works out of the box. It comes with a setup wizard, a web-based configuration server, [pluggable providers](./docs/PROVIDERS.md) (you're not limited to just Plaid & Google Sheets), and a spreadsheet template.
+Nope. You can [import transactions from a CSV bank statement](./docs/README.md#manually--on-your-local-machine--via-csv-bank-statements) exclusively on your local machine. We also have [templates](./docs/templates) to get you started.
 
-**Do I have to give my data to Plaid and Google? Are there any completely self-hosted alternatives I can use?**
+**Do I have to use Google Sheets?**
 
-- It's [pluggable](./docs/PROVIDERS.md)! Plaid & Google Sheets are working right now – contributions are welcome for [other providers](./docs/PROVIDERS.md)!
+Nope. You can [export your account balances & transactions to a CSV file](./docs/README.md#on-your-local-machine--via-csv-files) exclusively on your local machine.
 
 **Do I have to manually run this every time I want new transactions in my spreadsheet?**
 
-- You can **[Automate Updates with a CI Provider](./docs/CONFIG.md#automate-updates-with-a-ci-provider)** to get free, automated updates!
+Nope. You can automate it for free using [BitBar](./docs/README.md#automatically-in-your-macs-menu-bar--via-bitbar), [`cron`](./docs/README.md#automatically-in-your-local-machines-terminal--via-cron), or [GitHub Actions](./docs/README#automatically-in-the-cloud--via-github-actions).
 
-## Credits
+**It's not working!**
 
-Mintable initially started as a fork of [Evan You](https://github.com/yyx990803)'s [build-your-own-mint](https://github.com/yyx990803/build-your-own-mint).
+- [File an issue](https://github.com/kevinschaich/mintable/issues) or  [![](https://img.shields.io/reddit/subreddit-subscribers/Mintable?style=social)](https://reddit.com/r/Mintable).
+
+## Alternatives
+
+- [**Money in Excel**](https://www.microsoft.com/en-us/microsoft-365/blog/2020/06/15/introducing-money-excel-easier-manage-finances/): Recently announced partnership between Microsoft/Plaid. Requires a Microsoft 365 subscription ($70+/year).
+- [**Mint**](https://www.mint.com/): Owned by Intuit (TurboTax). Apps for iOS/Android/Web.
+- [**build-your-own-mint**](https://github.com/yyx990803/build-your-own-mint): Some assembly required. More flexible.
