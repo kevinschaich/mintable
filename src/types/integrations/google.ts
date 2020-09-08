@@ -9,7 +9,7 @@ export interface GoogleCredentials {
   clientId: string
   clientSecret: string
   redirectUri: string
-  
+
   accessToken?: string
   refreshToken?: string
   scope?: string[]
@@ -23,8 +23,13 @@ export interface GoogleConfig extends BaseIntegrationConfig {
 
   credentials: GoogleCredentials
   documentId: string
-  
+
   dateFormat?: string
+
+  // Whether to export all transactions to a single sheet. Defaults to false (transactions are split by month)
+  exportToSingleSheet?: boolean
+  // If `exportToSingleSheet` is true, this controls the name of the exported sheet. Defaults to "Transactions"
+  singleSheetName?: string
 
   template?: GoogleTemplateSheetSettings
 }

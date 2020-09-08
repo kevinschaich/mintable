@@ -335,17 +335,26 @@ export class GoogleIntegration {
         // Sort transactions by date
         const transactions = sortBy(accounts.map(account => account.transactions).flat(10), 'date')
 
-        // Split transactions by month
-        const groupedTransactions = groupBy(transactions, transaction => formatISO(startOfMonth(transaction.date)))
-
-        // Write transactions by month, copying template sheet if necessary
-        for (const month in groupedTransactions) {
+        if (this.googleConfig.exportToSingleSheet) {
             await this.updateSheet(
-                format(parseISO(month), this.googleConfig.dateFormat || 'yyyy.MM'),
-                groupedTransactions[month],
+                this.googleConfig.singleSheetName ?? "Transactions",
+                transactions,
                 this.config.transactions.properties,
                 true
-            )
+                )
+        } else {
+            // Split transactions by month
+            const groupedTransactions = groupBy(transactions, transaction => formatISO(startOfMonth(transaction.date)))
+
+            // Write transactions by month, copying template sheet if necessary
+            for (const month in groupedTransactions) {
+                await this.updateSheet(
+                    format(parseISO(month), this.googleConfig.dateFormat || 'yyyy.MM'),
+                    groupedTransactions[month],
+                    this.config.transactions.properties,
+                    true
+                )
+            }
         }
 
         // Sort Sheets
