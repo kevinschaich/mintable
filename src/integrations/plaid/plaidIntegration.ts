@@ -92,21 +92,24 @@ export class PlaidIntegration {
             })
 
             app.post('/accounts', async (req, res) => {
-                let accounts: { name: string; token: string }[] = []
+                let accounts: { accountNames: string[]; institution: string; token: string }[] = []
 
                 for (const accountId in this.config.accounts) {
                     const accountConfig: PlaidAccountConfig = this.config.accounts[accountId] as PlaidAccountConfig
                     if (accountConfig.integration === IntegrationId.Plaid) {
                         try {
-                            await this.client.getAccounts(accountConfig.token).then(resp => {
+                            await this.client.getAccounts(accountConfig.token).then(async accountsResp => {
+                                const institutionResp = await this.client.getInstitutionById(accountsResp.item.institution_id)
                                 accounts.push({
-                                    name: resp.accounts[0].name,
+                                    accountNames: accountsResp.accounts.map(account => `${account.name} (${account.mask})`),
+                                    institution: institutionResp.institution.name,
                                     token: accountConfig.token
                                 })
                             })
                         } catch {
                             accounts.push({
-                                name: 'Error fetching account name',
+                                accountNames: ['Error fetching account name'],
+                                institution: 'Error fetching institution',
                                 token: accountConfig.token
                             })
                         }

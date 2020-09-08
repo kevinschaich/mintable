@@ -48,13 +48,15 @@
                     } else {
                         const text = `<h3>Current Accounts</h3>`
                         $('#accounts').prepend(text)
-                        const table = `<table><tr><th>Token</th><th>Name</th><th>Update</th><th>Remove</th></tr></table>`
+                        const table = `<table><tr><th>Institution</th><th>Account(s)</th><th>Update</th><th>Remove</th></tr></table>`
                         $('#accounts-table').append(table)
 
                         accounts.forEach(account => {
                             const updateButton = `<button class="update" data-access-token="${account.token}">Update</button>`
                             const removeButton = `<button class="remove" data-access-token="${account.token}">Remove</button>`
-                            const row = `<tr><td>${account.token}</td><td>${account.name}</td><td>${updateButton}</td><td>${removeButton}</td></tr>`
+                            const row = `<tr><td>${account.institution}</td><td>${account.accountNames.join(
+                                '\n'
+                            )}</td><td>${updateButton}</td><td>${removeButton}</td></tr>`
                             $('#accounts table').append(row)
                         })
                     }

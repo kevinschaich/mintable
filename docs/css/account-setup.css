@@ -45,11 +45,16 @@ h3 {
 
 th {
     font-weight: 700;
+    padding: 20px;
 }
 
 td {
     font-weight: 400;
     color: #333;
+    padding: 10px 30px;
+    border-top: 1px solid rgb(235, 235, 235);
+    background: #fff;
+    white-space: pre;
 }
 
 #accounts {
@@ -64,16 +69,6 @@ td {
 
 p {
     padding: 10px 40px;
-}
-
-th {
-    padding: 20px;
-}
-
-td {
-    padding: 10px 20px;
-    border-top: 1px solid rgb(235, 235, 235);
-    background: #fff;
 }
 
 button {
