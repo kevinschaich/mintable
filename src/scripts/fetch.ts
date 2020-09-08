@@ -7,7 +7,7 @@ import { IntegrationId } from '../types/integrations'
 import { parseISO, subMonths, startOfMonth } from 'date-fns'
 import { CSVImportIntegration } from '../integrations/csv-import/csvImportIntegration'
 import { CSVExportIntegration } from '../integrations/csv-export/csvExportIntegration'
-import { Transaction, TransactionRuleCondition, TransactionRule } from '../types/transaction'
+import { Transaction, TransactionRule } from '../types/transaction'
 
 export default async () => {
     const config = getConfig()

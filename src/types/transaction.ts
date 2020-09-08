@@ -1,13 +1,18 @@
 import { IntegrationId } from './integrations'
 
+// https://plaid.com/docs/#transactions
 export interface Transaction {
     // where this transaction's information came from
     integration: IntegrationId
 
-    // merchant or transaction description
+    // transaction description
     name: string
+    // merchant name
+    merchantName?: string
     // date of transaction
     date: Date
+    // date the transaction was authorized
+    authorizedDate?: Date
     // amount of transaction (purchases are positive; refunds are negative)
     amount: number
     // currency of transaction

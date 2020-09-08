@@ -225,7 +225,9 @@ export class PlaidIntegration {
                 const transactions: Transaction[] = data.transactions.map(transaction => ({
                     integration: IntegrationId.Plaid,
                     name: transaction.name,
+                    merchantName: transaction.merchant_name,
                     date: parseISO(transaction.date),
+                    authorizedDate: transaction.authorized_date !== null ? parseISO(transaction.authorized_date) : null,
                     amount: transaction.amount,
                     currency: transaction.iso_currency_code || transaction.unofficial_currency_code,
                     type: transaction.transaction_type,
