@@ -57,12 +57,6 @@ export default async () => {
                     name: 'secret',
                     message: "Secret (pick the one corresponding to your 'Environment' choice above)",
                     validate: (s: string) => (s.length === 30 ? true : 'Must be 30 characters in length.')
-                },
-                {
-                    type: 'password',
-                    name: 'publicKey',
-                    message: 'Public Key',
-                    validate: (s: string) => (s.length === 30 ? true : 'Must be 30 characters in length.')
                 }
             ])
 
@@ -73,7 +67,6 @@ export default async () => {
                 plaidConfig.environment = credentials.environment
                 plaidConfig.credentials.clientId = credentials.clientId
                 plaidConfig.credentials.secret = credentials.secret
-                plaidConfig.credentials.publicKey = credentials.publicKey
 
                 config.integrations[IntegrationId.Plaid] = plaidConfig
 

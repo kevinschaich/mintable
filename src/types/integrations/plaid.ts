@@ -1,35 +1,37 @@
 import { BaseIntegrationConfig, IntegrationId, IntegrationType } from '../integrations'
 
 export enum PlaidEnvironmentType {
-  Development = 'development',
-  Sandbox = 'sandbox'
+    Development = 'development',
+    Sandbox = 'sandbox'
 }
 
 export interface PlaidCredentials {
-  clientId: string
-  secret: string
-  publicKey: string
+    clientId: string
+    secret: string
+
+    // Deprecated in July 2020; keeping as optional so configs don't break
+    // https://github.com/plaid/plaid-node/pull/310
+    publicKey?: string
 }
 
 export interface PlaidConfig extends BaseIntegrationConfig {
-  id: IntegrationId.Plaid
-  type: IntegrationType.Import
+    id: IntegrationId.Plaid
+    type: IntegrationType.Import
 
-  environment: PlaidEnvironmentType
+    environment: PlaidEnvironmentType
 
-  credentials: PlaidCredentials
+    credentials: PlaidCredentials
 }
 
 export const defaultPlaidConfig: PlaidConfig = {
-  name: '',
-  id: IntegrationId.Plaid,
-  type: IntegrationType.Import,
+    name: '',
+    id: IntegrationId.Plaid,
+    type: IntegrationType.Import,
 
-  environment: PlaidEnvironmentType.Sandbox,
+    environment: PlaidEnvironmentType.Sandbox,
 
-  credentials: {
-    clientId: '',
-    secret: '',
-    publicKey: ''
-  }
+    credentials: {
+        clientId: '',
+        secret: ''
+    }
 }

@@ -2,7 +2,7 @@
     "name": "mintable",
     "author": "Kevin Schaich <schaich.kevin@gmail.com> (http://kevinschaich.io)",
     "license": "MIT",
-    "version": "2.0.0-beta.46",
+    "version": "2.0.1",
     "bin": "./lib/scripts/cli.js",
     "preferGlobal": true,
     "scripts": {
@@ -37,7 +37,7 @@
         "jsonc": "^2.0.0",
         "lodash": "^4.17.15",
         "open": "^7.0.2",
-        "plaid": "^4.7.0",
+        "plaid": "^7.0.0",
         "prompts": "^2.3.1",
         "typescript": "^3.8.3",
         "typescript-json-schema": "^0.42.0",

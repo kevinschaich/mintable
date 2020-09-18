@@ -1,9 +1,7 @@
-import { updateConfig, getConfig } from '../../common/config'
-import prompts from 'prompts'
+import { getConfig } from '../../common/config'
 import { logInfo, logError } from '../../common/logging'
 import open from 'open'
 import { PlaidIntegration } from './plaidIntegration'
-import { argv } from 'yargs'
 import { IntegrationId } from '../../types/integrations'
 import { PlaidConfig } from '../../types/integrations/plaid'
 
@@ -20,10 +18,8 @@ export default async () => {
             const plaid = new PlaidIntegration(config)
 
             logInfo('Account setup in progress.')
-            open(
-                `http://localhost:8000?name=${plaidConfig.name}&environment=${plaidConfig.environment}&publicKey=${plaidConfig.credentials.publicKey}`
-            )
-            await plaid.addAccount()
+            open(`http://localhost:8000?environment=${plaidConfig.environment}`)
+            await plaid.accountSetup()
 
             logInfo('Successfully set up Plaid Account(s).')
             return resolve()

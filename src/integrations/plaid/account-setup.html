@@ -21,26 +21,21 @@
 
         <script type="text/javascript">
             ;(function($) {
-                var params = new URLSearchParams(window.location.search)
-                var options = {
-                    clientName: params.get('name'),
+                let handler
+                let params = new URLSearchParams(window.location.search)
+
+                let options = {
                     env: params.get('environment'),
-                    key: params.get('publicKey'),
-                    product: ['transactions'],
-                    onSuccess: function(public_token) {
-                        $.post('/get_access_token', { public_token: public_token }).then(resp =>
-                            setTimeout(() => location.reload(), 1000)
-                        )
+                    onSuccess: function(public_token, metadata) {
+                        $.post('/get_access_token', { public_token }).then(setTimeout(() => location.reload(), 1000))
                     },
-                    onExit: function(error) {
+                    onExit: function(error, metadata) {
                         // The user encountered a Plaid API error prior to exiting.
                         if (error != null) {
-                            $.post('/get_access_token', { error: error })
+                            $.post('/get_access_token', { error }).then(setTimeout(() => location.reload(), 1000))
                         }
                         // The user exited the Link flow.
-                        $.post('/get_access_token', { exit: true }).then(resp =>
-                            setTimeout(() => location.reload(), 1000)
-                        )
+                        $.post('/get_access_token', { exit: true }).then(setTimeout(() => location.reload(), 1000))
                     }
                 }
 
@@ -57,8 +52,8 @@
                         $('#accounts-table').append(table)
 
                         accounts.forEach(account => {
-                            const updateButton = `<button class="update" data-token="${account.token}">Update</button>`
-                            const removeButton = `<button class="remove" data-token="${account.token}">Remove</button>`
+                            const updateButton = `<button class="update" data-access-token="${account.token}">Update</button>`
+                            const removeButton = `<button class="remove" data-access-token="${account.token}">Remove</button>`
                             const row = `<tr><td>${account.token}</td><td>${account.name}</td><td>${updateButton}</td><td>${removeButton}</td></tr>`
                             $('#accounts table').append(row)
                         })
@@ -66,10 +61,10 @@
                 })
 
                 $(document).on('click', 'button.update', function(e) {
-                    token = e.currentTarget.getAttribute('data-token')
-                    $.post('/exchangeAccessToken', { token: token }).then(resp => {
-                        options.token = resp.token
-                        var handler = Plaid.create(options)
+                    access_token = e.currentTarget.getAttribute('data-access-token')
+                    $.post('/create_link_token', { access_token }).then(link_token => {
+                        options.token = link_token.link_token
+                        handler = Plaid.create(options)
                         handler.open()
                     })
                 })
@@ -77,16 +72,17 @@
                 $(document).on('click', 'button.remove', function(e) {
                     const confirmed = confirm('Are you sure you want to remove this account? This cannot be undone.')
                     if (confirmed === true) {
-                        token = e.currentTarget.getAttribute('data-token')
-                        $.post('/remove', { token: token }).then(resp => {
-                            setTimeout(() => location.reload(), 1000)
-                        })
+                        token = e.currentTarget.getAttribute('data-access-token')
+                        $.post('/remove', { token: token }).then(setTimeout(() => location.reload(), 1000))
                     }
                 })
 
                 $('#link-button').on('click', function(e) {
-                    var handler = Plaid.create(options)
-                    handler.open()
+                    $.post('/create_link_token', {}).then(link_token => {
+                        options.token = link_token.link_token
+                        handler = Plaid.create(options)
+                        handler.open()
+                    })
                 })
 
                 $('#done-button').on('click', function(e) {

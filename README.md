@@ -15,7 +15,8 @@ Mintable helps you:
 
 <br>
 
-[![](https://img.shields.io/travis/com/kevinschaich/mintable/master.svg)](https://travis-ci.com/kevinschaich/mintable)
+[![](https://img.shields.io/github/workflow/status/kevinschaich/mintable/Test)](https://github.com/kevinschaich/mintable/actions?query=workflow%3ATest)
+[![](https://img.shields.io/npm/v/mintable)](https://www.npmjs.com/package/mintable)
 [![](https://img.shields.io/github/release/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/releases)
 [![](https://img.shields.io/github/license/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/blob/master/LICENSE)
 [![](https://img.shields.io/github/issues/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/issues)
@@ -63,7 +64,7 @@ Nope. You can [export your account balances & transactions to a CSV file](./docs
 
 **Do I have to manually run this every time I want new transactions in my spreadsheet?**
 
-Nope. You can automate it for free using [BitBar](./docs/README.md#automatically-in-your-macs-menu-bar--via-bitbar), [`cron`](./docs/README.md#automatically-in-your-local-machines-terminal--via-cron), or [GitHub Actions](./docs/README#automatically-in-the-cloud--via-github-actions).
+Nope. You can automate it for free using [BitBar](./docs/README.md#automatically-in-your-macs-menu-bar--via-bitbar), [`cron`](./docs/README.md#automatically-in-your-local-machines-terminal--via-cron), or [GitHub Actions](./docs/README.md#automatically-in-the-cloud--via-github-actions).
 
 **It's not working!**
 

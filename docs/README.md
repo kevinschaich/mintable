@@ -2,26 +2,26 @@
 
 #### Table of Contents
 
-+ [Overview](#overview)
-+ [Installation](#installation)
-  + [Creating a Fresh Installation](#creating-a-fresh-installation)
-  + [Migrating from `v1.x.x`](#migrating-from-v1xx)
-+ [Importing Account Balances & Transactions](#importing-account-balances--transactions)
-  + [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
-  + [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
-+ [Exporting Account Balances & Transactions](#exporting-account-balances--transactions)
-  + [In the cloud – via Google Sheets](#in-the-cloud-via-google-sheets)
-  + [On your local machine – via CSV files](#on-your-local-machine--via-csv-files)
-+ [Updating Transactions/Accounts](#updating-transactionsaccounts)
-  + [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
-  + [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
-  + [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
-  + [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
-+ [Transaction Rules](#transaction-rules)
-  + [Transaction `filter` Rules](#transaction-filter-rules)
-  + [Transaction `override` Rules](#transaction-override-rules)
-+ [Development](#development)
-+ [Contributing](#contributing)
+- [Overview](#overview)
+- [Installation](#installation)
+  - [Creating a Fresh Installation](#creating-a-fresh-installation)
+  - [Migrating from `v1.x.x`](#migrating-from-v1xx)
+- [Importing Account Balances & Transactions](#importing-account-balances--transactions)
+  - [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
+  - [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
+- [Exporting Account Balances & Transactions](#exporting-account-balances--transactions)
+  - [In the cloud – via Google Sheets](#in-the-cloud-via-google-sheets)
+  - [On your local machine – via CSV files](#on-your-local-machine--via-csv-files)
+- [Updating Transactions/Accounts](#updating-transactionsaccounts)
+  - [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
+  - [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
+  - [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
+  - [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
+- [Transaction Rules](#transaction-rules)
+  - [Transaction `filter` Rules](#transaction-filter-rules)
+  - [Transaction `override` Rules](#transaction-override-rules)
+- [Development](#development)
+- [Contributing](#contributing)
 
 ## Overview
 
@@ -62,19 +62,23 @@ Mintable simplifies managing your finances, for free, without ads, and without t
 
 ### Migrating from `v1.x.x`
 
-1. Install the new `v2.x.x` `mintable` command line utility:
+> **⚠️ Warning:** Plaid [introduced a breaking change in July 2020](https://github.com/plaid/plaid-node/pull/310) which deprecates the Public Key component from the authentication process. Once you upgrade to `v2.x.x` and disable your Public Key, you will no longer be able to continue using your `v1.x.x` installation. Proceed with caution.
+
+1. [Disable the Public Key in your Plaid Dashboard](https://plaid.com/docs/upgrade-to-link-tokens/#disable-the-public-key) (read ⚠️ above!)
+
+2. Install the new `v2.x.x` `mintable` command line utility:
 
     ```bash
     npm install -g mintable
     ```
 
-2. Migrate your config to the new format:
+3. Migrate your config to the new format:
 
     ```bash
     mintable migrate --old-config-file /path/to/your/old/mintable.config.json
     ```
 
-3. Update your account balances/transactions:
+4. Update your account balances/transactions:
 
     ```bash
     mintable fetch
