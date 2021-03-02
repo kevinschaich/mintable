@@ -75,3 +75,4 @@ Nope. You can automate it for free using [BitBar](./docs/README.md#automatically
 - [**Money in Excel**](https://www.microsoft.com/en-us/microsoft-365/blog/2020/06/15/introducing-money-excel-easier-manage-finances/): Recently announced partnership between Microsoft/Plaid. Requires a Microsoft 365 subscription ($70+/year).
 - [**Mint**](https://www.mint.com/): Owned by Intuit (TurboTax). Apps for iOS/Android/Web.
 - [**build-your-own-mint**](https://github.com/yyx990803/build-your-own-mint): Some assembly required. More flexible.
+- [**Fintable](https://fintable.io): Your finances in Airtable (instead of Google Sheets/Excel) ($45+/year)
