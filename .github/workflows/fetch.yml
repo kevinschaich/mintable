@@ -2,13 +2,13 @@ name: Fetch
 
 on:
   push:
-    branches: [ master ]
+    branches: [ uk ]
   
   pull_request:
-    branches: [ master ]
+    branches: [ uk ]
 
   schedule:
-    - cron:  '0 * * * *'
+    - cron:  '10 * * * *'
 
 jobs:
   build:
