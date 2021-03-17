@@ -20,7 +20,7 @@ jobs:
         node-version: [12.x, 14.x]
 
     env:
-      MINTABLE_CONFIG: ${{ secrets.MINTABLE_CONFIG }}
+      MINTABLE_CONFIG: ${{ secrets.MINTABLE_CONFIGUK }}
 
     steps:
     - uses: actions/checkout@v2
