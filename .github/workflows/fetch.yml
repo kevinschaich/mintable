@@ -8,7 +8,7 @@ on:
     branches: [ uk ]
 
   schedule:
-    - cron:  '10 * * * *'
+    - cron:  '3 * * * *'
 
 jobs:
   build:
