@@ -123,7 +123,7 @@ export class PlaidIntegration {
                     },
                     client_name: 'Mintable',
                     products: ['transactions'],
-                    country_codes: ['US'], // TODO
+                    country_codes: ['UK'], // TODO
                     language: 'en' // TODO
                 }
                 if (req.body.access_token) {
