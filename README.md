@@ -68,7 +68,7 @@ Nope. You can automate it for free using [BitBar](./docs/README.md#automatically
 
 **It's not working!**
 
-- [File an issue](https://github.com/kevinschaich/mintable/issues) or  [![](https://img.shields.io/reddit/subreddit-subscribers/Mintable?style=social)](https://reddit.com/r/Mintable).
+- [File an issue](https://github.com/kevinschaich/mintable/issues)
 
 ## Alternatives
 
