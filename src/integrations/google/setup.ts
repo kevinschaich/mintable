@@ -47,7 +47,7 @@ export default async () => {
                 }
             ])
 
-            updateConfig(config => {
+            await updateConfig(config => {
                 let googleConfig = (config.integrations[IntegrationId.Google] as GoogleConfig) || defaultGoogleConfig
 
                 googleConfig.name = credentials.name
@@ -63,7 +63,8 @@ export default async () => {
                 return config
             })
 
-            const google = new GoogleIntegration(getConfig())
+            const newConfig = await getConfig();
+            const google = new GoogleIntegration(newConfig);
             open(google.getAuthURL())
 
             console.log('\n\t5. A link will open in your browser asking you to sign in')
@@ -87,7 +88,7 @@ export default async () => {
             await google.saveAccessTokens(tokens)
 
             logInfo('Successfully set up Google Integration.')
-            return resolve()
+            return resolve(1)
         } catch (e) {
             logError('Unable to set up Plaid Integration.', e)
             return reject()

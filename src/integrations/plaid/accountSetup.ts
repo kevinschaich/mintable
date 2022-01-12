@@ -13,7 +13,7 @@ export default async () => {
             console.log('\t2. Sign in with your banking provider for each account you wish to link.')
             console.log("\t3. Click 'Done Linking Accounts' in your browser when you are finished.\n")
 
-            const config = getConfig()
+            const config = await getConfig()
             const plaidConfig = config.integrations[IntegrationId.Plaid] as PlaidConfig
             const plaid = new PlaidIntegration(config)
 
@@ -22,7 +22,7 @@ export default async () => {
             await plaid.accountSetup()
 
             logInfo('Successfully set up Plaid Account(s).')
-            return resolve()
+            return resolve(1)
         } catch (e) {
             logError('Unable to set up Plaid Account(s).', e)
             return reject()

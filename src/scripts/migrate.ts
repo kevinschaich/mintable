@@ -14,10 +14,10 @@ export const getOldConfig = (): ConfigSource => {
     logError('You need to specify the --old-config-file argument.')
 }
 
-export default () => {
+export default async () => {
     try {
         const oldConfigSource = getOldConfig()
-        const oldConfigString = readConfig(oldConfigSource)
+        const oldConfigString = await readConfig(oldConfigSource)
         let oldConfig = parseConfig(oldConfigString)
 
         const deprecatedProperties = ['HOST', 'PORT', 'CATEGORY_OVERRIDES', 'DEBUG', 'CREATE_BALANCES_SHEET', 'DEBUG']

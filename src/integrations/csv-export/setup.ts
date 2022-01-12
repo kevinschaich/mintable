@@ -45,7 +45,7 @@ export default async () => {
                 }
             ])
 
-            updateConfig(config => {
+            await updateConfig(config => {
                 let CSVExportConfig =
                     (config.integrations[IntegrationId.CSVExport] as CSVExportConfig) || defaultCSVExportConfig
 
@@ -62,7 +62,7 @@ export default async () => {
             })
 
             logInfo('Successfully set up CSV Export Integration.')
-            return resolve()
+            return resolve(1)
         } catch (e) {
             logError('Unable to set up CSV Export Integration.', e)
             return reject()
