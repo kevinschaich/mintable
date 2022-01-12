@@ -231,6 +231,7 @@ export class PlaidIntegration {
                     type: transaction.transaction_type,
                     accountId: transaction.account_id,
                     transactionId: transaction.transaction_id,
+                    pendingtransactionId: transaction.pending_transaction_id,
                     category: transaction.category.join(' - '),
                     address: transaction.location.address,
                     city: transaction.location.city,
