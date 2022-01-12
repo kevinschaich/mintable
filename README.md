@@ -62,6 +62,10 @@ Nope. You can [import transactions from a CSV bank statement](./docs/README.md#m
 
 Nope. You can [export your account balances & transactions to a CSV file](./docs/README.md#on-your-local-machine--via-csv-files) exclusively on your local machine.
 
+**Do I have to use AWS Secrets Manager?**
+
+Nope. You can keep your config information in a file exclusively on your local machine.
+
 **Do I have to manually run this every time I want new transactions in my spreadsheet?**
 
 Nope. You can automate it for free using [BitBar](./docs/README.md#automatically-in-your-macs-menu-bar--via-bitbar), [`cron`](./docs/README.md#automatically-in-your-local-machines-terminal--via-cron), or [GitHub Actions](./docs/README.md#automatically-in-the-cloud--via-github-actions).

@@ -2,26 +2,29 @@
 
 #### Table of Contents
 
-- [Overview](#overview)
-- [Installation](#installation)
-  - [Creating a Fresh Installation](#creating-a-fresh-installation)
-  - [Migrating from `v1.x.x`](#migrating-from-v1xx)
-- [Importing Account Balances & Transactions](#importing-account-balances--transactions)
-  - [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
-  - [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
-- [Exporting Account Balances & Transactions](#exporting-account-balances--transactions)
-  - [In the cloud – via Google Sheets](#in-the-cloud-via-google-sheets)
-  - [On your local machine – via CSV files](#on-your-local-machine--via-csv-files)
-- [Updating Transactions/Accounts](#updating-transactionsaccounts)
-  - [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
-  - [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
-  - [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
-  - [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
-- [Transaction Rules](#transaction-rules)
-  - [Transaction `filter` Rules](#transaction-filter-rules)
-  - [Transaction `override` Rules](#transaction-override-rules)
-- [Development](#development)
-- [Contributing](#contributing)
+- [Documentation](#documentation)
+      - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Installation](#installation)
+    - [Creating a Fresh Installation](#creating-a-fresh-installation)
+    - [Migrating from `v1.x.x`](#migrating-from-v1xx)
+  - [Importing Account Balances & Transactions](#importing-account-balances--transactions)
+    - [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
+    - [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
+  - [Exporting Account Balances & Transactions](#exporting-account-balances--transactions)
+    - [In the cloud – via Google Sheets](#in-the-cloud-via-google-sheets)
+    - [On your local machine – via CSV files](#on-your-local-machine--via-csv-files)
+  - [Updating Transactions/Accounts](#updating-transactionsaccounts)
+    - [Manually – in your local machine's terminal](#manually-in-your-local-machines-terminal)
+    - [Automatically – in your Mac's Menu Bar – via BitBar](#automatically-in-your-macs-menu-bar--via-bitbar)
+    - [Automatically – in your local machine's terminal – via `cron`](#automatically-in-your-local-machines-terminal--via-cron)
+    - [Automatically – in the cloud – via GitHub Actions](#automatically-in-the-cloud--via-github-actions)
+    - [Automatically – in the cloud – via AWS Lambda Functions](#automatically-in-the-cloud--via-aws-lambda-functions)
+  - [Transaction Rules](#transaction-rules)
+    - [Transaction `filter` Rules](#transaction-filter-rules)
+    - [Transaction `override` Rules](#transaction-override-rules)
+  - [Development](#development)
+  - [Contributing](#contributing)
 
 ## Overview
 
@@ -238,6 +241,45 @@ You can use GitHub Actions to run Mintable automatically in the cloud:
 In the **Actions** tab of your repo, the **Fetch** workflow will now update your sheet periodically. The default refresh interval is 1 hour – you can use [Crontab Guru](https://crontab.guru/) to define your own interval.
 
 > **Note:** The minimum interval supported by GitHub Actions is every 5 minutes.
+
+### Automatically – in the cloud – via AWS Lambda Functions
+
+You can use AWS Lambda functions to run Mintable automatically in the cloud:
+
+> **Note:** This requires an AWS account with billing enabled, but Lambda invocations and your secrets manager secret will be covered under the free tier.
+> **Note:** Some of these steps can be skipped if you have already setup an AWS account and are authenticated with the CLI.
+
+1. Install mintable normally and setup your accounts.
+2. Fork [this repo](https://github.com/kevinschaich/mintable) and open the directory.
+3. [Install AWS cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+4. [Install AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
+5. [Create an AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
+6. Go to [AWS secrets manager](https://console.aws.amazon.com/secretsmanager/home). 
+   1. Select **Store a new secret** >> **Other type of secret** >> **Plaintext**
+   2. Open your mintable generated config file and copy the contents. Then, paste over the contents in the box on AWS.
+   3. Select **Next** and give your secret a name in **Secret name**. Select **Next** >> **Next** >> **Store**.
+   4. Select your new secret and copy the **Secret ARN**.
+   5. Paste your copied ARN into SECRET_MANAGER_ARN in the `template.yaml` file.
+7.  Go to [AWS IAM](https://console.aws.amazon.com/iamv2/home#/roles). 
+8.  Select **Create role** >> **AWS Service** >> **Lambda** >> **Next: Permissions**
+    1.  Search **SecretsManagerReadWrite** and select the option.
+    2.  Select **Next: Tags** >> **Next: Review** and give your role a name.
+    3.  Select **Create Role**.
+    4.  Select your new role from the list. Copy the **Role ARN** and paste it into `template.yaml` file next to role.
+9.  [Create access keys for your root user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user_manage_add-key).
+10. Authenticate with the AWS cli and paste your keys: 
+   ```
+    $ aws configure
+    AWS Access Key ID []:
+    AWS Secret Access Key []: 
+    Default region name []: us-east-1
+    Default output format [json]: 
+
+   ```
+15. Open a terminal in the cloned repo.
+16. Run `sam deploy --guided` and follow the prompts accordingly.
+
+Done! Look for you lambda in AWS.
 
 ---
 
