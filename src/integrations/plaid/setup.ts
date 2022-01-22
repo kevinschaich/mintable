@@ -60,7 +60,7 @@ export default async () => {
                 }
             ])
 
-            updateConfig(config => {
+            await updateConfig(config => {
                 let plaidConfig = (config.integrations[IntegrationId.Plaid] as PlaidConfig) || defaultPlaidConfig
 
                 plaidConfig.name = credentials.name
@@ -74,7 +74,7 @@ export default async () => {
             })
 
             logInfo('Successfully set up Plaid Integration.')
-            return resolve()
+            return resolve(1)
         } catch (e) {
             logError('Unable to set up Plaid Integration.', e)
             return reject()

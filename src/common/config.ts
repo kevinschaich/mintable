@@ -10,6 +10,10 @@ import { Definition, CompilerOptions, PartialArgs, getProgramFromFiles, generate
 import Ajv from 'ajv'
 import { BalanceConfig } from '../types/balance'
 import { jsonc } from 'jsonc'
+import { SecretsManagerClient, PutSecretValueCommand, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
+
+const REGION = "us-east-1";
+const secretsManagerClient = new SecretsManagerClient({ region: REGION });
 
 const DEFAULT_CONFIG_FILE = '~/mintable.jsonc'
 const DEFAULT_CONFIG_VAR = 'MINTABLE_CONFIG'
@@ -37,7 +41,12 @@ export interface EnvironmentConfig {
     variable: string
 }
 
-export type ConfigSource = FileConfig | EnvironmentConfig
+export interface SecretManagerConfig {
+    type: 'secretManager'
+    secretName: string
+}
+
+export type ConfigSource = FileConfig | EnvironmentConfig | SecretManagerConfig
 
 export interface Config {
     integrations: { [id: string]: IntegrationConfig }
@@ -58,6 +67,11 @@ export const getConfigSource = (): ConfigSource => {
         return { type: 'environment', variable: DEFAULT_CONFIG_VAR }
     }
 
+    if (process.env.SECRET_MANAGER_ARN) {
+        logInfo(`Using Secrets Manager.`)
+        return { type: 'secretManager', secretName: process.env.SECRET_MANAGER_NAME }
+    }
+
     // Default to DEFAULT_CONFIG_FILE
     const path = DEFAULT_CONFIG_FILE.replace(/^~(?=$|\/|\\)/, os.homedir())
     logInfo(`Using default configuration file \`${path}.\``)
@@ -65,7 +79,7 @@ export const getConfigSource = (): ConfigSource => {
     return { type: 'file', path: path }
 }
 
-export const readConfig = (source: ConfigSource, checkExists?: boolean): string => {
+export const readConfig = async (source: ConfigSource, checkExists?: boolean): Promise<string> => {
     if (source.type === 'file') {
         try {
             const config = fs.readFileSync(source.path, 'utf8')
@@ -95,6 +109,28 @@ export const readConfig = (source: ConfigSource, checkExists?: boolean): string 
                 logInfo('Unable to read config variable from env.')
             } else {
                 logError('Unable to read config variable from env.', e)
+            }
+        }
+    }
+    if (source.type === 'secretManager') {
+        try {
+
+            const secret = await secretsManagerClient.send(new GetSecretValueCommand({
+                SecretId: source.secretName
+            }));
+            const config = secret.SecretString;
+            
+            if (config === undefined) {
+                throw `Unable to get config from Secrets Manager.`
+            }
+
+            logInfo('Successfully retrieved configuration variable.')
+            return config
+        } catch (e) {
+            if (!checkExists) {
+                logInfo('Unable to read config variable from secrets manager.')
+            } else {
+                logError('Unable to read config variable from secrets manager', e)
             }
         }
     }
@@ -159,15 +195,15 @@ export const validateConfig = (parsedConfig: Object): Config => {
     return validatedConfig
 }
 
-export const getConfig = (): Config => {
+export const getConfig = async (): Promise<Config> => {
     const configSource = getConfigSource()
-    const configString = readConfig(configSource)
+    const configString = await readConfig(configSource)
     const parsedConfig = parseConfig(configString)
     const validatedConfig = validateConfig(parsedConfig)
     return validatedConfig
 }
 
-export const writeConfig = (source: ConfigSource, config: Config): void => {
+export const writeConfig = async (source: ConfigSource, config: Config): Promise<void> => {
     if (source.type === 'file') {
         try {
             fs.writeFileSync(source.path, jsonc.stringify(config, null, 2))
@@ -181,23 +217,35 @@ export const writeConfig = (source: ConfigSource, config: Config): void => {
             'Node does not have permissions to modify global environment variables. Please use file-based configuration to make changes.'
         )
     }
+    if (source.type === 'secretManager') {
+        try {
+            const putSecretValue = new PutSecretValueCommand({
+                SecretId: source.secretName,
+                SecretString: jsonc.stringify(config, null, 2)
+            });
+            await secretsManagerClient.send(putSecretValue);
+            logInfo('Successfully wrote configuration file.')
+        } catch (e) {
+            logError('Unable to write configuration file.', e)
+        }
+    }
 }
 
 type ConfigTransformer = (oldConfig: Config) => Config
 
-export const updateConfig = (configTransformer: ConfigTransformer, initialize?: boolean): Config => {
+export const updateConfig = async (configTransformer: ConfigTransformer, initialize?: boolean): Promise<Config> => {
     let newConfig: Config
     const configSource = getConfigSource()
 
     if (initialize) {
         newConfig = configTransformer(DEFAULT_CONFIG)
     } else {
-        const configString = readConfig(configSource)
+        const configString = await readConfig(configSource)
         const oldConfig = parseConfig(configString) as Config
         newConfig = configTransformer(oldConfig)
     }
 
     const validatedConfig = validateConfig(newConfig)
-    writeConfig(configSource, validatedConfig)
+    await writeConfig(configSource, validatedConfig)
     return validatedConfig
 }

@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+  mintable:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: .
+      Handler: lib/scripts/lambda.lambdaHandler
+      Runtime: nodejs14.x
+      Description: ''
+      MemorySize: 512
+      Timeout: 60
+      Role: <your role arn>
+      Environment:
+        Variables:
+          SECRET_MANAGER_ARN: <your secret manager arn>
+      Events:
+        ScheduledEvent:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 days)
+            Enabled: True 

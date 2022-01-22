@@ -10,7 +10,7 @@ import { CSVExportIntegration } from '../integrations/csv-export/csvExportIntegr
 import { Transaction, TransactionRuleCondition, TransactionRule } from '../types/transaction'
 
 export default async () => {
-    const config = getConfig()
+    const config = await getConfig()
 
     // Start date to fetch transactions, default to 2 months of history
     let startDate = config.transactions.startDate

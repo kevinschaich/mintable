@@ -61,7 +61,7 @@ export default async () => {
                 integration: IntegrationId.CSVImport
             }
 
-            updateConfig(config => {
+            await updateConfig(config => {
                 let CSVImportConfig =
                     (config.integrations[IntegrationId.CSVImport] as CSVImportConfig) || defaultCSVImportConfig
 
@@ -78,7 +78,7 @@ export default async () => {
             )
 
             logInfo('Successfully set up CSV Import Integration.')
-            return resolve()
+            return resolve(1)
         } catch (e) {
             logError('Unable to set up CSV Import Integration.', e)
             return reject()

@@ -63,7 +63,7 @@ import { logError } from '../common/logging'
                 logError('Config update cancelled by user.')
             }
         }
-        updateConfig(config => config, true)
+        await updateConfig(config => config, true)
         await plaid()
         await google()
         await accountSetup()
