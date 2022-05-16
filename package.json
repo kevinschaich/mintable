@@ -27,7 +27,7 @@
         "@types/prompts": "^2.0.3",
         "ajv": "^6.12.0",
         "body-parser": "^1.19.0",
-        "chalk": "^3.0.0",
+        "chalk": "^4.0.0",
         "csv-parse": "^4.10.1",
         "csv-stringify": "^5.5.0",
         "date-fns": "^2.10.0",
