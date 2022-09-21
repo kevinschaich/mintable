@@ -68,6 +68,10 @@ Nope. You can [export your account balances & transactions to a CSV file](./docs
 
 Nope. You can automate it for free using [BitBar](./docs/README.md#automatically-in-your-macs-menu-bar--via-bitbar), [`cron`](./docs/README.md#automatically-in-your-local-machines-terminal--via-cron), or [GitHub Actions](./docs/README.md#automatically-in-the-cloud--via-github-actions).
 
+**How do I use it with banks outside the US?**
+
+Fork & edit the [country codes here](https://github.com/kevinschaich/mintable/blob/377257a6040ed9b6dd93d88435e53c48108b5806/src/integrations/plaid/plaidIntegration.ts#L126). Default support is for US banks.
+
 **It's not working!**
 
 - [File an issue](https://github.com/kevinschaich/mintable/issues)
