@@ -27,6 +27,8 @@ Mintable helps you:
 
 ## Quickstart
 
+Requires `node >= v11.0.0`.
+
 1. Sign up for [Plaid's Free Plan](https://plaid.com/pricing/).
 2. Install Mintable:
 
