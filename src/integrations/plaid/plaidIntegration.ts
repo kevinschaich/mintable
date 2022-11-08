@@ -1,6 +1,17 @@
 import path from 'path'
 import { parseISO, format, subMonths } from 'date-fns'
-import plaid, { TransactionsResponse, CreateLinkTokenOptions } from 'plaid'
+import {
+    Configuration,
+    CountryCode,
+    ItemPublicTokenExchangeResponse,
+    LinkTokenCreateRequest,
+    PlaidApi,
+    PlaidEnvironments,
+    Products,
+    TransactionsGetRequest,
+    TransactionsGetRequestOptions,
+    TransactionsGetResponse
+} from 'plaid'
 import { Config, updateConfig } from '../../common/config'
 import { PlaidConfig, PlaidEnvironmentType } from '../../types/integrations/plaid'
 import { IntegrationId } from '../../types/integrations'
@@ -17,8 +28,8 @@ export class PlaidIntegration {
     config: Config
     plaidConfig: PlaidConfig
     environment: string
-    client: plaid.Client
-    user: plaid.User
+    client: PlaidApi
+    user: any
 
     constructor(config: Config) {
         this.config = config
@@ -26,17 +37,20 @@ export class PlaidIntegration {
 
         this.environment =
             this.plaidConfig.environment === PlaidEnvironmentType.Development
-                ? plaid.environments.development
-                : plaid.environments.sandbox
+                ? PlaidEnvironments.development
+                : PlaidEnvironments.sandbox
 
-        this.client = new plaid.Client({
-            clientID: this.plaidConfig.credentials.clientId,
-            secret: this.plaidConfig.credentials.secret,
-            env: this.environment,
-            options: {
-                version: '2019-05-29'
+        const configuration = new Configuration({
+            basePath: this.environment,
+            baseOptions: {
+                headers: {
+                    'PLAID-CLIENT-ID': this.plaidConfig.credentials.clientId,
+                    'PLAID-SECRET': this.plaidConfig.credentials.secret
+                }
             }
         })
+
+        this.client = new PlaidApi(configuration)
 
         // In production this is supposed to be a unique identifier but for Mintable we only have one user (you)
         this.user = {
@@ -44,11 +58,7 @@ export class PlaidIntegration {
         }
     }
 
-    public exchangeAccessToken = (accessToken: string): Promise<string> =>
-        // Exchange an expired API access_token for a new Link public_token
-        this.client.createPublicToken(accessToken).then(token => token.public_token)
-
-    public savePublicToken = (tokenResponse: plaid.TokenResponse): void => {
+    public savePublicToken = (tokenResponse: ItemPublicTokenExchangeResponse): void => {
         updateConfig(config => {
             config.accounts[tokenResponse.item_id] = {
                 id: tokenResponse.item_id,
@@ -72,11 +82,8 @@ export class PlaidIntegration {
 
             app.post('/get_access_token', (req, res) => {
                 if (req.body.public_token !== undefined) {
-                    client.exchangePublicToken(req.body.public_token, (error, tokenResponse) => {
-                        if (error != null) {
-                            reject(logError('Encountered error exchanging Plaid public token.', error))
-                        }
-                        this.savePublicToken(tokenResponse)
+                    client.itemPublicTokenExchange({ public_token: req.body.public_token }).then(res => {
+                        this.savePublicToken(res.data)
                         resolve(logInfo('Plaid access token saved.', req.body))
                     })
                 } else if (req.body.exit !== undefined) {
@@ -98,9 +105,9 @@ export class PlaidIntegration {
                     const accountConfig: PlaidAccountConfig = this.config.accounts[accountId] as PlaidAccountConfig
                     if (accountConfig.integration === IntegrationId.Plaid) {
                         try {
-                            await this.client.getAccounts(accountConfig.token).then(resp => {
+                            await this.client.accountsGet({ access_token: accountConfig.token }).then(resp => {
                                 accounts.push({
-                                    name: resp.accounts[0].name,
+                                    name: resp.data.accounts[0].name,
                                     token: accountConfig.token
                                 })
                             })
@@ -116,29 +123,20 @@ export class PlaidIntegration {
             })
 
             app.post('/create_link_token', async (req, res) => {
-                const clientUserId = this.user.client_user_id
-                const options: CreateLinkTokenOptions = {
+                const options: LinkTokenCreateRequest = {
                     user: {
-                        client_user_id: clientUserId
+                        client_user_id: this.user.client_user_id
                     },
                     client_name: 'Mintable',
-                    products: ['transactions'],
-                    country_codes: ['US'], // TODO
+                    products: [Products.Transactions],
+                    country_codes: [CountryCode.Us], // TODO
                     language: 'en' // TODO
                 }
-                if (req.body.access_token) {
-                    options.access_token = req.body.access_token
-                    delete options.products
-                }
-                this.client.createLinkToken(options, (err, data) => {
-                    if (err) {
-                        logError('Error creating Plaid link token.', err)
-                    }
-                    logInfo('Successfully created Plaid link token.')
-                    res.json({ link_token: data.link_token })
-                })
-            })
 
+                const result = await this.client.linkTokenCreate(options)
+
+                res.json({ link_token: result.data.link_token })
+            })
             app.post('/remove', async (req, res) => {
                 try {
                     await updateConfig(config => {
@@ -178,7 +176,7 @@ export class PlaidIntegration {
         accountConfig: AccountConfig,
         startDate: Date,
         endDate: Date
-    ): Promise<TransactionsResponse> => {
+    ): Promise<TransactionsGetResponse> => {
         return new Promise(async (resolve, reject) => {
             accountConfig = accountConfig as PlaidAccountConfig
             try {
@@ -186,13 +184,29 @@ export class PlaidIntegration {
                 const start = format(startDate, dateFormat)
                 const end = format(endDate, dateFormat)
 
-                let options: plaid.TransactionsRequestOptions = { count: 500, offset: 0 }
-                let accounts = await this.client.getTransactions(accountConfig.token, start, end, options)
+                let transactionsGetRequest: TransactionsGetRequest = {
+                    access_token: accountConfig.token,
+                    start_date: start,
+                    end_date: end
+                }
+                let transactionsGetRequestOptions: TransactionsGetRequestOptions = {
+                    account_ids: [accountConfig.id],
+                    count: 500,
+                    offset: 0
+                }
+                let accounts: TransactionsGetResponse = null
+
+                await this.client.transactionsGet(transactionsGetRequest, transactionsGetRequestOptions).then(res => {
+                    accounts = res.data
+                })
 
                 while (accounts.transactions.length < accounts.total_transactions) {
-                    options.offset += options.count
-                    const next_page = await this.client.getTransactions(accountConfig.token, start, end, options)
-                    accounts.transactions = accounts.transactions.concat(next_page.transactions)
+                    transactionsGetRequestOptions.offset += transactionsGetRequestOptions.count
+                    const next_page = await this.client.transactionsGet(
+                        transactionsGetRequest,
+                        transactionsGetRequestOptions
+                    )
+                    accounts.transactions = accounts.transactions.concat(next_page.data.transactions)
                 }
 
                 return resolve(accounts)
