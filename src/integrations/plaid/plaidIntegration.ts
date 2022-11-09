@@ -1,6 +1,7 @@
 import path from 'path'
 import { parseISO, format, subMonths } from 'date-fns'
-import {
+import plaid, {
+    AccountBase,
     Configuration,
     CountryCode,
     ItemPublicTokenExchangeResponse,
@@ -8,9 +9,7 @@ import {
     PlaidApi,
     PlaidEnvironments,
     Products,
-    TransactionsGetRequest,
-    TransactionsGetRequestOptions,
-    TransactionsGetResponse
+    TransactionsGetRequest
 } from 'plaid'
 import { Config, updateConfig } from '../../common/config'
 import { PlaidConfig, PlaidEnvironmentType } from '../../types/integrations/plaid'
@@ -176,40 +175,40 @@ export class PlaidIntegration {
         accountConfig: AccountConfig,
         startDate: Date,
         endDate: Date
-    ): Promise<TransactionsGetResponse> => {
+    ): Promise<{ accounts: AccountBase[]; transactions: plaid.Transaction[] }> => {
         return new Promise(async (resolve, reject) => {
             accountConfig = accountConfig as PlaidAccountConfig
+
+            const dateFormat = 'yyyy-MM-dd'
+            const start = format(startDate, dateFormat)
+            const end = format(endDate, dateFormat)
+
+            const request: TransactionsGetRequest = {
+                access_token: accountConfig.token,
+                start_date: start,
+                end_date: end
+            }
+
             try {
-                const dateFormat = 'yyyy-MM-dd'
-                const start = format(startDate, dateFormat)
-                const end = format(endDate, dateFormat)
+                const response = await this.client.transactionsGet(request)
 
-                let transactionsGetRequest: TransactionsGetRequest = {
-                    access_token: accountConfig.token,
-                    start_date: start,
-                    end_date: end
+                let transactions = response.data.transactions
+                const total_transactions = response.data.total_transactions
+                // Manipulate the offset parameter to paginate
+                // transactions and retrieve all available data
+
+                while (transactions.length < total_transactions) {
+                    const paginatedRequest: TransactionsGetRequest = {
+                        ...request,
+                        options: {
+                            offset: transactions.length
+                        }
+                    }
+
+                    const paginatedResponse = await this.client.transactionsGet(paginatedRequest)
+                    transactions = transactions.concat(paginatedResponse.data.transactions)
                 }
-                let transactionsGetRequestOptions: TransactionsGetRequestOptions = {
-                    account_ids: [accountConfig.id],
-                    count: 500,
-                    offset: 0
-                }
-                let accounts: TransactionsGetResponse = null
-
-                await this.client.transactionsGet(transactionsGetRequest, transactionsGetRequestOptions).then(res => {
-                    accounts = res.data
-                })
-
-                while (accounts.transactions.length < accounts.total_transactions) {
-                    transactionsGetRequestOptions.offset += transactionsGetRequestOptions.count
-                    const next_page = await this.client.transactionsGet(
-                        transactionsGetRequest,
-                        transactionsGetRequestOptions
-                    )
-                    accounts.transactions = accounts.transactions.concat(next_page.data.transactions)
-                }
-
-                return resolve(accounts)
+                return resolve({ accounts: response.data.accounts, transactions: transactions })
             } catch (e) {
                 return reject(e)
             }
@@ -269,7 +268,7 @@ export class PlaidIntegration {
                 }))
 
                 logInfo(
-                    `Fetched ${data.accounts.length} sub-accounts and ${data.total_transactions} transactions.`,
+                    `Fetched ${data.accounts.length} sub-accounts and ${data.transactions.length} transactions.`,
                     accounts
                 )
                 return accounts
