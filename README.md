@@ -15,7 +15,7 @@ Mintable helps you:
 
 <br>
 
-[![](https://img.shields.io/github/workflow/status/kevinschaich/mintable/Test)](https://github.com/kevinschaich/mintable/actions?query=workflow%3ATest)
+[![](https://img.shields.io/github/actions/workflow/status/kevinschaich/mintable/test.yml?branch=master)](https://github.com/kevinschaich/mintable/actions?query=workflow%3ATest)
 [![](https://img.shields.io/npm/v/mintable)](https://www.npmjs.com/package/mintable)
 [![](https://img.shields.io/github/release/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/releases)
 [![](https://img.shields.io/github/license/kevinschaich/mintable.svg)](https://github.com/kevinschaich/mintable/blob/master/LICENSE)
