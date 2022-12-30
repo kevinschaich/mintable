@@ -47,9 +47,6 @@
     "devDependencies": {
         "prettier": "^1.16.4"
     },
-    "overrides": {
-        "@types/express-serve-static-core": "4.17.28"
-    },
     "description": "Automate your personal finances – for free, with no ads, and no data collection.",
     "repository": {
         "type": "git",
