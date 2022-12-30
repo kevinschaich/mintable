@@ -72,6 +72,10 @@ Check out the full documentation [in the `./docs` folder](./docs/README.md).
 
 * Fork & edit the [country codes here](https://github.com/kevinschaich/mintable/blob/377257a6040ed9b6dd93d88435e53c48108b5806/src/integrations/plaid/plaidIntegration.ts#L126). Default support is for US banks.
 
+**How do I use it with Windows?**
+
+* Windows is not natively supported but you can try [this](https://github.com/kevinschaich/mintable/issues/125#issuecomment-1253961155).
+
 **It's not working!**
 
 - [File an issue](https://github.com/kevinschaich/mintable/issues)
