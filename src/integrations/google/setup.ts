@@ -14,7 +14,8 @@ export default async () => {
             )
             console.log('\n\t1. Create a new Google Sheet (https://sheets.new)')
             console.log('\t2. Follow the guide here: https://developers.google.com/workspace/guides/create-credentials#desktop-app')
-            console.log('\t3. Answer the following questions:\n')
+            console.log(`\t3. Make sure your app's Publishing Status is 'Testing', and add your Gmail account you wish to use as a Test User here: https://console.cloud.google.com/apis/credentials/consent`)
+            console.log('\t4. Answer the following questions:\n')
 
             const credentials = await prompts([
                 {
