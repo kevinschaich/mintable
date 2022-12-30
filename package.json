@@ -39,7 +39,7 @@
         "open": "^7.0.2",
         "plaid": "^7.0.0",
         "prompts": "^2.3.1",
-        "typescript": "^3.8.3",
+        "typescript": "3.8.3",
         "typescript-json-schema": "^0.42.0",
         "yargs": "^15.1.0"
     },
@@ -47,7 +47,7 @@
         "prettier": "^1.16.4"
     },
     "overrides": {
-        "@types/express-serve-static-core": "4.17.30"
+        "@types/express-serve-static-core": "4.17.28"
     },
     "description": "Automate your personal finances – for free, with no ads, and no data collection.",
     "repository": {
