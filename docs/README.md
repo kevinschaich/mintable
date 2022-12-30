@@ -315,6 +315,11 @@ npm run watch
 To publish a new version, increment `version` in `package.json` and run:
 
 ```bash
+git add package.json
+git commit -m 'vX.X.X'
+git push
+
+rm -rf lib/
 npm run build
 npm publish
 ```
