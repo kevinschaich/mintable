@@ -70,7 +70,8 @@ Check out the full documentation [in the `./docs` folder](./docs/README.md).
 
 **How do I use it with banks outside the US?**
 
-* Fork & edit the [country codes here](https://github.com/kevinschaich/mintable/blob/377257a6040ed9b6dd93d88435e53c48108b5806/src/integrations/plaid/plaidIntegration.ts#L126). Default support is for US banks.
+* Yes, it's possible. The default banks is US, but you can change this easily with an environment variable. You can find country codes [here](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements).
+* For example: `export COUNTRY_CODES="US,UK,DE"`
 
 **How do I use it with Windows?**
 

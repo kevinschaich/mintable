@@ -6,7 +6,7 @@ import { logInfo, logError } from '../../common/logging'
 import { CSVAccountConfig } from '../../types/account'
 
 export default async () => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         try {
             console.log(
                 '\nThis script will walk you through setting up the CSV Import integration. Follow these steps:'

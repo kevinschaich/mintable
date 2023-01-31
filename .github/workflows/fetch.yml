@@ -3,7 +3,7 @@ name: Fetch
 on:
   push:
     branches: [ master ]
-  
+
   pull_request:
     branches: [ master ]
 
@@ -17,13 +17,13 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [12.x, 14.x, 16.x]
 
     env:
       MINTABLE_CONFIG: ${{ secrets.MINTABLE_CONFIG }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
