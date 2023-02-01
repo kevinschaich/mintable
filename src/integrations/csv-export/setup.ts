@@ -5,7 +5,7 @@ import { updateConfig } from '../../common/config'
 import { logInfo, logError } from '../../common/logging'
 
 export default async () => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         try {
             console.log(
                 '\nThis script will walk you through setting up the CSV Export integration. Follow these steps:'
