@@ -41,6 +41,8 @@ export class CSVImportIntegration {
                         return files.map(match => {
                             try {
                                 const rows = parse(readFileSync(match), {
+                                    encoding: 'utf8',
+                                    delimiter: Buffer.from(CSVAccountConfig.delimiter, 'utf8'),
                                     columns: true,
                                     skip_empty_lines: true
                                 })
