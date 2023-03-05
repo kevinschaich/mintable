@@ -75,8 +75,11 @@ export class GoogleIntegration {
         return this.sheets
             .get({ spreadsheetId: documentId || this.googleConfig.documentId })
             .then(res => {
-                logInfo(`Fetched ${res.data.sheets.length} sheets.`, res.data.sheets)
-                return res.data.sheets
+                let sheets = res.data.sheets
+                logInfo(`Fetched ${sheets.length} sheets.`, sheets)
+                sheets = sheets.filter(s => s.properties.sheetType == 'GRID')
+                logInfo(`${sheets.length} grid-type sheets`)
+                return sheets
             })
             .catch(error => {
                 logError(`Error fetching sheets for spreadsheet ${this.googleConfig.documentId}.`, error)
