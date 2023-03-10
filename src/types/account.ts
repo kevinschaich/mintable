@@ -43,4 +43,8 @@ export interface CSVAccountConfig extends BaseAccountConfig {
     negateValues?: boolean
 }
 
-export type AccountConfig = PlaidAccountConfig | CSVAccountConfig
+export interface TellerAccountConfig extends BaseAccountConfig {
+    token: string
+}
+
+export type AccountConfig = PlaidAccountConfig | CSVAccountConfig | TellerAccountConfig

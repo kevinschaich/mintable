@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/account-setup.css" />
+    </head>
+    <body>
+        <div id="container">
+            <img id="logo" src="/img/icon.png" alt="Mintable Logo" />
+            <h1>Mintable</h1>
+            <h2>Teller Account Setup</h2>
+            <div id="accounts"><div id="accounts-table"></div></div>
+
+            <div id="add-accounts" style="display:none">
+                <h3>Accounts Available to Add</h3>
+                <div id="add-accounts-table"></div>
+            </div>
+
+            <button id="link-button">Link A New Account</button>
+
+            <br />
+
+            <button id="done-button">Done Linking Accounts</button>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+        <script src="https://cdn.teller.io/connect/connect.js"></script>
+
+        <script type="text/javascript">
+            ;(function($) {
+                let tellerConnect
+                let currentAccessToken
+                let params = new URLSearchParams(window.location.search)
+
+                // Load and display any accounts using Teller that are already configured.
+                $.post('/accounts').then(accounts => {
+                    if (accounts.length == 0) {
+                        const text = `<p>No Teller accounts set up yet. Click "Link A New Account" to add one.`
+                        $('#accounts-table').append(text)
+                    } else {
+                        const text = `<h3>Current Accounts</h3>`
+                        $('#accounts').prepend(text)
+                        const table = `<table><tr><th>Id</th><th>Name</th><th>Remove</th></tr></table>`
+                        $('#accounts-table').append(table)
+
+                        accounts.forEach(account => {
+                            const removeButton = `<button class="remove" data-account-id="${account.id}">Remove</button>`
+                            const row = `<tr><td>${account.id}</td><td>${account.name}</td><td>${removeButton}</td></tr>`
+                            $('#accounts table').append(row)
+                        })
+                    }
+                })
+
+                // Handle the Add button.
+                $(document).on('click', 'button.add', function(e) {
+                    const accountId = e.currentTarget.getAttribute('data-account-id')
+                    $.post('/register_account', { accessToken: currentAccessToken, accountId }).then(() => {
+                        setTimeout(() => location.reload(), 100)
+                    })
+                })
+
+                // Handle the Remove button.
+                $(document).on('click', 'button.remove', function(e) {
+                    const confirmed = confirm('Are you sure you want to remove this account? This cannot be undone.')
+                    if (confirmed === true) {
+                        const accountId = e.currentTarget.getAttribute('data-account-id')
+                        $.post('/remove', { accountId }).then(setTimeout(() => location.reload(), 1000))
+                    }
+                })
+
+                // Handle the Link A New Account button.
+                jQuery('#link-button').on('click', function(e) {
+                    tellerConnect.open()
+                })
+
+                // Handle the Done Linking Accounts button.
+                jQuery('#done-button').on('click', function(e) {
+                    $.post('/done').then(data => {
+                        $('#container').text('You can now close this page in your browser.')
+                    })
+                })
+
+                // Handle when accounts associated with a user enrollment are received.
+                const onEnrollmentAccounts = accounts => {
+                    const table = `<table><tr><th>Account ID</th><th>Name</th><th>Add</th></tr></table>`
+                    $('#add-accounts-table').html(table)
+
+                    accounts.forEach(account => {
+                        const addButton = `<button class="add" data-account-id="${account.id}">Add</button>`
+                        const row = `<tr><td>${account.id}</td><td>${account.institution?.name} ${account.name} ${account.last_four}</td><td>${addButton}</td></tr>`
+                        $('#add-accounts table').append(row)
+                    })
+
+                    $('#add-accounts').show()
+                }
+
+                // Initialize the client side connection with Teller for account linking.
+                tellerConnect = TellerConnect.setup({
+                    applicationId: params.get('tellerAppId'),
+                    onInit: function() {
+                        console.log('Teller Connect has initialized')
+                    },
+                    onSuccess: function(enrollment) {
+                        // When the user authenticates with a bank and receives an
+                        // access token, load the accounts associated with the token.
+                        currentAccessToken = enrollment.accessToken
+                        $.post('/get_enrollment_accounts', { enrollment }).then(onEnrollmentAccounts)
+                    },
+                    onExit: function() {
+                        console.log('User closed Teller Connect')
+                    }
+                })
+            })(jQuery)
+        </script>
+    </body>
+</html>
