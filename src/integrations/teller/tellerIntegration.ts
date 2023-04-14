@@ -203,7 +203,6 @@ export class TellerIntegration {
         if (accountBalance) {
             account.current = accountBalance.ledger
             account.available = accountBalance.available
-            account.limit = accountBalance.ledger + accountBalance.available
         }
 
         const data = await this.fetchPagedTransactions(accountConfig, startDate, endDate)

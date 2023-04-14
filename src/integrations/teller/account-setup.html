@@ -29,6 +29,7 @@
                 let tellerConnect
                 let currentAccessToken
                 let params = new URLSearchParams(window.location.search)
+                const accountIds = []
 
                 // Load and display any accounts using Teller that are already configured.
                 $.post('/accounts').then(accounts => {
@@ -38,10 +39,11 @@
                     } else {
                         const text = `<h3>Current Accounts</h3>`
                         $('#accounts').prepend(text)
-                        const table = `<table><tr><th>Id</th><th>Name</th><th>Remove</th></tr></table>`
+                        const table = `<table><tr><th>Teller ID</th><th>Name</th><th>Remove</th></tr></table>`
                         $('#accounts-table').append(table)
 
                         accounts.forEach(account => {
+                            accountIds.push(account.id)
                             const removeButton = `<button class="remove" data-account-id="${account.id}">Remove</button>`
                             const row = `<tr><td>${account.id}</td><td>${account.name}</td><td>${removeButton}</td></tr>`
                             $('#accounts table').append(row)
@@ -52,6 +54,8 @@
                 // Handle the Add button.
                 $(document).on('click', 'button.add', function(e) {
                     const accountId = e.currentTarget.getAttribute('data-account-id')
+                    e.currentTarget.classList.add('loading')
+                    e.currentTarget.textContent = 'Adding...'
                     $.post('/register_account', { accessToken: currentAccessToken, accountId }).then(() => {
                         setTimeout(() => location.reload(), 100)
                     })
@@ -62,32 +66,42 @@
                     const confirmed = confirm('Are you sure you want to remove this account? This cannot be undone.')
                     if (confirmed === true) {
                         const accountId = e.currentTarget.getAttribute('data-account-id')
+                        e.currentTarget.classList.add('loading')
+                        e.currentTarget.textContent = 'Removing...'
                         $.post('/remove', { accountId }).then(setTimeout(() => location.reload(), 1000))
                     }
                 })
 
                 // Handle the Link A New Account button.
-                jQuery('#link-button').on('click', function(e) {
+                $('#link-button').on('click', function(e) {
                     tellerConnect.open()
                 })
 
                 // Handle the Done Linking Accounts button.
-                jQuery('#done-button').on('click', function(e) {
+                $('#done-button').on('click', function(e) {
                     $.post('/done').then(data => {
                         $('#container').text('You can now close this page in your browser.')
                     })
                 })
 
                 // Handle when accounts associated with a user enrollment are received.
-                const onEnrollmentAccounts = accounts => {
-                    const table = `<table><tr><th>Account ID</th><th>Name</th><th>Add</th></tr></table>`
+                const onEnrollmentAccounts = acc => {
+                    const table = `<table><tr><th>Teller ID</th><th>Name</th><th>Add</th></tr></table>`
                     $('#add-accounts-table').html(table)
 
-                    accounts.forEach(account => {
+                    let accToAdd = 0
+                    acc.forEach(account => {
+                        if (accountIds.includes(account.id)) return
                         const addButton = `<button class="add" data-account-id="${account.id}">Add</button>`
                         const row = `<tr><td>${account.id}</td><td>${account.institution?.name} ${account.name} ${account.last_four}</td><td>${addButton}</td></tr>`
                         $('#add-accounts table').append(row)
+                        accToAdd++
                     })
+
+                    if (!accToAdd) {
+                        const text = `<p>There are no accounts found to add from this institution.</p>`
+                        $('#add-accounts-table').replaceWith(text)
+                    }
 
                     $('#add-accounts').show()
                 }

@@ -133,7 +133,7 @@ After you have the base Teller integration working, you can run:
 mintable teller-account-setup
 ```
 
-to enter the account setup wizard to add, update, or remove accounts.
+to enter the account setup wizard to add or remove accounts.
 
 This will launch a local web server (necessary to authenticate with Teller's servers) for you to connect your banks.
 

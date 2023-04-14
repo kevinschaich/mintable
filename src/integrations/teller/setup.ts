@@ -1,7 +1,9 @@
+import { existsSync, realpathSync } from 'fs'
+import prompts from 'prompts'
+
 import { TellerConfig, defaultTellerConfig } from '../../types/integrations/teller'
 import { updateConfig } from '../../common/config'
 import { IntegrationId } from '../../types/integrations'
-import prompts from 'prompts'
 import { logInfo, logError } from '../../common/logging'
 
 export default async () => {
@@ -12,7 +14,6 @@ export default async () => {
         console.log('\t3. Fill out the form')
         console.log('\t4. Find the application ID, and download the certificate and private key')
         console.log('\t5. Answer the following questions:\n')
-
 
         const credentials = await prompts([
             {
@@ -27,19 +28,19 @@ export default async () => {
                 type: 'text',
                 name: 'pathCertificate',
                 message: 'Path to Certificate',
-                validate: (s: string) => (s.length ? true : 'Must enter path to certificate file.')
+                validate: (s: string) => s.length && existsSync(s) ? true : 'Must enter path to certificate file.'
             },
             {
                 type: 'text',
                 name: 'pathPrivateKey',
                 message: 'Path to Private Key',
-                validate: (s: string) => (s.length ? true : 'Must enter path to private key file.')
+                validate: (s: string) => s.length && existsSync(s) ? true : 'Must enter path to private key file.'
             },
             {
                 type: 'text',
                 name: 'appId',
                 message: 'Application ID',
-                validate: (s: string) => (s.length ? true : 'Must enter Application ID from Teller.')
+                validate: (s: string) => s.length && s.startsWith('app_') ? true : 'Must enter Application ID from Teller.'
             }
         ])
 
@@ -47,8 +48,8 @@ export default async () => {
             const tellerConfig = (config.integrations[IntegrationId.Teller] as TellerConfig) || defaultTellerConfig
 
             tellerConfig.name = credentials.name
-            tellerConfig.pathCertificate = credentials.pathCertificate
-            tellerConfig.pathPrivateKey = credentials.pathPrivateKey
+            tellerConfig.pathCertificate = realpathSync(credentials.pathCertificate)
+            tellerConfig.pathPrivateKey = realpathSync(credentials.pathPrivateKey)
             tellerConfig.appId = credentials.appId
 
             config.integrations[IntegrationId.Teller] = tellerConfig
