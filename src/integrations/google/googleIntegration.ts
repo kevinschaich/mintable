@@ -233,6 +233,7 @@ export class GoogleIntegration {
                 spreadsheetId: this.googleConfig.documentId,
                 requestBody: {
                     requests: sheets
+                        .filter(sheet => sheet.properties.sheetType == 'GRID')
                         .map(sheet => [
                             {
                                 repeatCell: {
