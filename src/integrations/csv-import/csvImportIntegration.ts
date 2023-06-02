@@ -76,6 +76,16 @@ export class CSVImportIntegration {
                                         )
                                     }
 
+                                    if (!outputRow.hasOwnProperty('category')) {
+                                        outputRow.category = 'Uncategorized'
+                                    }
+
+                                    if (outputRow.hasOwnProperty('category')) {
+                                        if(outputRow.category === '' || outputRow.category === 'null' || outputRow.category === 'undefined') {
+                                            outputRow.category = 'Uncategorized'
+                                        }
+                                    }
+
                                     if (CSVAccountConfig.negateValues === true && outputRow.hasOwnProperty('amount')) {
                                         outputRow['amount'] = -outputRow['amount']
                                     }
