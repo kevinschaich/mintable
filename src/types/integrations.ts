@@ -2,6 +2,7 @@ import { PlaidConfig } from './integrations/plaid'
 import { GoogleConfig } from './integrations/google'
 import { CSVImportConfig } from './integrations/csv-import'
 import { CSVExportConfig } from './integrations/csv-export'
+import { TellerConfig } from './integrations/teller'
 
 export enum IntegrationType {
     Import = 'import',
@@ -12,7 +13,8 @@ export enum IntegrationId {
     Plaid = 'plaid',
     Google = 'google',
     CSVImport = 'csv-import',
-    CSVExport = 'csv-export'
+    CSVExport = 'csv-export',
+    Teller = 'teller'
 }
 
 export interface BaseIntegrationConfig {
@@ -21,4 +23,4 @@ export interface BaseIntegrationConfig {
     type: IntegrationType
 }
 
-export type IntegrationConfig = PlaidConfig | GoogleConfig | CSVImportConfig | CSVExportConfig
+export type IntegrationConfig = PlaidConfig | GoogleConfig | CSVImportConfig | CSVExportConfig | TellerConfig

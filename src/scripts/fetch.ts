@@ -1,5 +1,6 @@
 import { getConfig } from '../common/config'
 import { PlaidIntegration } from '../integrations/plaid/plaidIntegration'
+import { TellerIntegration } from '../integrations/teller/tellerIntegration'
 import { GoogleIntegration } from '../integrations/google/googleIntegration'
 import { logInfo } from '../common/logging'
 import { Account } from '../types/account'
@@ -36,6 +37,11 @@ export default async () => {
             case IntegrationId.CSVImport:
                 const csv = new CSVImportIntegration(config)
                 accounts = accounts.concat(await csv.fetchAccount(accountConfig, startDate, endDate))
+                break
+
+            case IntegrationId.Teller:
+                const teller = new TellerIntegration(config)
+                accounts = accounts.concat(await teller.fetchAccount(accountConfig, startDate, endDate))
                 break
 
             default:

@@ -103,6 +103,15 @@ button.remove:hover {
     background-color: #ed0d3a;
 }
 
+button.loading,
+button.loading:hover,
+button.remove.loading:hover {
+    background: #fff;
+    border-color: #aaa;
+    color: #aaa;
+    cursor: wait;
+}
+
 #link-button {
     margin-top: 80px;
 }

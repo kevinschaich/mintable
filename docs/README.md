@@ -8,6 +8,7 @@
   - [Migrating from `v1.x.x`](#migrating-from-v1xx)
 - [Importing Account Balances & Transactions](#importing-account-balances--transactions)
   - [Automatically – in the cloud – via Plaid](#automatically-in-the-cloud--via-plaid)
+  - [Automatically – via Teller](#automatically-via-teller)
   - [Manually – on your local machine – via CSV bank statements](#manually--on-your-local-machine--via-csv-bank-statements)
 - [Exporting Account Balances & Transactions](#exporting-account-balances--transactions)
   - [In the cloud – via Google Sheets](#in-the-cloud-via-google-sheets)
@@ -115,6 +116,32 @@ This will launch a local web server (necessary to authenticate with Plaid's serv
 To add a new account, click the blue **Link A New Account** button. To re-authenticate with an existing account, click the blue **Update** button next to the account name in the table.
 
 > **Note:** Plaid is the default import integration and these steps are not necessary if you've already run `mintable setup`.
+
+### Automatically via [Teller](https://teller.io)
+
+You can run:
+
+```bash
+mintable teller-setup
+```
+
+to enter the Teller setup wizard. This will ask for things like the certificate, private key, and application ID provided when you sign up for Teller.
+
+After you have the base Teller integration working, you can run:
+
+```bash
+mintable teller-account-setup
+```
+
+to enter the account setup wizard to add or remove accounts.
+
+This will launch a local web server (necessary to authenticate with Teller's servers) for you to connect your banks.
+
+To add a new account, click the blue **Link A New Account** button.
+
+> **Note:** Access to an account may expire. In that case, you should run `mintable teller-account-setup` to re-add the accounts with expired access.
+
+After set up is complete, you will import updated account balances/transactions from your banking institutions every time `mintable fetch` is run.
 
 ### Manually – on your local machine – via CSV bank statements
 

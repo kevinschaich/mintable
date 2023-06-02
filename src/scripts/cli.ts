@@ -7,7 +7,9 @@ import plaid from '../integrations/plaid/setup'
 import google from '../integrations/google/setup'
 import csvImport from '../integrations/csv-import/setup'
 import csvExport from '../integrations/csv-export/setup'
+import teller from '../integrations/teller/setup'
 import accountSetup from '../integrations/plaid/accountSetup'
+import tellerAccountSetup from '../integrations/teller/accountSetup'
 import fetch from './fetch'
 import migrate from './migrate'
 import { logError } from '../common/logging'
@@ -43,7 +45,9 @@ import { logError } from '../common/logging'
         'account-setup': accountSetup,
         'google-setup': google,
         'csv-import-setup': csvImport,
-        'csv-export-setup': csvExport
+        'csv-export-setup': csvExport,
+        'teller-setup': teller,
+        'teller-account-setup': tellerAccountSetup
     }
 
     const arg = process.argv[2]
