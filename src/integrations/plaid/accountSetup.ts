@@ -6,7 +6,7 @@ import { IntegrationId } from '../../types/integrations'
 import { PlaidConfig } from '../../types/integrations/plaid'
 
 export default async () => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         try {
             console.log('\nThis script will help you add accounts to Plaid.\n')
             console.log('\n\t1. A page will open in your browser allowing you to link accounts with Plaid.')
