@@ -44,6 +44,24 @@ export default async () => {
                     message:
                         'Document ID (From the sheet you just created: https://docs.google.com/spreadsheets/d/DOCUMENT_ID/edit)',
                     validate: (s: string) => (s.length >= 8 ? true : 'Must be at least 8 characters in length.')
+                },
+                {
+                    type: 'confirm',
+                    name: 'useTemplate',
+                    message: 'Do you want to setup a template for your Google Sheet?',
+                },
+                {
+                    type: prev => (prev ? 'text' : null),
+                    name: 'templateDocumentId',
+                    message: 'Template Document ID (From the URL of the document: https://docs.google.com/spreadsheets/d/DOCUMENT_ID/edit)',
+                    validate: (s: string) => (s.length >= 8 ? true : 'Must be at least 8 characters in length.')
+                },
+                {
+                    // The previous value is either "useTemplate" (false) or "templateDocumentId" (true). If it's false, we don't want to ask this question.
+                    type: prev => (prev ? 'text' : null),
+                    name: 'templateSheetTitle',
+                    message: 'Template Sheet Title (The name of the sheet in the template document)',
+                    validate: (s: string) => (s.length >= 1 ? true : 'Must be at least 1 character in length.')
                 }
             ])
 
@@ -54,6 +72,12 @@ export default async () => {
                 googleConfig.documentId = credentials.documentId
                 googleConfig.credentials.clientId = credentials.clientId
                 googleConfig.credentials.clientSecret = credentials.clientSecret
+                if (credentials.useTemplate) {
+                    googleConfig.template = {
+                        documentId: credentials.templateDocumentId,
+                        sheetTitle: credentials.templateSheetTitle
+                    }
+                }
 
                 config.integrations[IntegrationId.Google] = googleConfig
 
